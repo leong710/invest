@@ -505,7 +505,14 @@
         var len = res_r.length;
         for (let i=0; i < len; i++) {
             // 把user訊息包成json字串以便夾帶
-            let user_json = '{"emp_id":"'+res_r[i].emp_id+'","cname":"'+ res_r[i].cname+'","user":"'+ res_r[i].user+'","cstext":"'+ res_r[i].cstext+'","sign_code":"'+ res_r[i].dept_no+'"}';
+            let user_json = JSON.stringify({
+                    "emp_id"    : res_r[i].emp_id.trim(),
+                    "cname"     : res_r[i].cname.trim(),
+                    "user"      : res_r[i].user.trim(),
+                    "cstext"    : res_r[i].cstext.trim(),
+                    "sign_code" : res_r[i].dept_no.trim()
+                });
+
             div_result_tbody.innerHTML += 
                 '<tr>' +
                     '<td>' + res_r[i].emp_id +'</td>' +
@@ -514,8 +521,7 @@
                     '<td>' + res_r[i].user + '</td>' +
                     '<td>' + res_r[i].dept_no + '</td>' +
                     '<td>' + res_r[i].dept_c +'/'+ res_r[i].dept_d + '</td>' +
-                    '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id
-                        +'" value='+user_json+' onclick="tagsInput_me(this.value);">'+
+                    '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value='+user_json+' onclick="tagsInput_me(this.value)">'+
                     '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
                 '</tr>';
         }

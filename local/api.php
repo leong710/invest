@@ -20,11 +20,9 @@
         // step-2.組合查詢參數陣列
             // 接收來自前端的資料
             $su = array (
-                "table"     => !empty($_REQUEST["table"])     ? $_REQUEST["table"]     : NULL,    // 日期
-                "id"        => !empty($_REQUEST["id"])        ? $_REQUEST["id"]        : NULL,    // log's id
-                "flag"      => !empty($_REQUEST["flag"])      ? $_REQUEST["flag"]      : NULL,    // 系統id  
-                
-                "key_word"  => !empty($_REQUEST["key_word"])  ? $_REQUEST["key_word"]  : NULL,    // 訊息內容
+                "table"     => isset($_REQUEST["table"])     ? $_REQUEST["table"]     : NULL,    // 日期
+                "id"        => isset($_REQUEST["id"])        ? (string)$_REQUEST["id"]: NULL,    // log's id
+                "flag"      => isset($_REQUEST["flag"])      ? $_REQUEST["flag"]      : NULL,    // 系統id  
             );
             
         // step-3.確認基本數值具備且無誤 => 執行function
@@ -37,15 +35,14 @@
                         // 宣告查詢陣列內容
                         if(empty($su['id']) || empty($su['table'])) {
                             $aResult['error'] = $function.' - 參數錯誤!';
+
                         } else {
                             if($su['table'] == "site"){
                                 $cheng_flag = changeSite_flag($su);
+
                             }else if($su['table'] == "fab"){
                                 $cheng_flag = changeFab_flag($su);
-                            }else if($su['table'] == "local"){
-                                $cheng_flag = changeLocal_flag($su);
-                            }else if($su['table'] == "ptlocal"){
-                                $cheng_flag = changePTLocal_flag($su);
+
                             }else{
                                 $cheng_flag = array(
                                     'table' => $su['table'], 
@@ -56,14 +53,6 @@
                             $aResult['result'] = $cheng_flag;
                         }
                         break;
-
-                    case 'searchUser':
-                            if(empty($su['key_word'])) {
-                                $aResult['error'] = $function.' - 參數錯誤!';
-                            } else {
-                                $aResult['result'] = searchUser($su);
-                            }
-                            break;
 
                     default:
                         $aResult['error'] = 'Not found function '.$function.'!';
@@ -85,6 +74,6 @@
         }
         // 將回傳的結果返回給前端
         // 參數：JSON_UNESCAPED_UNICODE 中文不編碼
-        echo json_encode($aResult , JSON_UNESCAPED_UNICODE );
+        echo json_encode($aResult, JSON_UNESCAPED_UNICODE );
         // api function --- end
         

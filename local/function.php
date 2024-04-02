@@ -188,8 +188,8 @@
             $stmt->execute([$flag, $id]);
             $Result = array(
                 'table' => $table, 
-                'id' => $id,
-                'flag' => $flag
+                'id'    => $id,
+                'flag'  => $flag
             );
             return $Result;
         }catch(PDOException $e){

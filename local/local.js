@@ -70,20 +70,20 @@
         flagBtn.onclick = e => {
             let swal_content = e.target.name+'_id:'+e.target.id+'=';
             $.ajax({
-                url:'api.php',
-                method:'post',
-                async: false,                                           // ajax取得數據包後，可以return的重要參數
-                dataType:'json',
+                url     : 'api.php',
+                method  : 'post',
+                async   :  false,                                           // ajax取得數據包後，可以return的重要參數
+                dataType: 'json',
                 data:{
-                    function: 'cheng_flag',           // 操作功能
-                    table: e.target.name,
-                    id: e.target.id,
-                    flag: e.target.value
+                    function : 'cheng_flag',           // 操作功能
+                    table    : e.target.name,
+                    id       : e.target.id.toString(),
+                    flag     : e.target.value
                 },
                 success: function(res){
                     let res_r = res["result"];
+                    // console.log(res_r);
                     let res_r_flag = res_r["flag"];
-                    // console.log(res_r_flag);
                     if(res_r_flag == 'Off'){
                         e.target.classList.remove('btn-success');
                         e.target.classList.add('btn-warning');
@@ -101,7 +101,7 @@
                 error: function(e){
                     swal_action = 'error';
                     swal_content += res_r_flag+' 套用失敗';
-                    console.log("error");
+                    console.log("cheng_flag error: ", e);
                 }
             });
 
@@ -112,7 +112,7 @@
     }
 
     // // // 第三頁：searchUser function 
-    // // fun3-1：search Key_word
+    // // fun3-1：search Key_word       // 20240329 若要導入功能分離，可參考ert_em/auth/index
     function search_fun(){
         mloading("show");                       // 啟用mLoading
         let search = $('.search > input').val().trim();

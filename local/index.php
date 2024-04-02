@@ -128,7 +128,8 @@
                                                 <td class="text-start"><?php echo $site['site_title']; ?></td>
                                                 <td class="text-start"><?php echo $site['site_remark']; ?></td>
                                                 <td><?php if($sys_role <= 1){ ?>
-                                                    <button type="button" name="site" id="<?php echo $site['id'];?>" class="btn btn-sm btn-xs flagBtn <?php echo $site['flag'] == 'On' ? 'btn-success':'btn-warning';?>" value="<?php echo $site['flag'];?>"><?php echo $site['flag'];?></button>
+                                                    <button type="button" name="site" id="<?php echo $site['id'];?>" class="btn btn-sm btn-xs flagBtn 
+                                                            <?php echo $site['flag'] == 'On' ? 'btn-success':'btn-warning';?>" value="<?php echo $site['flag'];?>"><?php echo $site['flag'];?></button>
                                                     <?php }else{ ?>
                                                         <span class="btn btn-sm btn-xs <?php echo $site['flag'] == 'On' ? 'btn-success':'btn-warning';?>">
                                                             <?php echo $site['flag'] == 'On' ? '顯示':'隱藏';?>
@@ -183,7 +184,8 @@
                                                 <td class="text-center"><?php echo $fab['sign_code']; ?></td>
                                                 <td class="word_bk"><?php echo $fab['pm_emp_id']; ?></td>
                                                 <td><?php if($sys_role <= 1){ ?>   
-                                                        <button type="button" name="fab" id="<?php echo $fab['id'];?>" class="btn btn-sm btn-xs flagBtn <?php echo $fab['flag'] == 'On' ? 'btn-success':'btn-warning';?>" value="<?php echo $fab['flag'];?>"><?php echo $fab['flag'];?></button>
+                                                        <button type="button" name="fab" id="<?php echo $fab['id'];?>" class="btn btn-sm btn-xs flagBtn 
+                                                            <?php echo $fab['flag'] == 'On' ? 'btn-success':'btn-warning';?>" value="<?php echo $fab['flag'];?>"><?php echo $fab['flag'];?></button>
                                                     <?php }else{ ?>
                                                         <span class="btn btn-sm btn-xs <?php echo $fab['flag'] == 'On' ? 'btn-success':'btn-warning';?>">
                                                             <?php echo $fab['flag'] == 'On' ? '顯示':'隱藏';?></span>
