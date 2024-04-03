@@ -25,7 +25,7 @@
             },
             "rload": {
                 "title": "年資",
-                "data_type": "date",
+                "data_type": "text",
                 "value": ""
             },
             "a_day": {

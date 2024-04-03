@@ -35,10 +35,10 @@
     <script src="../../libs/jquery/mloading_init.js"></script>                                      <!-- mLoading_init.js 3/3 -->
     <style>
 
-        #emp_id, #excelFile{    
+        /* #emp_id, #excelFile{    
             margin-bottom: 0px;
             text-align: center;
-        }
+        } */
 
     </style>
 </head>
@@ -46,13 +46,14 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-11 border rounded px-3 py-4" style="background-color: #D4D4D4;">
+            <div class="col-10 border rounded px-3 py-4" style="background-color: #D4D4D4;">
                 <!-- 表頭1 -->
                 <div class="row px-2">
-                    <div class="col-12 col-md-6 py-0">
+                    <div class="col-12 col-md-6 py-0" id="home_title">
                         <h3><i class="fa-solid fa-3"></i>&nbsp<b>南廠區交通事故訪談表</b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
+                        <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
                         <a href="<?php echo $up_href;?>" class="btn btn-secondary" onclick="return confirm('確認返回？');" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</a>
                     </div>
                 </div>
@@ -75,33 +76,33 @@
                 <!-- container -->
                 <div class="col-12 py-0">
                     <!-- 內頁 -->
-                    <form action="store.php" method="post" onsubmit="this.cname.disabled=false,this.plant.disabled=false,this.dept.disabled=false,this.sign_code.disabled=false,this.omager.disabled=false" >
+                    <form action="./zz/debug.php" method="post" onsubmit="this.cname.disabled=false,this.plant.disabled=false,this.dept.disabled=false,this.sign_code.disabled=false,this.omager.disabled=false" >
                         <div class="row rounded bg-light" id="form_container">
                             <div class="col-12 p-3 ">
                                 <div class="row">
                                     <!-- line 1 -->
                                     <div class="col-6 col-md-6 py-0">
                                         <div class="form-floating">
-                                            <input type="text" name="case_title" id="case_title" class="form-control" required >
+                                            <input type="text" name="case_title" id="case_title" class="form-control" require >
                                             <label for="case_title" class="form-label">case_title/事件名稱：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 py-0">
                                         <div class="form-floating">
-                                            <input type="text" name="a_dept" id="a_dept" class="form-control" required >
+                                            <input type="text" name="a_dept" id="a_dept" class="form-control" require >
                                             <label for="a_dept" class="form-label">a_dept/事故單位：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
                                     <!-- line 2 -->
                                     <div class="col-6 col-md-6 pb-0">
                                         <div class="form-floating">
-                                            <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="<?=date('Y-m-d\TH:i')?>" required>
+                                            <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="<?=date('Y-m-d\TH:i')?>" require>
                                             <label for="meeting_time" class="form-label">meeting_time/會議時間：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 pb-0">
                                         <div class="form-floating">
-                                            <input type="text" name="meeting_local" id="meeting_local" class="form-control" required >
+                                            <input type="text" name="meeting_local" id="meeting_local" class="form-control" require >
                                             <label for="meeting_local" class="form-label">meeting_local/會議地點：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
@@ -114,36 +115,36 @@
                                         <!-- 第一排的功能 : 顯示已加入名單+input -->
                                         <div class="col-12 py-0">
                                             <div class="input-group py-1">
-                                                <span class="input-group-text text-end" style="width:25%;">事故當事者(或其委任代理人)<sup class="text-danger"> * </sup></span>
-                                                <input type="hidden" name="meeting_man_a[]" class="form-control mb-0" required readonly >
-                                                <span type="text" id="meeting_man_a_select" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal">&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <span class="input-group-text" style="width:25%;">事故當事者(或其委任代理人)<sup class="text-danger"> * </sup></span>
+                                                <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
+                                                <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text text-end" style="width:25%;">其他與會人員<sup class="text-danger"> * </sup></span>
-                                                <input type="hidden" name="meeting_man_o[]" class="form-control mb-0" required readonly >
-                                                <span type="text" id="meeting_man_o_select" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal">&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員<sup class="text-danger"> * </sup></span>
+                                                <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
+                                                <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text text-end" style="width:25%;">環安人員<sup class="text-danger"> * </sup></span>
-                                                <input type="hidden" name="meeting_man_s[]" class="form-control mb-0" required readonly >
-                                                <span type="text" id="meeting_man_s_select" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_msn_s" data-bs-target="#searchUser" data-bs-toggle="modal">&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <span class="input-group-text" style="width:25%;">環安人員<sup class="text-danger"> * </sup></span>
+                                                <input type="hidden" id="meeting_man_s_select" name="meeting_man_s">
+                                                <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
-    
                                         </div>
-    
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="col-12 p-3">
-                                <span class="from-label"><b>內容：</b></span><br>
+                                <div class="row">
+                                    <div class="col-6 col-md-6 py-0 "><span class="from-label"><b>內容：</b></span></div>
+                                    <div class="col-6 col-md-6 py-0 text-end"></div>
+                                </div>
                                 <div class="col-12 border rounded bg-white" id="item_list" >
-    
                                 </div>
                             </div>
                         </div>
@@ -153,7 +154,7 @@
                             <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Do you submit this 領用申請：</h5>
+                                        <h5 class="modal-title">Do you submit this 事故訪談表：</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body px-5">
@@ -286,7 +287,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header bg-warning  border rounded p-3 m-2">
-                        <h5 class="modal-title"><i class="fa-solid fa-circle-info"></i> searchUser</h5>
+                        <h5 class="modal-title"><i class="fa-solid fa-circle-info"></i>&nbspsearch & append User for&nbsp<span id="modal_title"></span></h5>
                         <button type="button" class="btn-close border rounded mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -336,39 +337,50 @@
 <script>
 // 開局設定init
     var form_json = <?=json_encode($form_a_json)?>;
-    var tags        = [];                                                                       // fun3-1：search Key_word
+    var meeting_man_a = [];                         //
+    var meeting_man_o = [];                         //
+    var meeting_man_s = [];                         // 
+    var meeting_man_target;                         // 指向目標
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
 
-
-
+    // JSON轉表單
     function make_question(id_key, key_a, item_a) {
         var now = new Date(); // 取得當前時間
         var int_a = '';
         if (item_a.data_type == "text") {
-            int_a = '<div class="form-floating">' +
-                '<input type="text" name="' + key_a + '" class="form-control" id="' + key_a + '" required>' +
-                '<label for="' + key_a + '" class="form-label">' + item_a.title + '</label></div>';
+            int_a = '<input type="text" name="' + key_a + '" id="' + key_a + '" class="form-control mb-0"  required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label>';
+
+            if(key_a == 'emp_id'){
+                int_a = '<div class="form-floating input-group">' + int_a +
+                '<button type="button" class="btn btn-outline-primary search_btn" id="emp_id_btn" data-toggle="tooltip" data-placement="bottom" title="以工號自動帶出其他資訊" '+
+                ' data-bs-target="#searchUser" data-bs-toggle="modal" >'+'<i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>'+'</div>';
+            }else{
+                int_a = '<div class="form-floating">' + int_a +'</div>';
+            }
 
         } else if (item_a.data_type == "date") {
-            var formattedDate = now.toISOString().slice(0, 10); // 格式化日期，取得日期部分
+            var formattedDate = now.toISOString().slice(0, 10);     // 格式化日期，取得日期部分
             int_a = '<div class="form-floating">' +
-                '<input type="date" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDate + '" required>' +
-                '<label for="' + key_a + '" class="form-label">' + item_a.title + '</label></div>';
+                // '<input type="date" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDate + '" required>' +
+                '<input type="date" name="' + key_a + '" class="form-control" id="' + key_a + '" value="" required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label></div>';
 
         } else if (item_a.data_type == "datetime") {
             var formattedDateTime = now.toISOString().slice(0, 16); // 格式化日期時間，取得到分鐘的部分
             int_a = '<div class="form-floating">' +
-                '<input type="datetime-local" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDateTime + '" required>' +
-                '<label for="' + key_a + '" class="form-label">' + item_a.title + '</label></div>';
+                // '<input type="datetime-local" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDateTime + '" required>' +
+                '<input type="datetime-local" name="' + key_a + '" class="form-control" id="' + key_a + '" value="" required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label></div>';
 
         } else if (item_a.data_type == "textarea") {
             int_a = '<div class="form-floating">' +
-                '<textarea name="' + key_a + '" id="' + key_a + '" class="form-control" style="height: 100px"></textarea>' +
-                '<label for="' + key_a + '" class="form-label">' + item_a.title + '</label></div>';
+                '<textarea name="' + key_a + '" id="' + key_a + '" class="form-control " style="height: 100px" ></textarea>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：</label></div>';
 
         } else if (item_a.data_type == "radio") {
-            int_a = '<div class="form-check">' +
-                '<label>' + item_a.title + '</label><br>';
+            int_a = '<div class=" border rounded p-2"><div class="form-check">' +
+                '<label><b>***' + item_a.title + '：</b></label><br>';
             for (const [radioKey, radioValue] of Object.entries(item_a.value)) {
                 if (typeof radioValue === 'object') {
                     int_a += '<input type="radio" name="' + key_a + '" value="' + radioKey + '" class="form-check-input">' +
@@ -378,7 +390,7 @@
                         '<label class="form-check-label">' + radioValue + '</label><br>';
                 }
             }
-            int_a += '</div>';
+            int_a += '</div></div>';
         }
 
         if(id_key == 'session_1'){
@@ -395,167 +407,149 @@
         $('#' + id_key).append(int_a);
     }
 
-    // 以下是你原來的迴圈，我保留了不做修改，新增部分在最後一個 else 語句裡
-    var form_doc = document.getElementById('item_list');
-    for (const [key_1, value_1] of Object.entries(form_json)) {
-        let match;
-        const regex = new RegExp('session', 'gi');
-        if ((match = regex.exec(key_1)) !== null) {
-            let int_1 = '<div class="col-12"><hr>';
-            if (value_1.title.length != 0) {
-                int_1 += '<h4><b>※&nbsp' + key_1 + '&nbsp' + value_1.title + '：</b></h4>';
-            }
-            if (value_1.info.length != 0) {
-                int_1 += '&nbsp' + value_1.info;
-            }
-            int_1 += '<div class="row" id="' + key_1 + '"></div></div>'
-            $('#item_list').append(int_1);
+    // // // searchUser function 
+        // fun_0.清除searchUser_modal
+        function resetMain(){
+            $("#result").removeClass("border rounded bg-white");
+            $('#result_table').empty();                                 // 搜尋清單
+            // $('#modal_title').empty();                                  // 標題
+            document.querySelector('#key_word').value = '';             // 搜尋key_word input
         }
-        for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            make_question(key_1, key_2, value_2)
-        }
-        // 檢查是否有缺少的項目，並添加缺少的項目
-        for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            if (!$('#' + key_2).length) {
-                make_question(key_1, key_2, value_2);
+        // fun_1.search Key_word
+        function search_fun(){
+            mloading("show");                                           // 啟用mLoading
+            const uuid = '39aad298-a041-11ed-8ed4-2cfda183ef4f';        // hrdb
+            var search = $('#key_word').val().trim();                   // search keyword取自user欄位
+            var request = {
+                functionname : 'search',                                // 操作功能
+                uuid         : uuid,                                    // ppe
+                search       : search                                   // 查詢對象key_word
             }
-        }
-    }
-
-        // Alex menu
-        var search_btns = Array.from(document.querySelectorAll(".search_btn"));
-        search_btns.forEach((s_btn)=>{
-            s_btn.addEventListener('mousedown',function(){
-                // 標籤
-                // document.querySelector(".head > ul > li > button.active").classList.remove('active');
-                // this.classList.add('active');
-                // show_activeTab(this.id);          // 呼叫fun竄改activeTab按鈕+數值
-                console.log(this.id)
-
+            $.ajax({
+                url: 'http://tneship.cminl.oa/api/hrdb/index.php',      // 正式2024新版
+                method: 'post',
+                dataType: 'json',
+                data: request,
+                success: function(res){
+                    var res_r = res["result"];
+                    postList(res_r);                                    // 將結果轉給postList進行渲染
+                },
+                error (err){
+                    console.log("search error:", err);
+                    $("body").mLoading("hide");
+                    alert("查詢錯誤!!");
+                }
             })
-        })
 
-    // // // 第三頁：searchUser function 
-
-    // // fun3-2：移除單項模組
-    $('#selectUserItem').on('click', '.remove', function() {
-        var tagIndex = $(this).closest('.tag').index();
-        let tagg = tags[tagIndex];                       // 取得目標數值 emp_id,cname
-        let emp_id = tagg.substr(0, tagg.search(','));   // 指定 emp_id
-        let tag_user = document.getElementById(emp_id);
-        if(tag_user){
-            tag_user.value = tagg;
+            $("body").mLoading("hide");                                 // 關閉mLoading
         }
-        tags.splice(tagIndex, 1);           // 自陣列中移除
-        $(this).closest('.tag').remove();   // 自畫面中移除
-        let edit_pm_emp_id = document.getElementById('edit_pm_emp_id');
-        if(edit_pm_emp_id){
-            edit_pm_emp_id.value = tags;
-        }
-    });
-
-    function resetMain(){
-        $("#result").removeClass("border rounded bg-white");
-        $('#result_table').empty();
-        document.querySelector('#key_word').value = '';
-    }
-    // 第一-階段：search Key_word
-    function search_fun(){
-        // mloading("show");                                               // 啟用mLoading
-        const uuid = '39aad298-a041-11ed-8ed4-2cfda183ef4f';            // hrdb
-        var search = $('#key_word').val().trim();                       // search keyword取自user欄位
-
-        var request = {
-            functionname : 'search',                                // 操作功能
-            uuid         : uuid,                                    // ppe
-            search       : search                                   // 查詢對象key_word
-        }
-
-        $.ajax({
-            // url:'http://tneship.cminl.oa/hrdb/api/index.php',        // 正式舊版
-            url: 'http://tneship.cminl.oa/api/hrdb/index.php',          // 正式2024新版
-            method: 'post',
-            dataType: 'json',
-            data: request,
-            success: function(res){
-                var res_r = res["result"];
-                postList(res_r);                                        // 將結果轉給postList進行渲染
-    
-            },
-            error (err){
-                console.log("search error:", err);
-                $("body").mLoading("hide");
-                alert("查詢錯誤!!");
+        // fun_2.渲染功能
+        function postList(res_r){
+            // 清除表頭
+            $('#result_table').empty();
+            // $("#result").addClass("border rounded bg-white");
+            $("#result").addClass("bg-white");
+            // 定義表格頭段
+            var div_result_table = document.querySelector('.result table');
+            var Rinner = "<thead><tr>"+
+                            "<th>員工編號</th>"+"<th>員工姓名</th>"+"<th>職稱</th>"+"<th>user_ID</th>"+"<th>部門代號</th>"+"<th>部門名稱</th>"+"<th>select</th>"+
+                        "</tr></thead>" + "<tbody id='tbody'>"+"</tbody>";
+            // 鋪設表格頭段thead
+            div_result_table.innerHTML += Rinner;
+            // 定義表格中段tbody
+            var div_result_tbody = document.querySelector('.result table tbody');
+            $('#tbody').empty();
+            for (let i=0; i < res_r.length; i++) {
+                // 把user訊息包成json字串以便夾帶
+                    // let user_json = JSON.stringify({
+                    //         'emp_id'    : res_r[i].emp_id.trim(),
+                    //         'cname'     : res_r[i].cname.trim(),
+                    //     });
+                let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim();
+                div_result_tbody.innerHTML += 
+                    '<tr>' +
+                        '<td>' + res_r[i].emp_id +'</td>' +
+                        '<td>' + res_r[i].cname + '</td>' +
+                        '<td>' + res_r[i].cstext + '</td>' +
+                        '<td>' + res_r[i].user + '</td>' +
+                        '<td>' + res_r[i].dept_no + '</td>' +
+                        '<td>' + res_r[i].dept_c +'/'+ res_r[i].dept_d + '</td>' +
+                        '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value='+user_json+' onclick="tagsInput_me(this.value)">'+
+                        '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
+                    '</tr>';
             }
-        })
-    }
-    // 第一階段：渲染功能
-    function postList(res_r){
-        // 清除表頭
-        $('#result_table').empty();
-        // $("#result").addClass("border rounded bg-white");
-        $("#result").addClass("bg-white");
-        // 定義表格頭段
-        var div_result_table = document.querySelector('.result table');
-        var Rinner = "<thead><tr>"+
-                        "<th>員工編號</th>"+"<th>員工姓名</th>"+"<th>職稱</th>"+"<th>user_ID</th>"+"<th>部門代號</th>"+"<th>部門名稱</th>"+"<th>select</th>"+
-                    "</tr></thead>" + "<tbody id='tbody'>"+"</tbody>";
-        // 鋪設表格頭段thead
-        div_result_table.innerHTML += Rinner;
-        // 定義表格中段tbody
-        var div_result_tbody = document.querySelector('.result table tbody');
-        $('#tbody').empty();
-        for (let i=0; i < res_r.length; i++) {
-            // 把user訊息包成json字串以便夾帶
-            let user_json = JSON.stringify({
-                    'emp_id'    : res_r[i].emp_id.trim(),
-                    'cname'     : res_r[i].cname.trim(),
-                    'user'      : res_r[i].user.trim(),
-                    'cstext'    : res_r[i].cstext.trim(),
-                    'sign_code' : res_r[i].dept_no.trim()
-                });
-            div_result_tbody.innerHTML += 
-                '<tr>' +
-                    '<td>' + res_r[i].emp_id +'</td>' +
-                    '<td>' + res_r[i].cname + '</td>' +
-                    '<td>' + res_r[i].cstext + '</td>' +
-                    '<td>' + res_r[i].user + '</td>' +
-                    '<td>' + res_r[i].dept_no + '</td>' +
-                    '<td>' + res_r[i].dept_c +'/'+ res_r[i].dept_d + '</td>' +
-                    '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value='+user_json+' onclick="tagsInput_me(this.value)">'+
-                    '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
-                '</tr>';
+
         }
-        $("body").mLoading("hide");                                 // 關閉mLoading
+        // fun_3.點選、渲染模組
+        function tagsInput_me(val) {
+            // let emp_id = val.substr(0, val.search(','));                    // 指定emp_id
+            // let cname  = val.substr(val.search(',',)+1);                    // 指定cname
+            // let cstext = val.substr(val.lastIndexOf(',')+1)                 // 指定cstext
+            let emp_id = val.split(',')[0];
+            let cname  = val.split(',')[1].trim();
+            let cstext = val.split(',')[2].trim();
 
-    }
-    // 第二階段：點選、渲染模組
-    function tagsInput_me(val) {
-        let obj_val = JSON.parse(val);                  // 將JSON字串轉成Object物件
-        let cname = obj_val.cname;      // 指定cname
-        let emp_id = obj_val.emp_id;   // 指定emp_id
+            if (val !== '') {
+                if(meeting_man_target == 'emp_id_btn'){     // 來自事故者基本資訊
+                    let personal_inf = {
+                        'emp_id' : emp_id, 
+                        'cname'  : cname, 
+                        'cstext' : cstext
+                    }
+                    Object.keys(personal_inf).forEach((_key)=>{
+                        let _key_elem = document.querySelector('#'+_key)
+                        if(_key_elem){
+                            _key_elem.value = personal_inf[_key]
+                        }
+                    })
+                    searchUser_modal.hide();      // 關閉searchUser_modal
 
-        if (obj_val !== '') {
-            tags.push(obj_val);
-            $('#meeting_man_a_select').append('<div class="tag">' + cname + '<span class="remove">x</span></div>');
-            let tag_user = document.getElementById(emp_id);
-            if(tag_user){
-                tag_user.value = '';
-                // $("#"+emp_id+" .fa-circle").toggleClass("fa-circle-check");
+                }else{                                      // 來自會議title
+                    let parts = val.split(',');
+                    parts.pop();                 // 移除最后一个元素--職稱
+                    val = parts.join(',');
+
+                    window[meeting_man_target].push(val);
+                    $('#'+meeting_man_target+'_show').append('<div class="tag">' + cname + '<span class="remove">x</span></div>');
+                    let tag_user = document.getElementById(emp_id);
+                    if(tag_user){ tag_user.value = ''; }
+                    let meeting_man_target_select = document.getElementById(meeting_man_target+'_select');
+                    if(meeting_man_target_select){
+                        meeting_man_target_select.value = window[meeting_man_target];
+                    }
+                }
             }
-            // let edit_spm_emp_id = document.getElementById('edit_spm_emp_id');
-            // if(edit_spm_emp_id){
-            //     edit_spm_emp_id.value = tags;
-            // }
+            // resetMain();
+            // searchUser_modal.hide();      // 切到searchUser頁面
         }
-        
-        resetMain();
-        searchUser_modal.hide();      // 切到searchUser頁面
-        // edit_pm.handleUpdate();
-    }
+        // fun_4.移除單項模組
+        $('#meeting_man_a_show, #meeting_man_o_show, #meeting_man_s_show ').on('click', '.remove', function() {
+            let this_parent     = $(this).parent().parent();                // 取得爺層的元素
+            let this_parent_id  = this_parent[0].id.replace('_show', '');   // 取得爺層的id，並去除_show
+            let tagIndex        = $(this).closest('.tag').index();          // 取得點擊index位置
+            let tagg            = window[this_parent_id][tagIndex];         // 取得目標數值 emp_id,cname
+            let emp_id          = tagg.substr(0, tagg.search(','));         // 指定 emp_id
+                let tag_user        = document.getElementById(emp_id);
+                if(tag_user){ 
+                    tag_user.value = tagg; 
+                }
+            window[this_parent_id].splice(tagIndex, 1);                     // 自陣列中移除
+            $(this).closest('.tag').remove();                               // 自畫面中移除
+            let _select = document.getElementById(this_parent_id+'_select');
+            if(_select){
+                _select.value = window[this_parent_id];
+            }
+        });
+    // // // searchUser function 
 
-    // // // 第三頁：searchUser function 
+    $(function () {
 
+        // 監聽myModal被關閉時就執行--清除表格
+        var searchUser_elm = document.getElementById('searchUser');
+        searchUser_elm.addEventListener('hidden.bs.modal', function () {
+            resetMain();                    // do something...清除欄位
+            $('#modal_title').empty();      // 清除標題
+        })
         // 20230817 禁用Enter鍵表單自動提交 
         document.onkeydown = function(event) { 
             var target, code, tag; 
@@ -578,7 +572,94 @@
                 } 
             } 
         };
+        // JSON轉表單
+        var form_doc = document.getElementById('item_list');
+        for (const [key_1, value_1] of Object.entries(form_json)) {
+            let match;
+            const regex = new RegExp('session', 'gi');
+            if ((match = regex.exec(key_1)) !== null) {
+                let int_1 = '<div class="col-12">';
+                if (value_1.title.length != 0) {
+                    int_1 += '<h5><b>※&nbsp' + key_1 + '&nbsp' + value_1.title + '：</b></h5>';
+                }
+                if (value_1.info.length != 0) {
+                    int_1 += '&nbsp' + value_1.info;
+                }
+                int_1 += '<div class="row" id="' + key_1 + '"></div></div>'
+                $('#item_list').append(int_1);
+            }
+            for (const [key_2, value_2] of Object.entries(value_1.item)) {
+                make_question(key_1, key_2, value_2)
+            }
+            // 檢查是否有缺少的項目，並添加缺少的項目
+            for (const [key_2, value_2] of Object.entries(value_1.item)) {
+                if (!$('#' + key_2).length) {
+                    make_question(key_1, key_2, value_2);
+                }
+            }
+        }
 
+        // 定義+監聽按鈕
+        var search_btns = Array.from(document.querySelectorAll(".search_btn"));
+        search_btns.forEach((s_btn)=>{
+            s_btn.addEventListener('mousedown',function(){
+                // 標籤
+                let modal_title
+                if(this.id == 'meeting_man_a'){
+                    modal_title = '事故當事者(或其委任代理人)'
+                }else if(this.id == 'meeting_man_o'){
+                    modal_title = '其他與會人員'
+                }else if(this.id == 'meeting_man_s'){
+                    modal_title = '環安人員'
+                }else if(this.id == 'emp_id_btn'){
+                    modal_title = '事故者基本資料'
+                }
+                $('#modal_title').append(modal_title)
+                meeting_man_target = this.id;               // 搜尋meeting_man_target
+            })
+        })
+
+    })
+
+
+    $(document).ready(function(){
+        // 監聽到職日欄位(id=hired)，自動計算年資並output(id=rload)
+        $('#hired').change(function() {
+            var selectedDate = new Date(document.getElementById("hired").value);    // 取得到職日日期
+            var currentDate = new Date();                                           // 取得今天日期
+            var difference = currentDate - selectedDate;                            // 計算日期差距（毫秒單位）
+            // 轉換毫秒為年月日
+                var years  = Math.floor(difference / (365.25 * 24 * 60 * 60 * 1000));
+                var months = Math.floor((difference % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+                var days   = Math.floor((difference % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+            // 输出结果
+                document.querySelector("#rload").value = "估算約： " + years + " 年 " + months + " 個月 " + days + " 天";
+        });
+        // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
+        $('#a_work_s, #a_work_e').change(function() {
+            console.log(this.id)
+            var a_work_s = new Date(document.getElementById("a_work_s").value);    // 取得起始
+                // 工作起始需不需要小於現在時間....需要確認
+                if(this.id == 'a_work_s'){
+                    var currentDate = new Date();                   // 取得今天日期
+                    if ($("#"+this.id).hasClass("is-valid"))   { $("#"+this.id).removeClass("is-valid");}
+                    if ($("#"+this.id).hasClass("is-invalid")) { $("#"+this.id).removeClass("is-invalid");}
+                    if (a_work_s < currentDate) {
+                        $("#"+this.id).addClass("is-valid");        // true
+                    } else {
+                        $("#"+this.id).addClass("is-invalid");      // false
+                    }
+                }
+            var a_work_e = new Date(document.getElementById("a_work_e").value);    // 取得訖止
+            if ($("#a_work_e").hasClass("is-valid"))   { $("#a_work_e").removeClass("is-valid");}
+            if ($("#a_work_e").hasClass("is-invalid")) { $("#a_work_e").removeClass("is-invalid");}
+            if (a_work_s < a_work_e) {
+                $("#a_work_e").addClass("is-valid");        // true
+            } else {
+                $("#a_work_e").addClass("is-invalid");      // false
+            }
+        });
+    })
 
 // 以下為控制 iframe
     var realName         = document.getElementById('realName');           // 上傳後，JSON存放處(給表單儲存使用)
