@@ -50,17 +50,19 @@
             }
         }
     },
+
     "session_2" : {
         "title" : "事故位置簡圖",
         "info": "描繪路線並標出 1.就業場所 2.日常居住處所 3.上下班應經途徑 4.事故地點",
         "item":{
             "a_pic" : {
                 "title": "圖片檔案",
-                "data_type": "text",
+                "data_type": "file",
                 "value": ""
             }
         }
     },
+
     "session_3" : {
         "title" : "事故原因及經過說明",
         "info"  : "",
@@ -72,6 +74,7 @@
             }
         }
     },
+
     "session_4" : {
         "title": "綜合問項1",
         "info"  : "",
@@ -239,6 +242,7 @@
             }
         }
     },
+
     "session_6" : {
         "title" : "綜合問項3",
         "info": "",
@@ -277,6 +281,7 @@
             }
         }
     },
+
     "session_7" : {
         "title" : "備註說明",
         "info": "",
@@ -284,7 +289,7 @@
             "remark": {
                 "title": "備註說明",
                 "info" : "",
-                "data_type": "text",
+                "data_type": "textarea",
                 "value": ""
             }
         }
