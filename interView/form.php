@@ -149,7 +149,9 @@
                                     <div class="col-6 col-md-6 py-0 "><span class="from-label"><b>內容：</b></span></div>
                                     <div class="col-6 col-md-6 py-0 text-end"></div>
                                 </div>
-                                <div class="col-12 border rounded bg-white" id="item_list" >
+                                <!-- <div class="col-12 border rounded bg-white" id="item_list" > -->
+                                <div class="accordion" id="item_list" >
+                                    <!-- append -->
                                 </div>
                             </div>
                         </div>
@@ -171,7 +173,6 @@
                                         <input type="hidden" name="created_cname"   id="created_cname"  value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="updated_user"    id="updated_user"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="uuid"            id="uuid"           value="">
-                                        <input type="hidden" name="step"            id="step"           value="<?php echo $step;?>">
                                         <input type="hidden" name="action"          id="action"         value="<?php echo $action;?>">
                                         <input type="hidden" name="idty"            id="idty"           value="1">
                                         <?php if($sys_role <= 3){ ?>
@@ -363,7 +364,7 @@
     var meeting_man_target;                         // 指向目標
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
 
-    // JSON轉表單；依據不同的key_type進行切換型別
+    // JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
     function make_question(id_key, key_a, item_a) {
         var now = new Date(); // 取得當前時間
         var int_a = '';
@@ -400,33 +401,42 @@
                 '<textarea name="' + key_a + '" id="' + key_a + '" class="form-control " style="height: 100px" ></textarea>' +
                 '<label for="' + key_a + '" class="form-label">' + item_a.title + '：</label></div></div>';
 
-        } else if (item_a.data_type == "radio" || item_a.data_type == "checkbox") {
+        } else if (item_a.data_type == "radio") {
             let data_type = item_a.data_type;
             int_a = '<div class=" border rounded p-2">' +
-                '<label><b>*** ' + item_a.title + '：</b></label><br>';
+                '<snap><b>*** ' + item_a.title + '：</b></snap><br>';
             for (const [radioKey, radioValue] of Object.entries(item_a.value)) {
                 if (typeof radioValue === 'object') {
-                    int_a += '<div class="form-check "><input type="'+ data_type +'" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input">' +
-                        '<label class="form-check-label" for="' + id_key+ '_' + key_a + '_' + radioKey + '">o_' + radioValue.title + '</label></div>';
+                    int_a += '<div class="form-check bg-light rounded"><input type="radio" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input option_item" onchange="onchange_option(this.name)">' +
+                    '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + radioKey + '">' + radioKey + '：</label></div>';
+                    if(radioValue.data_type == 'text'){
+                        int_a += '<input type="'+ radioValue.data_type +'" name="' + id_key + '_' + key_a + '" placeholder="' + radioValue.title + '" id="' + id_key + '_' + key_a + '_' + radioKey + '_o" class="form-control unblock">';
+                    }
+
                 } else {
-                    int_a += '<div class="form-check "><input type="'+ data_type +'" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input">' +
+                    int_a += '<div class="form-check bg-light rounded"><input type="radio" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input" onchange="onchange_option(this.name)">' +
                         '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + radioKey + '">' + radioValue + '</label></div>';
                 }
             }
             int_a += '</div></div>';
-        // } else if (item_a.data_type == "checkbox") {
-        //     int_a = '<div class=" border rounded p-2"><div class="form-check">' +
-        //         '<label><b>***' + item_a.title + '：</b></label><br>';
-        //     for (const [checkboxKey, checkboxValue] of Object.entries(item_a.value)) {
-        //         if (typeof checkboxValue === 'object') {
-        //             int_a += '<input type="checkbox" name="' + key_a + '" value="' + checkboxKey + '" class="form-check-input">' +
-        //                 '<label class="form-check-label">o_' + checkboxValue.title + '</label><br>';
-        //         } else {
-        //             int_a += '<input type="checkbox" name="' + key_a + '" value="' + checkboxKey + '" class="form-check-input">' +
-        //                 '<label class="form-check-label">' + checkboxValue + '</label><br>';
-        //         }
-        //     }
-        //     int_a += '</div></div>';
+        } else if (item_a.data_type == "checkbox") {
+            let data_type = item_a.data_type;
+            int_a = '<div class=" border rounded p-2">' +
+                '<snap><b>*** ' + item_a.title + '：</b></snap><br>';
+            for (const [checkboxKey, checkboxValue] of Object.entries(item_a.value)) {
+                if (typeof checkboxValue === 'object') {
+                    int_a += '<div class="form-check bg-light rounded"><input type="checkbox" name="' + id_key + '_' + key_a + '[]" value="' + checkboxKey + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '" class="form-check-input option_item" onchange="onchange_option(this.name)">' +
+                    '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + checkboxKey + '">' + checkboxKey + '：</label></div>';
+                    if(checkboxValue.data_type == 'text'){
+                        int_a += '<input type="'+ checkboxValue.data_type +'" name="' + id_key + '_' + key_a + '[]" placeholder="' + checkboxValue.title + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '_o" class="form-control unblock">';
+                    }
+
+                } else {
+                    int_a += '<div class="form-check bg-light rounded"><input type="checkbox" name="' + id_key + '_' + key_a + '[]" value="' + checkboxKey + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '" class="form-check-input" onchange="onchange_option(this.name)">' +
+                        '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + checkboxKey + '">' + checkboxValue + '</label></div>';
+                }
+            }
+            int_a += '</div></div>';
 
         } else if (item_a.data_type == "file") {        // session_2 事故位置簡圖
             int_a = '<div class="col-6 col-md-6"><div class="col-12 bg-white border rounded">' +
@@ -441,17 +451,17 @@
 
         // 外層session包裝
         if(id_key == 'session_1'){
-            int_a = '<div class="col-6 col-md-4 p-2">'+int_a+'</div>'
+            int_a = '<div class="col-6 col-md-4 p-2 ">'+int_a+'</div>'
             
         } else if(id_key == 'session_4'){
-            int_a = '<div class="col-6 col-md-6 p-2">'+int_a+'</div>'
+            int_a = '<div class="col-6 col-md-6 p-2 ">'+int_a+'</div>'
 
         } else if(id_key == 'session_5' || id_key == 'session_6'){
-            int_a = '<div class="col-12 col-md-6 p-2">'+int_a+'</div>'
+            int_a = '<div class="col-12 col-md-6 p-2 ">'+int_a+'</div>'
             
         }
 
-        $('#' + id_key).append(int_a);
+        $('#' + id_key +' .accordion-body').append(int_a);      // 渲染form
     }
 
     // // // searchUser function 
@@ -610,7 +620,54 @@
         };
         xhr.send(formData);
     }
+
+    // 空值遮蔽：On、Off
+    function onchange_option(name){
+        var opts = document.querySelectorAll('[name="'+name+'"].option_item')
+        opts.forEach((opt)=>{
+            var opt_id_o = document.querySelector('#'+opt.id+'_o');
+            if(opt.checked){
+                opt_id_o.classList.remove('unblock');
+                opt_id_o.focus();
+
+            }else{
+                // opt_id_o.value = "";
+                opt_id_o.classList.add('unblock');
+            }
+        })
+        // var checkbox = document.getElementById(name+"_flag_Switch");
+        // var flag = checkbox.checked ? "On" : "Off";
+        // var table_tr = document.querySelectorAll('.'+name+' > tbody > tr');
+        // if(flag=='Off'){
+        //     table_tr.forEach(function(row){
+        //         row.classList.remove('unblock');
+        //     })
+        // }else{
+        //     table_tr.forEach(function(row){
+        //         // 因為外層又包了一個Button導致目標下移
+        //         if(row.children[row.children.length-1].innerText != ""){
+        //             row.classList.remove('unblock');
+        //         }else{
+        //             row.classList.add('unblock');
+        //         }
+        //     })  
+        // }
+    }
   
+    function reset_option(){
+        var opts = document.querySelectorAll('.option_item')
+        opts.forEach((opt)=>{
+            var opt_id_o = document.querySelector('#'+opt.id+'_o');
+            if(opt.checked){
+                opt_id_o.classList.remove('unblock');
+
+            }else{
+                // opt_id_o.value = "";
+                opt_id_o.classList.add('unblock');
+            }
+        })
+    }
+
     $(function () {
 
         // 監聽myModal被關閉時就執行--清除表格
@@ -647,16 +704,21 @@
             let match;
             const regex = new RegExp('session', 'gi');
             if ((match = regex.exec(key_1)) !== null) {
-                let int_1 = '<div class="col-12">';
+                let int_1 = '<div class="accordion-item">';
                 if (value_1.title.length != 0) {
-                    int_1 += '<h5><b>※&nbsp' + key_1 + '&nbsp' + value_1.title + '：</b></h5>';
+                    int_1 += '<h5 class="accordion-header" id="' + key_1 + '_head">'+
+                        '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#' + key_1 + '" aria-expanded="true" aria-controls="' + key_1 + '">'+
+                        '<b>※&nbsp' + key_1 + '&nbsp' + value_1.title + '：</b>'+ '</button></h5>';
                 }
                 if (value_1.info.length != 0) {
                     int_1 += '&nbsp' + value_1.info;
                 }
-                int_1 += '<div class="row" id="' + key_1 + '"></div></div>'
+                int_1 += '<div id="' + key_1 + '"  class="accordion-collapse collapse show" aria-labelledby="' + key_1 + '_head" ><div class="row accordion-body"> </div></div></div>'
+
                 $('#item_list').append(int_1);
             }
+
+
             // for (const [key_2, value_2] of Object.entries(value_1.item)) {
             //     make_question(key_1, key_2, value_2)
             // }
@@ -668,7 +730,7 @@
             }
         }
 
-        // 定義+監聽按鈕
+        // 定義+監聽按鈕for與會人員
         var search_btns = Array.from(document.querySelectorAll(".search_btn"));
         search_btns.forEach((s_btn)=>{
             s_btn.addEventListener('mousedown',function(){
@@ -687,9 +749,31 @@
                 meeting_man_target = this.id;               // 搜尋meeting_man_target
             })
         })
+        // // 定義+監聽按鈕for option_item
+        // var option_btns = Array.from(document.querySelectorAll(".option_item"));
+        // option_btns.forEach((o_btn)=>{
+        //     o_btn.addEventListener('change',function(){
+        //         // console.log(this.name);
+        //         if(this.checked){
+        //             document.querySelector('#'+this.id+'_o').classList.remove('unblock');
+        //         }else{
+        //             document.querySelector('#'+this.id+'_o').value = "";
+        //             document.querySelector('#'+this.id+'_o').classList.add('unblock');
+        //         }
+        //     })
+        // })
 
+
+        
+        
     })
-
+    
+    // DOMContentLoaded 事件监听器
+    // document.addEventListener('DOMContentLoaded', function () {
+        
+    //     // 绑定事件监听器
+    //     attachEventListeners();
+    // });
 
     $(document).ready(function(){
         // 監聽到職日欄位(id=hired)，自動計算年資並output(id=rload)
@@ -706,7 +790,7 @@
         });
         // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
         $('#a_work_s, #a_work_e').change(function() {
-            console.log(this.id)
+            // console.log(this.id)
             var a_work_s = new Date(document.getElementById("a_work_s").value);    // 取得起始
                 // 工作起始需不需要小於現在時間....需要確認
                 if(this.id == 'a_work_s'){
@@ -728,6 +812,9 @@
                 $("#a_work_e").addClass("is-invalid");      // false
             }
         });
+
+
+        reset_option()
     })
 
 // 以下為控制 iframe

@@ -1,295 +1,347 @@
 {
     "session_1": {
-        "title": "事故者基本資料",
+        "label": "事故者基本資料",
         "info": "",
-        "item": {
-            "emp_id": {
-                "title": "工號",
-                "data_type": "text",
-                "value": ""
+        "item": [
+            {
+                "label": "工號",
+                "type" : "text",
+                "name" : "emp_id",
+                "required": true
             },
-            "cname": {
-                "title": "姓名",
-                "data_type": "text",
-                "value": ""
+             {
+                "label": "姓名",
+                "type" : "text",
+                "name" : "cname",
+                "required": true
             },
-            "cstext": {
-                "title": "職稱",
-                "data_type": "text",
-                "value": ""
+            {
+                "label": "職稱",
+                "type" : "text",
+                "name" : "cstext",
+                "required": false
             },
-            "hired": {
-                "title": "到職日",
-                "data_type": "date",
-                "value": ""
+            {
+                "label": "到職日",
+                "type" : "date",
+                "name" : "hired",
+                "required": true
             },
-            "rload": {
-                "title": "年資",
-                "data_type": "text",
-                "value": ""
+            {
+                "label": "年資",
+                "type": "text",
+                "name" : "rload",
+                "required": false
             },
-            "a_day": {
-                "title": "事故時間",
-                "data_type": "datetime",
-                "value": ""
+            {
+                "label": "事故時間",
+                "type": "datetime",
+                "name" : "a_day",
+                "required": true
             },
-            "a_work_s": {
-                "title": "發生事故當日當事者應工作起始時間",
-                "data_type": "datetime",
-                "value": ""
+            {
+                "label": "發生事故當日當事者應工作起始時間",
+                "type": "datetime",
+                "name" : "a_work_s",
+                "required": false
             },
-            "a_work_e": {
-                "title": "發生事故當日當事者應工作訖止時間",
-                "data_type": "datetime",
-                "value": ""
+            {
+                "label": "發生事故當日當事者應工作訖止時間",
+                "type": "datetime",
+                "name" : "a_work_e",
+                "required": false
             },
-            "a_location": {
-                "title": "事故地點",
-                "data_type": "text",
-                "value": ""
+            {
+                "label": "事故地點",
+                "type": "text",
+                "name" : "a_location",
+                "required": true
             }
-        }
+        ]
     },
 
     "session_2" : {
-        "title" : "事故位置簡圖",
+        "label" : "事故位置簡圖",
         "info": "描繪路線並標出 1.就業場所 2.日常居住處所 3.上下班應經途徑 4.事故地點",
-        "item":{
-            "a_pic" : {
-                "title": "圖片檔案",
-                "data_type": "file",
-                "value": ""
+        "item":[
+            {
+                "label": "圖片檔案",
+                "type" : "file",
+                "name" : "a_pic",
+                "required": true
             }
-        }
+        ]
     },
 
     "session_3" : {
-        "title" : "事故原因及經過說明",
+        "label" : "事故原因及經過說明",
         "info"  : "",
-        "item"  : {
-            "a_description" : {
-                "title": "事故原因及經過說明",
-                "data_type": "textarea",
-                "value": ""
+        "item"  : [
+            {
+                "label": "事故原因及經過說明",
+                "type" : "textarea",
+                "name" : "a_description",
+                "required": true
             }
-        }
+        ]
     },
 
     "session_4" : {
-        "title": "綜合問項1",
-        "info"  : "",
-        "item"  : {
-            "combo_1" : {
-                "title": "傷害類型",
-                "data_type": "radio",
-                "value": {
-                    "上班"      : "上班", 
-                    "下班途中"  : "下班途中",
-                    "公出事故"  : "公出事故",
-                    "執行職務"  : "執行職務",
-                    "其他"      : {
-                        "title"     : "其他",
-                        "data_type" : "text",
-                        "value"     : "" 
-                        }
-                }
+        "label": "綜合問項A",
+        "info" : "",
+        "item" : [
+            {
+                "label": "傷害類型",
+                "type" : "radio",
+                "name" : "s4_combo_1",
+                "options": [
+                    { "label" : "上班"      , "value" : "上班"     },
+                    { "label" : "下班途中"  , "value" : "下班途中"  },
+                    { "label" : "公出事故"  , "value" : "公出事故"  },
+                    { "label" : "執行職務"  , "value" : "執行職務"  },
+                    { "label" : "其他"      , "value" : "other"    }
+                ],
+                "required": true
             },
-            "combo_2" : {
-                "title" : "是否為上下班合理路徑",
-                "data_type" : "radio",
-                "value" : {
-                    "是" : "是",
-                    "否" : "否" 
-                    }
+            {
+                "label": "其他",
+                "type" : "text",
+                "name" : "s4_combo_1_other",
+                "depends_on": { "field": "s4_combo_1", "value": "other"}
             },
-            "combo_3" : {
-                "title" : "是否為上下班合理時間",
-                "data_type" : "radio",
-                "value" : {
-                    "是" : "是",
-                    "否" : "否" 
-                    }
+            {
+                "label": "是否為上下班合理路徑",
+                "type" : "radio",
+                "name" : "s4_combo_2",
+                "options" : [
+                    { "label" : "是" , "value" : "是" },
+                    { "label" : "否" , "value" : "否" }
+                ],
+                "required": true
             },
-            "combo_4" : {
-                "title": "有無因處理私事而中斷或脫離應經之途徑",
-                "data_type": "radio",
-                "value": {
-                    "有" : {
-                        "title" : "有處理私事而中斷或脫離應經之途徑（請於備註說明）",
-                        "data_type" : "text",
-                        "value" : "" 
-                    },
-                    "無" : "無處理私事而中斷或脫離應經之途徑"
-                }
+            {
+                "label": "是否為上下班合理時間",
+                "type" : "radio",
+                "name" : "s4_combo_3",
+                "options" : [
+                    { "label" : "是" , "value" : "是" },
+                    { "label" : "否" , "value" : "否" }
+                ],
+                "required": true
             },
-            "combo_5" : {
-                "title": "舉證資料(無須影印)",
-                "data_type": "checkbox",
-                "value": {
-                    "報案三聯單" : "報案三聯單",
-                    "保險證明"   : "保險證明",
-                    "交通裁決書" : "交通裁決書",
-                    "其他"       : {
-                            "title" : "其他",
-                            "data_type" : "text",
-                            "value" : "" 
-                        },
-                    "無"        : {
-                            "title" : "無：原因",
-                            "data_type" : "text",
-                            "value" : "" 
-                        }
-                }
+            {
+                "label": "有無因處理私事而中斷或脫離應經之途徑",
+                "type" : "radio",
+                "name" : "s4_combo_4",
+                "options" : [
+                    { "label" : "有（請於備註說明）" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
+            },
+            {
+                "label": "舉證資料(無須影印)",
+                "type" : "checkbox",
+                "name" : "s4_combo_5",
+                "options" : [
+                    { "label" : "報案三聯單" , "value" : "報案三聯單" },
+                    { "label" : "保險證明"   , "value" : "保險證明" },
+                    { "label" : "交通裁決書" , "value" : "交通裁決書" },
+                    { "label" : "其他"      , "value" : "Other" },
+                    { "label" : "無：原因"   , "value" : "無" }
+                ],
+                "required": true
+            },
+            {
+                "label": "其他",
+                "type" : "text",
+                "name" : "s4_combo_5_other",
+                "depends_on": { "field": "s4_combo_5", "value": "other"}
+            },
+            {
+                "label": "無：原因",
+                "type" : "text",
+                "name" : "s4_combo_5_no",
+                "depends_on": { "field": "s4_combo_5", "value": "no"}
             }
-        }
+        ]
     },
 
     "session_5" : {
-        "title" : "綜合問項2",
+        "label" : "綜合問項B",
         "info" : "",
-        "item" : {
-            "combo_1" : {
-                "title": "1.領有駕駛車種之執照駕車",
-                "data_type": "radio",
-                "value": {
-                   "1" : "有（領有駕駛車種之執照駕車者，請附駕駛人駕照正、背面影本）", 
-                   "2" : "無"
-                }
+        "item" : [
+            {
+                "label": "1.領有駕駛車種之執照駕車",
+                "type" : "radio",
+                "name" : "s5_combo_1",
+                "options" : [
+                    { "label" : "有（領有駕駛車種之執照駕車者，請附駕駛人駕照正、背面影本）" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_2" : {
-                "title": "2.受吊扣期間或吊銷駕駛執照處分駕車",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "2.受吊扣期間或吊銷駕駛執照處分駕車",
+                "type" : "radio",
+                "name" : "s5_combo_2",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_3" : {
-                "title": "3.經有燈光號誌管制之交岔路口違規闖紅燈",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "3.經有燈光號誌管制之交岔路口違規闖紅燈",
+                "type" : "radio",
+                "name" : "s5_combo_3",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_4" : {
-                "title": "4.闖越鐵路平交道",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "4.闖越鐵路平交道",
+                "type" : "radio",
+                "name" : "s5_combo_4",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_5" : {
-                "title": "5.酒精濃度超過規定標準駕車",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "5.酒精濃度超過規定標準駕車",
+                "type" : "radio",
+                "name" : "s5_combo_5",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_6" : {
-                "title": "6.吸食毒品、迷幻藥或管制藥品駕駛車輛",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "6.吸食毒品、迷幻藥或管制藥品駕駛車輛",
+                "type" : "radio",
+                "name" : "s5_combo_6",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_7" : {
-                "title": "7.違規行駛高速公路路肩",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "7.違規行駛高速公路路肩",
+                "type" : "radio",
+                "name" : "s5_combo_7",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_8" : {
-                "title": "8.不按遵行之方向行駛",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "8.不按遵行之方向行駛",
+                "type" : "radio",
+                "name" : "s5_combo_8",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_9" : {
-                "title": "9.在道路上競駛、競技、蛇行或以其他危險方式駕駛車輛",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "9.在道路上競駛、競技、蛇行或以其他危險方式駕駛車輛",
+                "type" : "radio",
+                "name" : "s5_combo_9",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "combo_10" : {
-                "title": "10.不依規定駛入來車道",
-                "data_type" : "radio",
-                "value" : {
-                    "有" : "有",
-                    "無" : "無" 
-                    }
+            {
+                "label": "10.不依規定駛入來車道",
+                "type" : "radio",
+                "name" : "s5_combo_10",
+                "options" : [
+                    { "label" : "有" , "value" : "有" },
+                    { "label" : "無" , "value" : "無" }
+                ],
+                "required": true
             },
-            "confirm" : {
-                "title": "當事人同意上述描述符合實際情形",
+            {
+                "label": "當事人同意上述描述符合實際情形",
                 "info" : {
                     "1" : "如欲請公傷假，請檢附醫生診斷證明書影本。",
                     "2" : "以上各項均由本人依照事實填具，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。"
                 },
-                "data_type" : "radio",
-                "value" : {
-                    "YES" : "YES",
-                    "NO" : "NO" 
-                    }
+                "type" : "radio",
+                "name" : "s5_confirm",
+                "options" : [
+                    { "label" : "YES" , "value" : "YES" },
+                    { "label" : "NO" , "value" : "NO" }
+                ],
+                "required": true
             }
-        }
+        ]
     },
 
     "session_6" : {
-        "title" : "綜合問項3",
+        "label" : "綜合問項C",
         "info": "",
-        "item" : {
-            "combo_1" : {
-                "title": "是否住院",
+        "item" : [
+            {
+                "label": "是否住院",
                 "info": "",
-                "data_type" : "radio",
-                "value" : {
-                    "是" : "是",
-                    "否" : "否" 
-                    }
+                "type" : "radio",
+                "name" : "s6_combo_1",
+                "options" : [
+                    { "label" : "是" , "value" : "是" },
+                    { "label" : "否" , "value" : "否" }
+                ],
+                "required": true
             },
-            "combo_2" : {
-                "title": "公傷假判定(由環安人員填寫)",
+            {
+                "label": "公傷假判定(由環安人員填寫)",
                 "info" : "如環安判定為否時，需另行知會當事人，並簽名確認或備註相關原因。",
-                "data_type": "radio",
-                "value": {
-                    "是" : "是",
-                    "否" : {
-                        "title" : "否：原因",
-                        "info": "",
-                        "data_type" : "text",
-                        "value" : ""
-                    }
-                }
+                "type": "radio",
+                "name" : "s6_combo_2",
+                "options" : [
+                    { "label" : "是" , "value" : "是" },
+                    { "label" : "否" , "value" : "否" }
+                ],
+                "required": true
             },
-            "ruling" : {
-                "title": "判定為非公傷，當事人簽認",
+            {
+                "label": "否：原因",
+                "type" : "text",
+                "name" : "s6_combo_2_other",
+                "depends_on": { "field": "s6_combo_2", "value": "other"}
+            },
+            {
+                "label": "判定為非公傷，當事人簽認",
                 "info" : "(如判斷為公傷則不需再簽認)",
-                "data_type" : "radio",
-                "value" : {
-                    "YES" : "YES",
-                    "NO" : "NO" 
-                    }
+                "type" : "radio",
+                "name" : "s6_ruling",
+                "options" : [
+                    { "label" : "YES" , "value" : "YES" },
+                    { "label" : "NO" , "value" : "NO" }
+                ],
+                "required": true
             }
-        }
+        ]
     },
 
     "session_7" : {
-        "title" : "備註說明",
+        "label" : "備註說明",
         "info": "",
         "item" : {
             "remark": {
-                "title": "備註說明",
+                "label": "備註說明",
                 "info" : "",
-                "data_type": "textarea",
+                "type": "textarea",
                 "value": ""
             }
         }
