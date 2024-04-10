@@ -55,7 +55,7 @@
                 <!-- 表頭1 -->
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
-                        <h3><i class="fa-solid fa-3"></i>&nbsp<b><snap id="form_title"></snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
+                        <h3><i class="fa-solid fa-3"></i>&nbsp<b>南廠區交通事故訪談表</b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
                         <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
@@ -63,39 +63,38 @@
                     </div>
                 </div>
                 <div class="row px-2">
-                    <div class="col-12 col-md-6 py-1">
+                    <div class="col-12 col-md-6">
                         訪問單號：<?php echo ($action == 'create') ? "(尚未給號)": "receive_aid_".$receive_row['id']; ?></br>
                         開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(實際以送出時間為主)":$receive_row['created_at']; ?></br>
                         填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $receive_row["created_emp_id"]." / ".$receive_row["created_cname"] ;?>
                     </div>
-                    <div class="col-12 col-md-6 py-1 text-end">
+                    <div class="col-12 col-md-6 text-end">
                         <?php if(($sys_role <= 1 ) && (isset($receive_row['idty']) && $receive_row['idty'] != 0)){ ?>
                             <form action="" method="post">
                                 <input type="hidden" name="uuid" value="<?php echo $receive_row["uuid"];?>">
                                 <input type="submit" name="delete_receive" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
                             </form>
                         <?php }?>
-                        <span id="dcc_no"></span>
                     </div>
                 </div>
     
                 <!-- container -->
-                <div class="col-12">
+                <div class="col-12 py-0">
                     <!-- 內頁 -->
                     <form action="./zz/debug.php" method="post" onsubmit="this.cname.disabled=false,this.plant.disabled=false,this.dept.disabled=false,this.sign_code.disabled=false,this.omager.disabled=false" >
-                        <div class="row rounded bg-light py-3" id="form_container">
+                        <div class="row rounded bg-light" id="form_container">
                             <div class="col-12 p-3 ">
                                 <div class="row">
                                     <!-- line 1 -->
                                     <div class="col-6 col-md-6 py-0">
                                         <div class="form-floating">
-                                            <input type="text" name="case_title" id="case_title" class="form-control" placeholder="事件名稱：" require >
+                                            <input type="text" name="case_title" id="case_title" class="form-control" require >
                                             <label for="case_title" class="form-label">case_title/事件名稱：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 py-0">
                                         <div class="form-floating">
-                                            <input type="text" name="a_dept" id="a_dept" class="form-control" placeholder="事故單位：" require >
+                                            <input type="text" name="a_dept" id="a_dept" class="form-control" require >
                                             <label for="a_dept" class="form-label">a_dept/事故單位：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
@@ -108,7 +107,7 @@
                                     </div>
                                     <div class="col-6 col-md-6 pb-0">
                                         <div class="form-floating">
-                                            <input type="text" name="meeting_local" id="meeting_local" class="form-control" placeholder="會議地點：" require >
+                                            <input type="text" name="meeting_local" id="meeting_local" class="form-control" require >
                                             <label for="meeting_local" class="form-label">meeting_local/會議地點：<sup class="text-danger"> * </sup></label>
                                         </div>
                                     </div>
@@ -220,7 +219,6 @@
             </div>
         </div>
     </div>
-
     <!-- toast -->
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
             <div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true" autohide="true" delay="1000">
@@ -231,7 +229,26 @@
                 </div>
             </div>
         </div>
-
+    <!-- 模組 cata_info -->
+        <div class="modal fade" id="cata_info" tabindex="-1" aria-labelledby="cata_info" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">細項說明：</h5>
+                        <button type="button" class="btn-close" aria-label="Close" data-bs-target="#catalog_modal" data-bs-toggle="modal"></button>
+                    </div>
+                    <div class="modal-body px-5">
+                        <div class="row">
+                            <div class="col-6 col-md-4" id="pic_append"></div>
+                            <div class="col-6 col-md-8" id="info_append"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- 互動視窗 load_excel -->
         <div class="modal fade" id="load_excel" tabindex="-1" aria-labelledby="load_excel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -270,7 +287,6 @@
                 </div>
             </div>
         </div> 
-
     <!-- 彈出畫面-查詢user模組 -->
         <div class="modal fade" id="searchUser" aria-hidden="true" aria-labelledby="searchUser" tabindex="-1">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -317,6 +333,24 @@
             <i class="fas fa-angle-up fa-2x"></i>
         </div>
 
+    <!-- 模組 preView-->
+        <div class="modal fade" id="preview_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header bg-info border rounded p-3 m-2">
+                        <h5 class="modal-title"><i class="fa-solid fa-circle-info"></i>&nbsppreView 預覽：</h5>
+                        <button type="button" class="btn-close border rounded mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-light p-3" style="text-align:center;" id="preview_modal_body" >
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 </body>
 
 <script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
@@ -324,7 +358,6 @@
 <script>
 // 開局設定init
     var form_json = <?=json_encode($form_a_json)?>;
-    var form_item = form_json.form_item;
     var meeting_man_a = [];                         //
     var meeting_man_o = [];                         //
     var meeting_man_s = [];                         // 
@@ -332,83 +365,103 @@
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
 
     // JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
-    function make_question(session_key, key_class, item_a) {        // 接收參數：session, class, 單一問項
+    function make_question(id_key, key_a, item_a) {
+        var now = new Date(); // 取得當前時間
         var int_a = '';
-        var dcff = '<div class="form-floating">';
-        // 共用部分的操作
-        function commonPart() {
-            var labelSuffix = item_a.required ? '<sup class="text-danger"> *</sup>' : '';
-            return '<label for="' + item_a.name + '" >' + item_a.label + '：' + labelSuffix +'</label>';
-        }
+        // 內層問項生成：
+        if (item_a.data_type == "text") {
+            int_a = '<input type="text" name="' + key_a + '" id="' + key_a + '" class="form-control mb-0"  required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label>';
 
-        // 日期格式化函數
-        function formatDate(date) {
-            return date.toISOString().slice(0, item_a.type === 'date' ? 10 : 16);
-        }
+            if(key_a == 'emp_id'){
+                int_a = '<div class="form-floating input-group">' + int_a +
+                '<button type="button" class="btn btn-outline-primary search_btn" id="emp_id_btn" data-toggle="tooltip" data-placement="bottom" title="以工號自動帶出其他資訊" '+
+                ' data-bs-target="#searchUser" data-bs-toggle="modal" >'+'<i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>'+'</div>';
 
-        // // 內層問項生成：根據字段類型生成相應的表單元素
-        switch(item_a.type) {
-            case 'text':
-                int_a = '<input type="text" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" placeholder="' + item_a.label + '" '+ (item_a.required ? 'required' : '') + '>' + commonPart();
-                if(item_a.name == 'emp_id'){
-                    int_a = '<div class="input-group form-floating">' + int_a 
-                        + '<button type="button" class="btn btn-outline-primary search_btn" id="emp_id_btn" data-toggle="tooltip" data-placement="bottom" title="以工號自動帶出其他資訊" '
-                        + ' data-bs-target="#searchUser" data-bs-toggle="modal" >'+'<i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>'+'</div>';
-                }else{
-                    int_a = dcff + int_a + '</div>';
-                }
-                break;
-            case 'date':
-            case 'datetime':
-                int_a = dcff +
-                        // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
-                        '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="" ' +
-                        (item_a.required ? 'required' : '') + '>' + commonPart() + '</div>';
-                break;
-            // 其他類型的處理...
-            case 'textarea':
-                int_a = dcff +
-                    '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
-                    + (item_a.required ? 'required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
+            }else{
+                int_a = '<div class="form-floating">' + int_a +'</div>';
+            }
 
-                int_a = '<div class="p-2">' + int_a + '</div>';
-                break;
+        } else if (item_a.data_type == "date") {
+            var formattedDate = now.toISOString().slice(0, 10);     // 格式化日期，取得日期部分
+            int_a = '<div class="form-floating">' +
+                // '<input type="date" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDate + '" required>' +
+                '<input type="date" name="' + key_a + '" class="form-control" id="' + key_a + '" value="" required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label></div>';
 
-            case 'radio':
-            case 'checkbox':
-                int_a = '<div class=" border rounded p-2"><snap><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
-                Object(item_a.options).forEach((option)=>{
-                    let object_type = ((typeof option.value !== 'object') ? option.value : option.label);   // for other's value
-                    int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
-                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? 'required' : '') 
-                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? 'option_item' : '') + '" onchange="onchange_option(this.name)" >'
-                          + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + object_type + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
+        } else if (item_a.data_type == "datetime") {
+            var formattedDateTime = now.toISOString().slice(0, 16); // 格式化日期時間，取得到分鐘的部分
+            int_a = '<div class="form-floating">' +
+                // '<input type="datetime-local" name="' + key_a + '" class="form-control" id="' + key_a + '" value="' + formattedDateTime + '" required>' +
+                '<input type="datetime-local" name="' + key_a + '" class="form-control" id="' + key_a + '" value="" required>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：<sup class="text-danger"> *</sup></label></div>';
 
-                    if (typeof option.value === 'object' && option.value.type == 'text') {
-                        int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
-                            + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock">';
+        } else if (item_a.data_type == "textarea") {
+            int_a = '<div class="p-2"><div class="form-floating">' +
+                '<textarea name="' + key_a + '" id="' + key_a + '" class="form-control " style="height: 100px" ></textarea>' +
+                '<label for="' + key_a + '" class="form-label">' + item_a.title + '：</label></div></div>';
+
+        } else if (item_a.data_type == "radio") {
+            let data_type = item_a.data_type;
+            int_a = '<div class=" border rounded p-2">' +
+                '<snap><b>*** ' + item_a.title + '：</b></snap><br>';
+            for (const [radioKey, radioValue] of Object.entries(item_a.value)) {
+                if (typeof radioValue === 'object') {
+                    int_a += '<div class="form-check bg-light rounded"><input type="radio" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input option_item" onchange="onchange_option(this.name)">' +
+                    '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + radioKey + '">' + radioKey + '：</label></div>';
+                    if(radioValue.data_type == 'text'){
+                        int_a += '<input type="'+ radioValue.data_type +'" name="' + id_key + '_' + key_a + '" placeholder="' + radioValue.title + '" id="' + id_key + '_' + key_a + '_' + radioKey + '_o" class="form-control unblock">';
                     }
-                }) 
-                int_a += '</div>';
-                break;
 
-            case 'file':       // session_2 事故位置簡圖
-                int_a = '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' 
-                    + '<label for="' + item_a.name + '" class="form-label">上傳圖檔 (限傳jpg、png、gif、bmp)：' + (item_a.required ? '<sup class="text-danger"> * </sup>' : '' ) + '</label>'
-                    + '<div class="input-group "><input type="file" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
-                    + '<button type="button" class="btn btn-outline-secondary" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>'+'</div></div></div>'
+                } else {
+                    int_a += '<div class="form-check bg-light rounded"><input type="radio" name="' + id_key + '_' + key_a + '" value="' + radioKey + '" id="' + id_key + '_' + key_a + '_' + radioKey + '" class="form-check-input" onchange="onchange_option(this.name)">' +
+                        '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + radioKey + '">' + radioValue + '</label></div>';
+                }
+            }
+            int_a += '</div></div>';
+        } else if (item_a.data_type == "checkbox") {
+            let data_type = item_a.data_type;
+            int_a = '<div class=" border rounded p-2">' +
+                '<snap><b>*** ' + item_a.title + '：</b></snap><br>';
+            for (const [checkboxKey, checkboxValue] of Object.entries(item_a.value)) {
+                if (typeof checkboxValue === 'object') {
+                    int_a += '<div class="form-check bg-light rounded"><input type="checkbox" name="' + id_key + '_' + key_a + '[]" value="' + checkboxKey + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '" class="form-check-input option_item" onchange="onchange_option(this.name)">' +
+                    '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + checkboxKey + '">' + checkboxKey + '：</label></div>';
+                    if(checkboxValue.data_type == 'text'){
+                        int_a += '<input type="'+ checkboxValue.data_type +'" name="' + id_key + '_' + key_a + '[]" placeholder="' + checkboxValue.title + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '_o" class="form-control unblock">';
+                    }
 
-                    + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
-                
-                break;
+                } else {
+                    int_a += '<div class="form-check bg-light rounded"><input type="checkbox" name="' + id_key + '_' + key_a + '[]" value="' + checkboxKey + '" id="' + id_key + '_' + key_a + '_' + checkboxKey + '" class="form-check-input" onchange="onchange_option(this.name)">' +
+                        '<label class="form-check-label" for="' + id_key + '_' + key_a + '_' + checkboxKey + '">' + checkboxValue + '</label></div>';
+                }
+            }
+            int_a += '</div></div>';
+
+        } else if (item_a.data_type == "file") {        // session_2 事故位置簡圖
+            int_a = '<div class="col-6 col-md-6"><div class="col-12 bg-white border rounded">' +
+                        '<label for="' + key_a + '" class="form-label">上傳圖檔：<sup class="text-danger"> * 限傳jpg、png、gif、bmp</sup></label>'+
+                        '<div class="input-group ">'+
+                        '<input type="file" name="' + key_a + '" id="' + key_a + '"  class="form-control mb-0" accept=".jpg,.png,.gif,.bmp">'+
+                        '<button type="button" class="btn btn-outline-secondary " onclick="uploadFile(\'' + key_a + '\')">Upload</button>'+
+                    '</div></div></div>'
+            int_a += '<div class="col-6 col-md-6"><div class="col-12 bg-white border rounded a_pic" id="preview_' + key_a + '">-- preView --</div></div>'
+
         }
 
-        // 外層session包裝 // 將表單元素添加到特定的容器中
-        if(key_class){
-            int_a = '<div class="'+ key_class +'">'+int_a+'</div>';
+        // 外層session包裝
+        if(id_key == 'session_1'){
+            int_a = '<div class="col-6 col-md-4 p-2 ">'+int_a+'</div>'
+            
+        } else if(id_key == 'session_4'){
+            int_a = '<div class="col-6 col-md-6 p-2 ">'+int_a+'</div>'
+
+        } else if(id_key == 'session_5' || id_key == 'session_6'){
+            int_a = '<div class="col-12 col-md-6 p-2 ">'+int_a+'</div>'
+            
         }
 
-        $('#' + session_key +' .accordion-body').append(int_a);      // 渲染form
+        $('#' + id_key +' .accordion-body').append(int_a);      // 渲染form
     }
 
     // // // searchUser function 
@@ -451,6 +504,7 @@
         function postList(res_r){
             // 清除表頭
             $('#result_table').empty();
+            // $("#result").addClass("border rounded bg-white");
             $("#result").addClass("bg-white");
             // 定義表格頭段
             var div_result_table = document.querySelector('.result table');
@@ -471,12 +525,12 @@
                 let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim();
                 div_result_tbody.innerHTML += 
                     '<tr>' +
-                        '<td>' + res_r[i].emp_id.trim() +'</td>' +
-                        '<td>' + res_r[i].cname.trim() + '</td>' +
-                        '<td>' + res_r[i].cstext.trim() + '</td>' +
-                        '<td>' + res_r[i].user.trim() + '</td>' +
-                        '<td>' + res_r[i].dept_no.trim() + '</td>' +
-                        '<td>' + res_r[i].dept_c.trim() +'/'+ res_r[i].dept_d.trim() + '</td>' +
+                        '<td>' + res_r[i].emp_id +'</td>' +
+                        '<td>' + res_r[i].cname + '</td>' +
+                        '<td>' + res_r[i].cstext + '</td>' +
+                        '<td>' + res_r[i].user + '</td>' +
+                        '<td>' + res_r[i].dept_no + '</td>' +
+                        '<td>' + res_r[i].dept_c +'/'+ res_r[i].dept_d + '</td>' +
                         '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value='+user_json+' onclick="tagsInput_me(this.value)">'+
                         '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
                     '</tr>';
@@ -485,9 +539,12 @@
         }
         // fun_3.點選、渲染模組
         function tagsInput_me(val) {
-            let emp_id = val.split(',')[0];  // 指定emp_id
-            let cname  = val.split(',')[1];  // 指定cname
-            let cstext = val.split(',')[2];  // 指定cstext
+            // let emp_id = val.substr(0, val.search(','));                    // 指定emp_id
+            // let cname  = val.substr(val.search(',',)+1);                    // 指定cname
+            // let cstext = val.substr(val.lastIndexOf(',')+1)                 // 指定cstext
+            let emp_id = val.split(',')[0];
+            let cname  = val.split(',')[1].trim();
+            let cstext = val.split(',')[2].trim();
 
             if (val !== '') {
                 if(meeting_man_target == 'emp_id_btn'){     // 來自事故者基本資訊
@@ -552,9 +609,10 @@
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let response = JSON.parse(xhr.responseText);
-                let preview_modal = '<a href="' + response.filePath + '" target="_blank" >';
-                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;">';
+                let preview_modal = '<a href="#" data-bs-toggle="modal" data-bs-target="#preview_modal">';
+                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="height: 100%;">';
                 document.getElementById('preview_' + key).innerHTML = preview_modal + src_img +'</a>';
+                document.getElementById('preview_modal_body').innerHTML =  src_img;                         // 預覽模組
 
             } else {
                 alert('Upload failed. Please try again.');
@@ -618,7 +676,6 @@
             resetMain();                    // do something...清除欄位
             $('#modal_title').empty();      // 清除標題
         })
-
         // 20230817 禁用Enter鍵表單自動提交 
         document.onkeydown = function(event) { 
             var target, code, tag; 
@@ -641,24 +698,17 @@
                 } 
             } 
         };
-
         // JSON轉表單
-        if(form_json.form_title){ $('#form_title').append(form_json.form_title);  }
-        if(form_json.dcc_no){     $('#dcc_no').append(form_json.dcc_no); }
-        if(form_json.version){    $('#dcc_no').append('-' + form_json.version); }
-
         var form_doc = document.getElementById('item_list');
-        for (const [key_1, value_1] of Object.entries(form_item)) {
-            
-            // step_1.生成session_title
+        for (const [key_1, value_1] of Object.entries(form_json)) {
             let match;
             const regex = new RegExp('session', 'gi');
             if ((match = regex.exec(key_1)) !== null) {
-                let int_1 = '<div class="accordion-item">';                 // 使用手風琴模組
-                if (value_1.label.length != 0) {
+                let int_1 = '<div class="accordion-item">';
+                if (value_1.title.length != 0) {
                     int_1 += '<h5 class="accordion-header" id="' + key_1 + '_head">'+
                         '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#' + key_1 + '" aria-expanded="true" aria-controls="' + key_1 + '">'+
-                        '<b>※&nbsp' + key_1 + '&nbsp' + value_1.label + '：</b>'+ '</button></h5>';
+                        '<b>※&nbsp' + key_1 + '&nbsp' + value_1.title + '：</b>'+ '</button></h5>';
                 }
                 if (value_1.info.length != 0) {
                     int_1 += '&nbsp' + value_1.info;
@@ -668,24 +718,16 @@
                 $('#item_list').append(int_1);
             }
 
-            // console.log(key_1, ':', value_1.class)
 
-            // step_2.生成問項...將每一筆繞出來
             // for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            //     // make_question(key_1, key_2, value_2)
-            //     console.log(key_1, key_2, value_2)
+            //     make_question(key_1, key_2, value_2)
             // }
-
-            Object(value_1.item).forEach((item_value)=>{
-                // console.log(key_1, value_1.class, item_value);
-                make_question(key_1, value_1.class, item_value);
-            })
             // 檢查是否有缺少的項目，並添加缺少的項目
-            // for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            //     if (!$('#' + key_2).length) {
-            //         make_question(key_1, key_2, value_2);
-            //     }
-            // }
+            for (const [key_2, value_2] of Object.entries(value_1.item)) {
+                if (!$('#' + key_2).length) {
+                    make_question(key_1, key_2, value_2);
+                }
+            }
         }
 
         // 定義+監聽按鈕for與會人員
@@ -772,7 +814,7 @@
         });
 
 
-        // reset_option()
+        reset_option()
     })
 
 // 以下為控制 iframe
