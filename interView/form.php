@@ -11,14 +11,20 @@
     // 決定表單開啟方式
     $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
 
-
     // 路径到 form_a.json 文件
-    $json_file_path = 'form_a.json';
-    // 从 JSON 文件加载内容
-    $form_a_json = file_get_contents($json_file_path);
-    // 解析 JSON 数据并将其存储在 $form_a_json 变量中
-    $form_a_json = json_decode($form_a_json, true); // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
-    
+    // $json_file_path = 'form_a.json';
+    $test_doc = '13ES100016-F002-V002';
+    $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "../doc_json/".$test_doc.".json" );
+    if(file_exists($form_doc)){
+        // 从 JSON 文件加载内容
+        $form_json = file_get_contents($form_doc);
+        // 解析 JSON 数据并将其存储在 $form_a_json 变量中
+        $form_json = json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+        $init_error = '';
+    }else{
+        $form_json = [];
+        $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
+    }
 
 ?>
 
@@ -44,7 +50,15 @@
             height: auto; 
             text-align:center;
         }
-
+        .info {
+            font-size: 14px;
+            color: blue;
+            text-shadow: 3px 3px 5px rgba(0,0,0,.3);
+        }
+        /* 使用 CSS 將 canvas 的寬度設置為 100% */
+        /* canvas {
+            width: 100%;
+        } */
     </style>
 </head>
 
@@ -55,7 +69,7 @@
                 <!-- 表頭1 -->
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
-                        <h3><i class="fa-solid fa-3"></i>&nbsp<b><snap id="form_title"></snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
+                        <h3><i class="fa-solid fa-3"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
                         <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
@@ -75,7 +89,7 @@
                                 <input type="submit" name="delete_receive" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
                             </form>
                         <?php }?>
-                        <span id="dcc_no"></span>
+                        <span id="dcc_no"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
                     </div>
                 </div>
     
@@ -144,13 +158,12 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-12 p-3">
+                            <!-- <hr> -->
+                            <div class="col-12 p-3 pt-0">
                                 <div class="row">
                                     <div class="col-6 col-md-6 py-0 "><span class="from-label"><b>內容：</b></span></div>
                                     <div class="col-6 col-md-6 py-0 text-end"></div>
                                 </div>
-                                <!-- <div class="col-12 border rounded bg-white" id="item_list" > -->
                                 <div class="accordion" id="item_list" >
                                     <!-- append -->
                                 </div>
@@ -232,45 +245,6 @@
             </div>
         </div>
 
-    <!-- 互動視窗 load_excel -->
-        <div class="modal fade" id="load_excel" tabindex="-1" aria-labelledby="load_excel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">上傳Excel檔：</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <form name="excelInput" action="../_Format/upload_excel.php" method="POST" enctype="multipart/form-data" target="api" onsubmit="return restockExcelForm()">
-                        <div class="modal-body px-4">
-                            <div class="row">
-                                <div class="col-6 col-md-8 py-0">
-                                    <label for="excelFile" class="form-label">需求清單 <span>&nbsp<a href="../_Format/receive_example.xlsx" target="_blank">上傳格式範例</a></span> 
-                                        <sup class="text-danger"> * 限EXCEL檔案</sup></label>
-                                    <div class="input-group">
-                                        <input type="file" name="excelFile" id="excelFile" style="font-size: 16px; max-width: 350px;" class="form-control form-control-sm" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                                        <button type="submit" name="excelUpload" id="excelUpload" class="btn btn-outline-secondary" value="stock">上傳</button>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-4 py-0">
-                                    <p id="warningText" name="warning" >＊請上傳需求單Excel檔</p>
-                                    <p id="sn_list" name="warning" >＊請確認Excel中的資料</p>
-                                </div>
-                            </div>
-                                
-                            <div class="row" id="excel_iframe">
-                                <iframe id="api" name="api" width="100%" height="30" style="display: none;" onclick="restockExcelForm()"></iframe>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="import_excel_btn" class="btn btn-success unblock" data-bs-dismiss="modal">載入</button>
-                            <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">返回</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> 
-
     <!-- 彈出畫面-查詢user模組 -->
         <div class="modal fade" id="searchUser" aria-hidden="true" aria-labelledby="searchUser" tabindex="-1">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -321,26 +295,55 @@
 
 <script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>  <!-- goTop滾動畫面script.js 4/4-->
+<script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>
+
 <script>
-// 開局設定init
-    var form_json = <?=json_encode($form_a_json)?>;
-    var form_item = form_json.form_item;
-    var meeting_man_a = [];                         //
-    var meeting_man_o = [];                         //
-    var meeting_man_s = [];                         // 
+    // 開局設定init
+    var form_json = <?=json_encode($form_json)?>; // 取得表單
+    var form_item = form_json.form_item;            // 抓item項目for form item
+    var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
+    var meeting_man_o = [];                         // 其他與會人員
+    var meeting_man_s = [];                         // 環安人員
     var meeting_man_target;                         // 指向目標
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
+    // 以下為控制 iframe
+        // var realName         = document.getElementById('realName');           // 上傳後，JSON存放處(給表單儲存使用)
+        // var iframe           = document.getElementById('api');                // 清冊的iframe介面
+        // var warningText      = document.getElementById('warningText');        // 清冊未上傳的提示
+        // var sn_list          = document.getElementById('sn_list');            // 清冊中有誤的提示
+        // var excel_json       = document.getElementById('excel_json');         // 清冊中有誤的提示
+        // var excelFile        = document.getElementById('excelFile');          // 上傳檔案名稱
+        // var excelUpload      = document.getElementById('excelUpload');        // 上傳按鈕
+        // var import_excel_btn = document.getElementById('import_excel_btn');   // 載入按鈕
 
-    // JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
+    // 動態表單主fun -- JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
     function make_question(session_key, key_class, item_a) {        // 接收參數：session, class, 單一問項
         var int_a = '';
         var dcff = '<div class="form-floating">';
-        // 共用部分的操作
+        // 共用部分的操作1 label標籤
         function commonPart() {
             var labelSuffix = item_a.required ? '<sup class="text-danger"> *</sup>' : '';
             return '<label for="' + item_a.name + '" >' + item_a.label + '：' + labelSuffix +'</label>';
         }
-
+        // 共用部分的操作2 驗證回饋
+        function validPart() {
+            return '<div class="invalid-feedback" id="' + item_a.name + '_feedback">數值填入錯誤 ~ </div>';
+        }
+        // 共用部分的操作3 info
+        function infoPart() {
+            let info_temp = '';
+            if(typeof item_a.info !== 'object'){
+                info_temp += ' >>> ' + item_a.info;
+            }else{
+                for (const [key_1, value_1] of Object.entries(item_a.info)) {
+                    if(info_temp){
+                        info_temp += '<br/>'
+                    }
+                    info_temp += key_1 + '.' + value_1
+                }
+            }
+            return '<span class="info">' + info_temp + '</span>';
+        }
         // 日期格式化函數
         function formatDate(date) {
             return date.toISOString().slice(0, item_a.type === 'date' ? 10 : 16);
@@ -363,9 +366,8 @@
                 int_a = dcff +
                         // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
                         '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="" ' +
-                        (item_a.required ? 'required' : '') + '>' + commonPart() + '</div>';
+                        (item_a.required ? 'required' : '') + '>' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
                 break;
-            // 其他類型的處理...
             case 'textarea':
                 int_a = dcff +
                     '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
@@ -380,8 +382,8 @@
                 Object(item_a.options).forEach((option)=>{
                     let object_type = ((typeof option.value !== 'object') ? option.value : option.label);   // for other's value
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
-                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? 'required' : '') 
-                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? 'option_item' : '') + '" onchange="onchange_option(this.name)" >'
+                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
+                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') + '" >'
                           + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + object_type + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
 
                     if (typeof option.value === 'object' && option.value.type == 'text') {
@@ -399,19 +401,71 @@
                     + '<button type="button" class="btn btn-outline-secondary" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>'+'</div></div></div>'
 
                     + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
+                    break;
                 
+            case 'signature':   // 簽名模組
+                int_a = '<div class="col-12 border rounded">'
+                    +'<snap class="p-0" ><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap>'
+                    + '<div class="row">'
+                        + '<div class="col-12 col-md-6 text-center">'
+                            + '<canvas id="' + item_a.name + '_signaturePad" width="350" height="250" class=" border rounded p-2 bg-light"></canvas>'
+                            + '<div class="py-1">'
+                                + '<button type="button" class="btn btn-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
+                                + '<button type="button" class="btn btn-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
+                            + '</div>'
+                        +'</div>'
+                        + '<div class="col-12 col-md-6 text-center"><img id="' + item_a.name + '_signature-image" src="../image/signin_empty.png" alt="Signature Image" class="img-thumbnail" >'
+                            + '<br><input type="text" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
+                        +'</div>'
+                    +'</div>'
+                    +'</div>'
+                    
                 break;
         }
 
+        if(item_a.info){
+            int_a += infoPart()
+        }
+
         // 外層session包裝 // 將表單元素添加到特定的容器中
-        if(key_class){
+        if(key_class && item_a.type != 'signature'){
             int_a = '<div class="'+ key_class +'">'+int_a+'</div>';
+        }else if(item_a.type == 'signature'){
+            int_a = '<div class="col-12 p-2">'+int_a+'</div>';
         }
 
         $('#' + session_key +' .accordion-body').append(int_a);      // 渲染form
     }
 
-    // // // searchUser function 
+    // Option選項遮蔽：On、Off
+    function onchange_option(name){
+        var opts = document.querySelectorAll('[name="'+name+'"].other_item')
+        opts.forEach((opt)=>{
+            let opt_id_o = document.querySelector('#'+opt.id+'_o');
+            if(opt.checked){
+                opt_id_o.classList.remove('unblock');
+                opt_id_o.focus();
+
+                if ($("#"+opt.id).hasClass("only_option")){
+                    let only_opts = document.querySelectorAll('[name="'+opt.name+'"]')
+                    only_opts.forEach(function(checkbox) {
+                        // Check if the current checkbox is not the fourth one and is checked
+                        if ((checkbox.id !== opt.id ) && checkbox.checked) {
+                            // If so, uncheck it
+                            checkbox.checked = false;
+                            $("#"+checkbox.id+'_o').addClass('unblock');
+                        }
+                    });
+                }
+
+            }else{
+                // opt_id_o.value = "";
+                opt_id_o.classList.add('unblock');
+            }
+        })
+    }
+
+    // // searchUser function 
         // fun_0.清除searchUser_modal
         function resetMain(){
             $("#result").removeClass("border rounded bg-white");
@@ -540,85 +594,15 @@
                 _select.value = window[this_parent_id];
             }
         });
-    // // // searchUser function 
-
-    // a_pic的 uploadFile 函数
-    function uploadFile(key) {
-        let formData = new FormData();
-        let fileInput = document.getElementById(key);
-        formData.append('file', fileInput.files[0]);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-                let preview_modal = '<a href="' + response.filePath + '" target="_blank" >';
-                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;">';
-                document.getElementById('preview_' + key).innerHTML = preview_modal + src_img +'</a>';
-
-            } else {
-                alert('Upload failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
-
-    // 空值遮蔽：On、Off
-    function onchange_option(name){
-        var opts = document.querySelectorAll('[name="'+name+'"].option_item')
-        opts.forEach((opt)=>{
-            var opt_id_o = document.querySelector('#'+opt.id+'_o');
-            if(opt.checked){
-                opt_id_o.classList.remove('unblock');
-                opt_id_o.focus();
-
-            }else{
-                // opt_id_o.value = "";
-                opt_id_o.classList.add('unblock');
-            }
-        })
-        // var checkbox = document.getElementById(name+"_flag_Switch");
-        // var flag = checkbox.checked ? "On" : "Off";
-        // var table_tr = document.querySelectorAll('.'+name+' > tbody > tr');
-        // if(flag=='Off'){
-        //     table_tr.forEach(function(row){
-        //         row.classList.remove('unblock');
-        //     })
-        // }else{
-        //     table_tr.forEach(function(row){
-        //         // 因為外層又包了一個Button導致目標下移
-        //         if(row.children[row.children.length-1].innerText != ""){
-        //             row.classList.remove('unblock');
-        //         }else{
-        //             row.classList.add('unblock');
-        //         }
-        //     })  
-        // }
-    }
-  
-    function reset_option(){
-        var opts = document.querySelectorAll('.option_item')
-        opts.forEach((opt)=>{
-            var opt_id_o = document.querySelector('#'+opt.id+'_o');
-            if(opt.checked){
-                opt_id_o.classList.remove('unblock');
-
-            }else{
-                // opt_id_o.value = "";
-                opt_id_o.classList.add('unblock');
-            }
-        })
-    }
+    // // searchUser function 
 
     $(function () {
-
         // 監聽myModal被關閉時就執行--清除表格
         var searchUser_elm = document.getElementById('searchUser');
         searchUser_elm.addEventListener('hidden.bs.modal', function () {
             resetMain();                    // do something...清除欄位
             $('#modal_title').empty();      // 清除標題
         })
-
         // 20230817 禁用Enter鍵表單自動提交 
         document.onkeydown = function(event) { 
             var target, code, tag; 
@@ -641,15 +625,14 @@
                 } 
             } 
         };
-
-        // JSON轉表單
-        if(form_json.form_title){ $('#form_title').append(form_json.form_title);  }
-        if(form_json.dcc_no){     $('#dcc_no').append(form_json.dcc_no); }
-        if(form_json.version){    $('#dcc_no').append('-' + form_json.version); }
-
-        var form_doc = document.getElementById('item_list');
+        
+        // 動態表單主fun -- JSON轉表單
+        // step_0.前置工作、生成表頭
+        if(form_json.form_title){ $('#form_title').empty().append(form_json.form_title);  }     // 文件標題
+        if(form_json.dcc_no){     $('#dcc_no').empty().append(form_json.dcc_no); }              // DCC編號
+        if(form_json.version){    $('#dcc_no').append('-' + form_json.version); }               // 文件版本
+        var form_doc = document.getElementById('item_list');                                    // 定義動態表單id位置
         for (const [key_1, value_1] of Object.entries(form_item)) {
-            
             // step_1.生成session_title
             let match;
             const regex = new RegExp('session', 'gi');
@@ -660,35 +643,93 @@
                         '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#' + key_1 + '" aria-expanded="true" aria-controls="' + key_1 + '">'+
                         '<b>※&nbsp' + key_1 + '&nbsp' + value_1.label + '：</b>'+ '</button></h5>';
                 }
-                if (value_1.info.length != 0) {
-                    int_1 += '&nbsp' + value_1.info;
-                }
-                int_1 += '<div id="' + key_1 + '"  class="accordion-collapse collapse show" aria-labelledby="' + key_1 + '_head" ><div class="row accordion-body"> </div></div></div>'
+                int_1 += '<div id="' + key_1 + '"  class="accordion-collapse collapse show" aria-labelledby="' + key_1 + '_head" > '
+                    + (value_1.info ? '&nbsp' + value_1.info : '') 
+                    +'<div class="row accordion-body">'
+                    +'</div></div></div>'
 
                 $('#item_list').append(int_1);
             }
-
-            // console.log(key_1, ':', value_1.class)
-
             // step_2.生成問項...將每一筆繞出來
-            // for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            //     // make_question(key_1, key_2, value_2)
-            //     console.log(key_1, key_2, value_2)
-            // }
-
             Object(value_1.item).forEach((item_value)=>{
-                // console.log(key_1, value_1.class, item_value);
                 make_question(key_1, value_1.class, item_value);
             })
-            // 檢查是否有缺少的項目，並添加缺少的項目
-            // for (const [key_2, value_2] of Object.entries(value_1.item)) {
-            //     if (!$('#' + key_2).length) {
-            //         make_question(key_1, key_2, value_2);
-            //     }
-            // }
         }
 
-        // 定義+監聽按鈕for與會人員
+    })
+
+    window.onload = function() {
+        var signaturePads = {};
+        // Initialize Signature Pad for each canvas
+        var canvases = document.querySelectorAll('canvas');
+        canvases.forEach((canvas, index)=>{
+            var signaturePad = new SignaturePad(canvas);
+            signaturePads[canvas.id] = signaturePad;
+        })
+
+        // Attach event listeners to clear and save buttons
+        var clearButtons = document.querySelectorAll('.clear-btn');
+        clearButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                var padNumber = button.dataset.pad;
+                var signaturePad = signaturePads[padNumber + '_signaturePad'];
+                var signatureImage = document.getElementById(padNumber + '_signature-image');
+                $('#' + padNumber + '_signature-input').val('');
+                signaturePad.clear();
+                signatureImage.src = '../image/signin_empty.png';
+            });
+        });
+
+        var saveButtons = document.querySelectorAll('.save-btn');
+        saveButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                var padNumber = button.dataset.pad;
+                var signaturePad = signaturePads[padNumber + '_signaturePad'];
+                var signatureImage = document.getElementById(padNumber + '_signature-image');
+                
+                if (signaturePad.isEmpty()) {
+                    alert("Please provide a signature first.");
+                } else {
+                    var dataURL = signaturePad.toDataURL();
+                    signatureImage.src = dataURL;
+                    $('#' + padNumber + '_signature-input').val(dataURL);
+                }
+            });
+        });
+
+        // var canvas = document.getElementById('signature-pad');
+        // var signaturePad = new SignaturePad(canvas);
+
+        // var clearButton = document.getElementById('clear-button');
+        // var saveButton = document.getElementById('save-button');
+        // var signatureImage = document.getElementById('signature-image');
+        // var signatureTextarea = document.getElementById('signature-textarea');
+
+        // clearButton.addEventListener('click', function(event) {
+        //     signaturePad.clear();
+        // });
+        // saveButton.addEventListener('click', function(event) {
+        //     if (signaturePad.isEmpty()) {
+        //         alert("Please provide a signature first.");
+        //     } else {
+        //     // Convert the signature to a data URL
+        //     var dataURL = signaturePad.toDataURL();
+        //     // You can also send the dataURL to your server for further processing
+        //     signatureImage.src = dataURL;
+        //     // Set the data URL as the value of the textarea
+        //     signatureTextarea.value = dataURL;
+        //     }
+        // });
+    };
+    
+    // DOMContentLoaded 事件监听器
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     // 绑定事件监听器
+    //     attachEventListeners();
+    // });
+
+    $(document).ready(function(){
+        // 定義+監聽按鈕for與會人員...search btn id
         var search_btns = Array.from(document.querySelectorAll(".search_btn"));
         search_btns.forEach((s_btn)=>{
             s_btn.addEventListener('mousedown',function(){
@@ -706,87 +747,12 @@
                 $('#modal_title').append(modal_title)
                 meeting_man_target = this.id;               // 搜尋meeting_man_target
             })
-        })
-        // // 定義+監聽按鈕for option_item
-        // var option_btns = Array.from(document.querySelectorAll(".option_item"));
-        // option_btns.forEach((o_btn)=>{
-        //     o_btn.addEventListener('change',function(){
-        //         // console.log(this.name);
-        //         if(this.checked){
-        //             document.querySelector('#'+this.id+'_o').classList.remove('unblock');
-        //         }else{
-        //             document.querySelector('#'+this.id+'_o').value = "";
-        //             document.querySelector('#'+this.id+'_o').classList.add('unblock');
-        //         }
-        //     })
-        // })
+        })    
 
-
-        
-        
     })
-    
-    // DOMContentLoaded 事件监听器
-    // document.addEventListener('DOMContentLoaded', function () {
-        
-    //     // 绑定事件监听器
-    //     attachEventListeners();
-    // });
-
-    $(document).ready(function(){
-        // 監聽到職日欄位(id=hired)，自動計算年資並output(id=rload)
-        $('#hired').change(function() {
-            var selectedDate = new Date(document.getElementById("hired").value);    // 取得到職日日期
-            var currentDate = new Date();                                           // 取得今天日期
-            var difference = currentDate - selectedDate;                            // 計算日期差距（毫秒單位）
-            // 轉換毫秒為年月日
-                var years  = Math.floor(difference / (365.25 * 24 * 60 * 60 * 1000));
-                var months = Math.floor((difference % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
-                var days   = Math.floor((difference % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
-            // 输出结果
-                document.querySelector("#rload").value = "估算約： " + years + " 年 " + months + " 個月 " + days + " 天";
-        });
-        // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
-        $('#a_work_s, #a_work_e').change(function() {
-            // console.log(this.id)
-            var a_work_s = new Date(document.getElementById("a_work_s").value);    // 取得起始
-                // 工作起始需不需要小於現在時間....需要確認
-                if(this.id == 'a_work_s'){
-                    var currentDate = new Date();                   // 取得今天日期
-                    if ($("#"+this.id).hasClass("is-valid"))   { $("#"+this.id).removeClass("is-valid");}
-                    if ($("#"+this.id).hasClass("is-invalid")) { $("#"+this.id).removeClass("is-invalid");}
-                    if (a_work_s < currentDate) {
-                        $("#"+this.id).addClass("is-valid");        // true
-                    } else {
-                        $("#"+this.id).addClass("is-invalid");      // false
-                    }
-                }
-            var a_work_e = new Date(document.getElementById("a_work_e").value);    // 取得訖止
-            if ($("#a_work_e").hasClass("is-valid"))   { $("#a_work_e").removeClass("is-valid");}
-            if ($("#a_work_e").hasClass("is-invalid")) { $("#a_work_e").removeClass("is-invalid");}
-            if (a_work_s < a_work_e) {
-                $("#a_work_e").addClass("is-valid");        // true
-            } else {
-                $("#a_work_e").addClass("is-invalid");      // false
-            }
-        });
-
-
-        // reset_option()
-    })
-
-// 以下為控制 iframe
-    var realName         = document.getElementById('realName');           // 上傳後，JSON存放處(給表單儲存使用)
-    var iframe           = document.getElementById('api');                // 清冊的iframe介面
-    var warningText      = document.getElementById('warningText');        // 清冊未上傳的提示
-    var sn_list          = document.getElementById('sn_list');            // 清冊中有誤的提示
-    var excel_json       = document.getElementById('excel_json');         // 清冊中有誤的提示
-    var excelFile        = document.getElementById('excelFile');          // 上傳檔案名稱
-    var excelUpload      = document.getElementById('excelUpload');        // 上傳按鈕
-    var import_excel_btn = document.getElementById('import_excel_btn');   // 載入按鈕
 
 </script>
 
-<!-- <script src="receive_form.js?v=<=time()?>"></script> -->
+<script src="form.js?v=<?=time()?>"></script>
 
 <?php include("../template/footer.php"); ?>

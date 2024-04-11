@@ -1,0 +1,12 @@
+{
+    "type" : {
+        "text"      : "",
+        "date"      : "",
+        "datetime"  : "",
+        "textarea"  : "",
+        "radio"     : "",
+        "checkbox"  : "",
+        "file"      : "",
+        "signature" : ""
+    }
+}
