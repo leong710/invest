@@ -1,7 +1,7 @@
 {
-    "form_title" : "南廠區交通事故訪談表",
-    "version"    : "V002",
-    "dcc_no"     : "13ES100016-F002",
+    "form_title" : "南廠區廠內事故訪談表",
+    "version"    : "V003",
+    "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "session_1" : {
             "label" : "事故者基本資料",
@@ -76,8 +76,7 @@
             "class" : "",
             "item"  : [
                 {
-                    "label": "上傳路線圖檔",
-                    "info"  : "(限傳jpg、png、gif、bmp)",
+                    "label": "圖片檔案",
                     "type" : "file",
                     "name" : "a_pic",
                     "required": true

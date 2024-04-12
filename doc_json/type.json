@@ -1,12 +1,37 @@
 {
-    "type" : {
-        "text"      : "",
-        "date"      : "",
-        "datetime"  : "",
-        "textarea"  : "",
-        "radio"     : "",
-        "checkbox"  : "",
-        "file"      : "",
-        "signature" : ""
-    }
+    "form_title" : "表單名稱",
+    "version"    : "版本號",
+    "dcc_no"     : "DCC文件編號",
+    "form_item"  : { 
+        "session_1" : {
+            "label" : "標題",
+            "info"  : "細項註解(文字或Object)",
+            "class" : "排版 col-6 col-md-4 p-2 ",
+            "item"  : [
+                {
+                    "label": "題目",
+                    "type" : "題目型態",
+                    "name" : "儲存name",
+                    "required": "必答 true/false",
+                    "valid": "驗證 true/false",
+                    "options": [
+                        { "label" : "上班"      , "value" : "上班"     },
+                        { "label" : "其他"      , "value" : {
+                            "label": "其他",
+                            "type" : "text",
+                            "name" : "s4_combo_1",
+                            "value": "Other"
+                        }}]
+                }]},
+
+            "type" : {
+                "text"      : "文字",
+                "date"      : "日期",
+                "datetime"  : "日期時間",
+                "textarea"  : "文字區域",
+                "radio"     : "單選",
+                "checkbox"  : "多選",
+                "file"      : "檔案",
+                "signature" : "簽名"
+            }}
 }

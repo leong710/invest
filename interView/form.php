@@ -12,9 +12,10 @@
     $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
 
     // 路径到 form_a.json 文件
-    // $json_file_path = 'form_a.json';
-    $test_doc = '13ES100016-F002-V002';
-    $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "../doc_json/".$test_doc.".json" );
+        // $json_file_path = 'form_a.json';
+        // $test_doc = '13ES100016-F002-V002';
+    $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
+    // $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "../doc_json/".$test_doc.".json" );
     if(file_exists($form_doc)){
         // 从 JSON 文件加载内容
         $form_json = file_get_contents($form_doc);
@@ -69,7 +70,7 @@
                 <!-- 表頭1 -->
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
-                        <h3><i class="fa-solid fa-3"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
+                        <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
                         <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
@@ -83,20 +84,20 @@
                         填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $receive_row["created_emp_id"]." / ".$receive_row["created_cname"] ;?>
                     </div>
                     <div class="col-12 col-md-6 py-1 text-end">
+                        <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
                         <?php if(($sys_role <= 1 ) && (isset($receive_row['idty']) && $receive_row['idty'] != 0)){ ?>
                             <form action="" method="post">
                                 <input type="hidden" name="uuid" value="<?php echo $receive_row["uuid"];?>">
                                 <input type="submit" name="delete_receive" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
                             </form>
                         <?php }?>
-                        <span id="dcc_no"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
                     </div>
                 </div>
     
                 <!-- container -->
                 <div class="col-12">
                     <!-- 內頁 -->
-                    <form action="./zz/debug.php" method="post" onsubmit="this.cname.disabled=false,this.plant.disabled=false,this.dept.disabled=false,this.sign_code.disabled=false,this.omager.disabled=false" >
+                    <form action="./zz/debug.php" method="post" onsubmit="this.cname.disabled=false" >
                         <div class="row rounded bg-light py-3" id="form_container">
                             <div class="col-12 p-3 ">
                                 <div class="row">
@@ -187,6 +188,7 @@
                                         <input type="hidden" name="created_cname"   id="created_cname"  value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="updated_user"    id="updated_user"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="uuid"            id="uuid"           value="">
+                                        <input type="text" name="dcc_no"          id="dcc_no"         value="">
                                         <input type="hidden" name="action"          id="action"         value="<?php echo $action;?>">
                                         <input type="hidden" name="idty"            id="idty"           value="1">
                                         <?php if($sys_role <= 3){ ?>
@@ -299,7 +301,7 @@
 
 <script>
     // 開局設定init
-    var form_json = <?=json_encode($form_json)?>; // 取得表單
+    var form_json = <?=json_encode($form_json)?>;   // 取得表單
     var form_item = form_json.form_item;            // 抓item項目for form item
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
     var meeting_man_o = [];                         // 其他與會人員
@@ -329,7 +331,7 @@
         function validPart() {
             return '<div class="invalid-feedback" id="' + item_a.name + '_feedback">數值填入錯誤 ~ </div>';
         }
-        // 共用部分的操作3 info
+        // 共用部分的操作3 info   有單文字和物件
         function infoPart() {
             let info_temp = '';
             if(typeof item_a.info !== 'object'){
@@ -348,8 +350,7 @@
         function formatDate(date) {
             return date.toISOString().slice(0, item_a.type === 'date' ? 10 : 16);
         }
-
-        // // 內層問項生成：根據字段類型生成相應的表單元素
+        // 主要fun：內層問項生成：根據字段類型生成相應的表單元素
         switch(item_a.type) {
             case 'text':
                 int_a = '<input type="text" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" placeholder="' + item_a.label + '" '+ (item_a.required ? 'required' : '') + '>' + commonPart();
@@ -396,45 +397,41 @@
 
             case 'file':       // session_2 事故位置簡圖
                 int_a = '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' 
-                    + '<label for="' + item_a.name + '" class="form-label">上傳圖檔 (限傳jpg、png、gif、bmp)：' + (item_a.required ? '<sup class="text-danger"> * </sup>' : '' ) + '</label>'
+                    + commonPart()
                     + '<div class="input-group "><input type="file" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
-                    + '<button type="button" class="btn btn-outline-secondary" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>'+'</div></div></div>'
-
+                    + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
+                    + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
+                    + '</div>'
+                    + '<input type="hidden" name="' + item_a.name + '_md5" id="' + item_a.name + '_md5" ' + (item_a.required ? 'required' : '' ) + '>'
+                    +'</div></div>'
                     + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
-                    break;
+                break;
                 
             case 'signature':   // 簽名模組
                 int_a = '<div class="col-12 border rounded">'
                     +'<snap class="p-0" ><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap>'
                     + '<div class="row">'
                         + '<div class="col-12 col-md-6 text-center">'
-                            + '<canvas id="' + item_a.name + '_signaturePad" width="350" height="250" class=" border rounded p-2 bg-light"></canvas>'
-                            + '<div class="py-1">'
-                                + '<button type="button" class="btn btn-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
-                                + '<button type="button" class="btn btn-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
-                            + '</div>'
-                        +'</div>'
+                        + '<canvas id="' + item_a.name + '_signaturePad" width="350" height="250" class=" border rounded p-2 bg-light"></canvas>'
+                        + '<div class="py-1">'
+                        + '<button type="button" class="btn btn-outline-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
+                        + '<button type="button" class="btn btn-outline-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
+                        + '</div>' + '</div>'
                         + '<div class="col-12 col-md-6 text-center"><img id="' + item_a.name + '_signature-image" src="../image/signin_empty.png" alt="Signature Image" class="img-thumbnail" >'
-                            + '<br><input type="text" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
-                        +'</div>'
-                    +'</div>'
-                    +'</div>'
-                    
+                        + '<br><input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
+                        +'</div>' + '</div>' + '</div>'
                 break;
         }
-
-        if(item_a.info){
-            int_a += infoPart()
-        }
-
+        // 有info就呼叫fun崁入
+        int_a += (item_a.info) ? infoPart() : '';
         // 外層session包裝 // 將表單元素添加到特定的容器中
         if(key_class && item_a.type != 'signature'){
-            int_a = '<div class="'+ key_class +'">'+int_a+'</div>';
+            int_a = '<div class="'+ key_class +'">' + int_a + '</div>';
         }else if(item_a.type == 'signature'){
-            int_a = '<div class="col-12 p-2">'+int_a+'</div>';
+            int_a = '<div class="col-12 p-2">' + int_a + '</div>';
         }
-
-        $('#' + session_key +' .accordion-body').append(int_a);      // 渲染form
+        // 渲染form
+        $('#' + session_key +' .accordion-body').append(int_a);      
     }
 
     // Option選項遮蔽：On、Off
@@ -629,36 +626,46 @@
         // 動態表單主fun -- JSON轉表單
         // step_0.前置工作、生成表頭
         if(form_json.form_title){ $('#form_title').empty().append(form_json.form_title);  }     // 文件標題
-        if(form_json.dcc_no){     $('#dcc_no').empty().append(form_json.dcc_no); }              // DCC編號
-        if(form_json.version){    $('#dcc_no').append('-' + form_json.version); }               // 文件版本
+        if(form_json.dcc_no){     $('#dcc_no_head').empty().append(form_json.dcc_no); }         // DCC編號
+        if(form_json.version){    $('#dcc_no_head').append('-' + form_json.version); }          // 文件版本
+        let dcc_no_input = document.querySelector('#dcc_no');                                   // 
+        if(dcc_no_input && form_json.dcc_no && form_json.version){ 
+            dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;
+        }
         var form_doc = document.getElementById('item_list');                                    // 定義動態表單id位置
-        for (const [key_1, value_1] of Object.entries(form_item)) {
-            // step_1.生成session_title
-            let match;
-            const regex = new RegExp('session', 'gi');
-            if ((match = regex.exec(key_1)) !== null) {
-                let int_1 = '<div class="accordion-item">';                 // 使用手風琴模組
-                if (value_1.label.length != 0) {
-                    int_1 += '<h5 class="accordion-header" id="' + key_1 + '_head">'+
-                        '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#' + key_1 + '" aria-expanded="true" aria-controls="' + key_1 + '">'+
-                        '<b>※&nbsp' + key_1 + '&nbsp' + value_1.label + '：</b>'+ '</button></h5>';
+        if(form_item){                                                                          // confirm form_item is't empty
+            for (const [key_1, value_1] of Object.entries(form_item)) {
+                // step_1.生成session_title
+                let match;
+                const regex = new RegExp('session', 'gi');
+                if ((match = regex.exec(key_1)) !== null) {
+                    let int_1 = '<div class="accordion-item">';                 // 使用手風琴模組
+                    if (value_1.label.length != 0) {
+                        int_1 += '<h5 class="accordion-header" id="' + key_1 + '_head">'+
+                            '<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#' + key_1 + '" aria-expanded="true" aria-controls="' + key_1 + '">'+
+                            '<b>※&nbsp' + key_1 + '&nbsp' + value_1.label + '：</b>'+ '</button></h5>';
+                    }
+                    int_1 += '<div id="' + key_1 + '"  class="accordion-collapse collapse show" aria-labelledby="' + key_1 + '_head" > '
+                        + (value_1.info ? '&nbsp' + value_1.info : '') 
+                        +'<div class="row accordion-body">'
+                        +'</div></div></div>'
+    
+                    $('#item_list').append(int_1);
                 }
-                int_1 += '<div id="' + key_1 + '"  class="accordion-collapse collapse show" aria-labelledby="' + key_1 + '_head" > '
-                    + (value_1.info ? '&nbsp' + value_1.info : '') 
-                    +'<div class="row accordion-body">'
-                    +'</div></div></div>'
-
-                $('#item_list').append(int_1);
+                // step_2.生成問項...將每一筆繞出來
+                Object(value_1.item).forEach((item_value)=>{
+                    make_question(key_1, value_1.class, item_value);
+                })
             }
-            // step_2.生成問項...將每一筆繞出來
-            Object(value_1.item).forEach((item_value)=>{
-                make_question(key_1, value_1.class, item_value);
-            })
+
+            let int_end = '<div class="col-12 mt-3 py-0 rounded bg-success text-white text-center">-- 問卷底部 --</div>'
+            $('#item_list').append(int_end);
         }
 
     })
 
     window.onload = function() {
+        // 簽名板
         var signaturePads = {};
         // Initialize Signature Pad for each canvas
         var canvases = document.querySelectorAll('canvas');
@@ -674,9 +681,9 @@
                 var padNumber = button.dataset.pad;
                 var signaturePad = signaturePads[padNumber + '_signaturePad'];
                 var signatureImage = document.getElementById(padNumber + '_signature-image');
-                $('#' + padNumber + '_signature-input').val('');
-                signaturePad.clear();
-                signatureImage.src = '../image/signin_empty.png';
+                $('#' + padNumber + '_signature-input').val('');            // base64儲存格
+                signaturePad.clear();                                       // 手寫盤
+                signatureImage.src = '../image/signin_empty.png';           // 預覽圖
             });
         });
 
@@ -686,40 +693,15 @@
                 var padNumber = button.dataset.pad;
                 var signaturePad = signaturePads[padNumber + '_signaturePad'];
                 var signatureImage = document.getElementById(padNumber + '_signature-image');
-                
                 if (signaturePad.isEmpty()) {
                     alert("Please provide a signature first.");
                 } else {
                     var dataURL = signaturePad.toDataURL();
-                    signatureImage.src = dataURL;
-                    $('#' + padNumber + '_signature-input').val(dataURL);
+                    signatureImage.src = dataURL;                           // 預覽圖
+                    $('#' + padNumber + '_signature-input').val(dataURL);   // base64儲存格
                 }
             });
         });
-
-        // var canvas = document.getElementById('signature-pad');
-        // var signaturePad = new SignaturePad(canvas);
-
-        // var clearButton = document.getElementById('clear-button');
-        // var saveButton = document.getElementById('save-button');
-        // var signatureImage = document.getElementById('signature-image');
-        // var signatureTextarea = document.getElementById('signature-textarea');
-
-        // clearButton.addEventListener('click', function(event) {
-        //     signaturePad.clear();
-        // });
-        // saveButton.addEventListener('click', function(event) {
-        //     if (signaturePad.isEmpty()) {
-        //         alert("Please provide a signature first.");
-        //     } else {
-        //     // Convert the signature to a data URL
-        //     var dataURL = signaturePad.toDataURL();
-        //     // You can also send the dataURL to your server for further processing
-        //     signatureImage.src = dataURL;
-        //     // Set the data URL as the value of the textarea
-        //     signatureTextarea.value = dataURL;
-        //     }
-        // });
     };
     
     // DOMContentLoaded 事件监听器

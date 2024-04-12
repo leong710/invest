@@ -5,6 +5,6 @@
 		$uri = 'http://';
 	}
 	$uri .= $_SERVER['HTTP_HOST'];
-	header('Location: '.$uri.'/invest/local/index.php');
+	header('Location: '.$uri.'/invest/interView/');
 	exit;
 ?>

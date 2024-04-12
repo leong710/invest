@@ -20,14 +20,14 @@
             <ul class="navbar-nav me-auto   my-2 my-lg-0 navbar-nav-scroll">
                 <?php if($sys_auth){ ?>
                     <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="#"><i class="fa-regular fa-square-plus"></i>&nbsp外層Link</a></li> -->
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="<?php echo $webroot;?>/interView/form.php"><i class="fa fa-edit"></i>&nbsp填寫訪問單</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="<?php echo $webroot;?>/interView/"><i class="fa fa-edit"></i>&nbsp填寫訪問單</a></li>
                     <!-- 下拉式選單 -->
                     <?php if($sys_role >= 0){ ?>
 
                         <?php if($sys_role <= 2.5 ){ ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link active dropdown-toggle" id="navbarDD_2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-warehouse"></i>&nbsp庫存管理<span class="badge rounded-pill bg-danger"></span></a>
+                                <a class="nav-link dropdown-toggle" id="navbarDD_2" role="button" data-bs-toggle="dropdown" aria-expanded="false" disabled >
+                                    <i class="fas fa-warehouse"></i>&nbsp其他管理<span class="badge rounded-pill bg-danger"></span></a>
                                               
                                 <ul class="dropdown-menu" aria-labelledby="navbarDD_2">
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/stock/"><i class="fa-solid fa-boxes-stacked"></i>&nbsp<b>倉庫庫存</b>
@@ -61,9 +61,16 @@
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/checked/"><i class="fa-solid fa-list-check"></i>&nbsp<b>半年檢紀錄表</b></a></li>
 
                                     <li><hr class="dropdown-divider"></li>
-
-
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/pt_stock/sum_report.php"><i class="fa-solid fa-chart-column"></i>&nbsp<b>除汙器材管控清單</b></a></li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/pno/"><i class="fa-solid fa-list"></i>&nbsp料號管理</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/catalog/"><i class="fas fa-th-large"></i>&nbsp器材目錄管理</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/local/low_level.php"><i class="fa-solid fa-retweet"></i>&nbsp安全存量設定</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/supp/"><i class="fa-solid fa-address-book"></i>&nbsp供應商聯絡人管理</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+
                                 </ul>
                             </li>
                         <?php } ?>
@@ -75,18 +82,14 @@
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDD_3">
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/local/"><i class="fa-solid fa-location-dot"></i>&nbsp廠區清單管理</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/pno/"><i class="fa-solid fa-list"></i>&nbsp料號管理</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/catalog/"><i class="fas fa-th-large"></i>&nbsp器材目錄管理</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/local/low_level.php"><i class="fa-solid fa-retweet"></i>&nbsp安全存量設定</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/formcase/"><i class="fas fa-th-large"></i>&nbsp表單管理</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/supp/"><i class="fa-solid fa-address-book"></i>&nbsp供應商聯絡人管理</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/formplan/"><i class="fa-regular fa-calendar-days"></i>&nbsp表單計畫</a></li>
+                 
                                 </ul>
                             </li>
 
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDD_4" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" id="navbarDD_4" role="button" data-bs-toggle="dropdown" aria-expanded="false" disabled >
                                     <i class="fa-solid fa-gear"></i>&nbsp管理員專區</a>
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDD_4">
                                     <?php if($sys_role <= 1 ){ ?>

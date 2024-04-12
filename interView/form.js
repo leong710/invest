@@ -7,13 +7,34 @@
         xhr.open('POST', 'upload.php', true);
         xhr.onload = function () {
             if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-                let preview_modal = '<a href="' + response.filePath + '" target="_blank" >';
-                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;">';
-                document.getElementById('preview_' + key).innerHTML = preview_modal + src_img +'</a>';
+                let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+                let preview_modal = '<a href="' + response.filePath + '" target="_blank" >';                            // 生成預覽按鈕a
+                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;">';        // 生成img
+                document.getElementById('preview_' + key).innerHTML = preview_modal + src_img +'</a>';                  // 套上a+img
+                document.getElementById(key + '_md5').value = response.fileName;                                        // md5
 
             } else {
                 alert('Upload failed. Please try again.');
+            }
+        };
+        xhr.send(formData);
+    }
+
+    function unlinkFile(key) {
+        let formData = new FormData();
+        let unlinkFile = document.getElementById(key+ '_md5').value;                      // 取temp_md5
+        formData.append('unlinkFile', unlinkFile);
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'unlink.php', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+                document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
+                document.getElementById(key).value = '';                                                                // 清除選擇檔案
+                document.getElementById(key + '_md5').value = '';                                                       // 清除md5
+
+            } else {
+                alert('unlink failed. Please try again.');
             }
         };
         xhr.send(formData);
