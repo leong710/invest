@@ -28,6 +28,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 pb-0 text-end">
+                    <a href="https://fontawesome.com/v6/icons/" target="_blank" title="fontawesome" class="btn btn-info text-white"><i class="fa-solid fa-font-awesome"></i> fontawesome</a>
                     <?php if($sys_role <= 1){ ?>
                         <button type="button" id="add_formcase_btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit_modal" onclick="add_module('formcase')" > <i class="fa fa-plus"></i> 新增表單</button>
                     <?php } ?>
