@@ -73,7 +73,9 @@
                         <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
-                        <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
+                        <?php if(!$init_error){ ?>
+                            <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
+                        <?php } ?>
                         <a href="<?php echo $up_href;?>" class="btn btn-secondary" onclick="return confirm('確認返回？');" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</a>
                     </div>
                 </div>
@@ -188,7 +190,7 @@
                                         <input type="hidden" name="created_cname"   id="created_cname"  value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="updated_user"    id="updated_user"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden" name="uuid"            id="uuid"           value="">
-                                        <input type="text" name="dcc_no"          id="dcc_no"         value="">
+                                        <input type="hidden" name="dcc_no"          id="dcc_no"         value="">
                                         <input type="hidden" name="action"          id="action"         value="<?php echo $action;?>">
                                         <input type="hidden" name="idty"            id="idty"           value="1">
                                         <?php if($sys_role <= 3){ ?>
@@ -202,36 +204,36 @@
                     </form>
                     <hr>
                     <!-- 尾段logs訊息 -->
-                    <div class="col-12 pt-0 rounded bg-light unblock" id="logs_div">
-                        <div class="row">
-                            <div class="col-6 col-md-6">
-                                表單記錄：
-                            </div>
-                            <div class="col-6 col-md-6">
-                            </div>
+                    <div class="row rounded bg-light" id="logs_div">
+                        <div class="col-6 col-md-6 pb-0">
+                            表單記錄：
                         </div>
-                        <div class="row">
-                            <div class="col-12 py-1 px-4">
-                                <table class="for-table logs table table-sm table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Step</th>
-                                            <th>Signer</th>
-                                            <th>Time Signed</th>
-                                            <th>Status</th>
-                                            <th>Comment</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                            <div style="font-size: 12px;" class="text-end">
-                                logs-end
-                            </div>
+                        <div class="col-6 col-md-6 pb-0">
+                        </div>
+
+                        <div class="col-12 pt-1 px-4">
+                            <table class="for-table logs table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Step</th>
+                                        <th>Signer</th>
+                                        <th>Time Signed</th>
+                                        <th>Status</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div style="font-size: 12px;" class="text-end">
+                            logs-end
                         </div>
                     </div>
                 </div>
                 
+                <div style="font-size: 12px;" class="pb-0 text-end">
+                    universalForm v0
+                </div>
             </div>
         </div>
     </div>
