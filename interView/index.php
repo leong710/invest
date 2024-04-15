@@ -2,8 +2,10 @@
    require_once("../pdo.php");
    require_once("../sso.php");
    require_once("../user_info.php");
-//    require_once("../formcase/function.php");
-   accessDenied($sys_id);
+    //    accessDenied($sys_id);
+    if(!empty($_SESSION["AUTH"]["pass"]) && empty($_SESSION[$sys_id])){
+        accessDenied_sys($sys_id);
+    }
 
         // 在index表頭顯示清單：
         function show_formcase(){
@@ -51,7 +53,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-10 border rounded px-3 py-5 bg-light" >
+            <div class="col-8 border rounded px-3 py-5 bg-light" >
                 <div class="row" id="btn_list">
                 </div>
             </div>
@@ -64,7 +66,7 @@
     var formcases_length = formcases.length;
 
     function make_btn(value_1){
-        var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + value_1._icon + '</br>' + value_1.title + '</a>' 
+        var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + value_1._icon + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
         return int_b;
     }
 

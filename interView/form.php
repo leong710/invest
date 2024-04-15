@@ -145,7 +145,7 @@
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他與會人員<sup class="text-danger"> * </sup></span>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
                                                 <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
@@ -517,11 +517,13 @@
             $('#tbody').empty();
             for (let i=0; i < res_r.length; i++) {
                 // 把user訊息包成json字串以便夾帶
-                    // let user_json = JSON.stringify({
-                    //         'emp_id'    : res_r[i].emp_id.trim(),
-                    //         'cname'     : res_r[i].cname.trim(),
-                    //     });
-                let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim();
+                    let user_json = {
+                            'emp_id'    : res_r[i].emp_id.trim(),
+                            'cname'     : res_r[i].cname.trim(),
+                            'cstext'    : res_r[i].cstext.trim(),
+                            'oftext'   : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
+                        };
+                // let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim() + ',' + res_r[i].dept_no.trim() + '\/' + res_r[i].oftext;
                 div_result_tbody.innerHTML += 
                     '<tr>' +
                         '<td>' + res_r[i].emp_id.trim() +'</td>' +
@@ -529,8 +531,8 @@
                         '<td>' + res_r[i].cstext.trim() + '</td>' +
                         '<td>' + res_r[i].user.trim() + '</td>' +
                         '<td>' + res_r[i].dept_no.trim() + '</td>' +
-                        '<td>' + res_r[i].dept_c.trim() +'/'+ res_r[i].dept_d.trim() + '</td>' +
-                        '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value='+user_json+' onclick="tagsInput_me(this.value)">'+
+                        '<td>' + res_r[i].oftext.trim() + '</td>' +
+                        '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value=\''+ JSON.stringify(user_json) +'\' onclick="tagsInput_me(this.value)">'+
                         '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
                     '</tr>';
             }
@@ -538,17 +540,17 @@
         }
         // fun_3.點選、渲染模組
         function tagsInput_me(val) {
-            let emp_id = val.split(',')[0];  // 指定emp_id
-            let cname  = val.split(',')[1];  // 指定cname
-            let cstext = val.split(',')[2];  // 指定cstext
-
             if (val !== '') {
+                // let personal_inf = {
+                //     'emp_id' : val.split(',')[0],  // 指定emp_id 
+                //     'cname'  : val.split(',')[1],  // 指定cname 
+                //     'cstext' : val.split(',')[2],  // 指定cstext
+                // }
+                let personal_inf = JSON.parse(val);
+                let emp_id = personal_inf['emp_id'];        // 指定emp_id 
+                let cname  = personal_inf['cname'];         // 指定cname 
+
                 if(meeting_man_target == 'emp_id_btn'){     // 來自事故者基本資訊
-                    let personal_inf = {
-                        'emp_id' : emp_id, 
-                        'cname'  : cname, 
-                        'cstext' : cstext
-                    }
                     Object.keys(personal_inf).forEach((_key)=>{
                         let _key_elem = document.querySelector('#'+_key)
                         if(_key_elem){
@@ -559,6 +561,7 @@
 
                 }else{                                      // 來自會議title
                     let parts = val.split(',');
+                    parts.pop();                 // 移除最后一个元素--部門資訊
                     parts.pop();                 // 移除最后一个元素--職稱
                     val = parts.join(',');
 

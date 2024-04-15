@@ -3,7 +3,7 @@
     require_once("../sso.php");
     require_once("../user_info.php");
     require_once("function.php");
-    // accessDeniedAdmin($sys_id);
+    accessDeniedAdmin($sys_id);
 
     $sw_json = [];       // 
 

@@ -5,11 +5,10 @@
     </div>
     <?php if(isset($_REQUEST["debug"])){
         echo "<div class='text-start text-white'><pre>";
-        // print_r($_SESSION[$sys_id]);
-        print_r($_SESSION["AUTH"]);
-        print_r($_SESSION[$sys_id]);
+            if(isset($_SESSION["AUTH"])){print_r($_SESSION["AUTH"]);}
+            if(isset($_SESSION[$sys_id])){print_r($_SESSION[$sys_id]);}
         echo "</pre></div>";
-    }?>
+    } ?>
 </footer>
 
 </body><!-- 防止 ERR_CACHE_MISS -->

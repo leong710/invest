@@ -17,8 +17,8 @@
         if(!isset($_SESSION)){                                              // 確認session是否啟動
             session_start();
         }
-        if(isset($_SESSION["AUTH"]) && !empty($_SESSION["AUTH"]["pass"])){  // 確認是否完成AUTH/pass => True
-            if(isset($_SESSION[$sys_id])){                                  // 如果sys_id已經建立，就返回
+        if(!empty($_SESSION["AUTH"]["pass"])){                              // 確認是否完成AUTH/pass => True
+            if(!empty($_SESSION[$sys_id])){                                  // 如果sys_id已經建立，就返回
                 return;
                 
             }else{                                                          // sys_id還沒建立，就導入
@@ -49,6 +49,7 @@
                 header("refresh:0;url={$url}tnESH_SSO/autoLog.php?sys_id={$sys_id}");
                 exit;
             }
+
         }else{                                                              // 確認AUTH/pass => false
             header("refresh:0;url={$url}tnESH_SSO/login.php?sys_id={$sys_id}");
             exit;
