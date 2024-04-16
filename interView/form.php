@@ -66,9 +66,9 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-10 border rounded px-3 py-4" style="background-color: #D4D4D4;">
+            <div class="col-10 border rounded px-4 py-4" style="background-color: #D4D4D4;">
                 <!-- 表頭1 -->
-                <div class="row px-2">
+                <div class="row px-4">
                     <div class="col-12 col-md-6 py-0" id="home_title">
                         <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
@@ -251,7 +251,7 @@
 
     <!-- 彈出畫面-查詢user模組 -->
         <div class="modal fade" id="searchUser" aria-hidden="true" aria-labelledby="searchUser" tabindex="-1">
-            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
 
                     <div class="modal-header bg-warning  border rounded p-3 m-2">
@@ -262,16 +262,17 @@
                     <div class="modal-body mx-2">
                         <div class="row">
                             <div class="col-12 border rounded p-3 " id="selectScomp_no">
-                                <div class="row">
+                                <div class="row justify-content-center">
                                     <!-- 第一排的功能 : 顯示已加入名單+input -->
                                     <div class="col-12 px-4 py-0">
                                         <div id="selectScomp_noItem"></div>
                                         <input type="hidden" class="form-control" name="scomp_no[]" id="scomp_no" placeholder="已加入的">
                                     </div>
                                     <!-- 第二排的功能 : 搜尋功能 -->
-                                    <div class="col-12 px-4">
+                                    <div class="col-6 px-4">
                                         <div class="input-group search">
-                                            <input type="text" class="form-control mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >
+                                            <span class="input-group-text">查詢</span>
+                                            <input type="text" class="form-control text-center mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >
                                             <button type="button" class="btn btn-outline-success" onclick="resetMain()">清除</button>
                                             <button type="button" class="btn btn-outline-primary" onclick="search_fun()"><i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>
                                         </div>
@@ -669,8 +670,8 @@
 
     })
 
+    // 簽名板
     window.onload = function() {
-        // 簽名板
         var signaturePads = {};
         // Initialize Signature Pad for each canvas
         var canvases = document.querySelectorAll('canvas');

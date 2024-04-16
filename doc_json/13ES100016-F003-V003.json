@@ -9,38 +9,6 @@
             "class" : "col-6 col-md-4 p-2 ",
             "item"  : [
                 {
-                    "label": "調查開始時間(ANIS系統立案日期)",
-                    "type" : "date",
-                    "name" : "anis_day",
-                    "required": true
-                },
-                {
-                    "label": "事故權責單位",
-                    "type" : "text",
-                    "name" : "a_dept",
-                    "required": true
-                },
-                {
-                    "label": "環安單位",
-                    "type" : "text",
-                    "name" : "esh_dept",
-                    "required": false
-                },
-                {
-                    "label": "承攬商代表",
-                    "type" : "date",
-                    "name" : "vendor",
-                    "required": false,
-                    "valid": true
-                },
-                {
-                    "label": "其他",
-                    "type": "text",
-                    "name" : "other_dept",
-                    "required": false,
-                    "valid": true
-                },
-                {
                     "label": "事故時間",
                     "type": "datetime",
                     "name" : "a_day",
@@ -52,6 +20,38 @@
                     "type": "text",
                     "name" : "a_location",
                     "required": true
+                },
+                {
+                    "label": "調查開始時間(ANIS系統立案日期)",
+                    "type" : "date",
+                    "name" : "anis_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "事故權責單位",
+                    "type" : "text",
+                    "name" : "a_dept",
+                    "required": true
+
+                },
+                {
+                    "label": "環安單位",
+                    "type" : "text",
+                    "name" : "esh_dept",
+                    "required": true
+                },
+                {
+                    "label": "承攬商代表",
+                    "type" : "text",
+                    "name" : "vendor",
+                    "required": false
+                },
+                {
+                    "label": "其他",
+                    "type": "text",
+                    "name" : "other_dept",
+                    "required": false
                 }
             ]
         },
@@ -119,14 +119,12 @@
 
         "session_4" : {
             "label" : "職業災害",
-            "info"  : {
-                        "1" : "需填寫人員傷勢。",
-                        "2" : "※ 如需申請公傷假，請檢附醫生診斷證明書影本。"
-                    },
+            "info"  : "※ 如需申請公傷假，請檢附醫生診斷證明書影本。",
             "class": "col-6 col-md-6 p-2 ",
             "item" : [
                 {
                     "label": "受傷部位",
+                    "info" : "需填寫人員傷勢。",
                     "type" : "checkbox",
                     "name" : "s4_combo_1",
                     "options": [
@@ -218,7 +216,7 @@
                 },
                 {
                     "label": "事故基本原因",
-                    "type" : "radio",
+                    "type" : "checkbox",
                     "name" : "s5_combo_2",
                     "options" : [
                         { "label" : "作業程序不完整或不適當"            , "value" : "作業程序不完整或不適當" },
