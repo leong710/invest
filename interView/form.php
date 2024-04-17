@@ -384,11 +384,11 @@
             case 'checkbox':
                 int_a = '<div class=" border rounded p-2"><snap><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
                 Object(item_a.options).forEach((option)=>{
-                    let object_type = ((typeof option.value !== 'object') ? option.value : option.label);   // for other's value
+                    let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
                           + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') + '" >'
-                          + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + object_type + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
+                          + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
 
                     if (typeof option.value === 'object' && option.value.type == 'text') {
                         int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '

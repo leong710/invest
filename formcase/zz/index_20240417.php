@@ -18,14 +18,6 @@
 <?php include("../template/header.php"); ?>
 <?php include("../template/nav.php"); ?>
 
-<head>
-    <script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>
-    <link href="../../libs/aos/aos.css" rel="stylesheet">
-    <script src="../../libs/jquery/jquery.mloading.js"></script>
-    <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">
-    <script src="../../libs/jquery/mloading_init.js"></script>
-</head>
-
 <div class="container my-2">
     <div class="row justify-content-center">
         <div class="col-xl-12 col-12 border rounded bg-white p-4 ">
@@ -96,7 +88,7 @@
                 <button type="button" class="btn-close border rounded mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <form action="" method="post" enctype="multipart/form-data" onsubmit="this.formcase_dcc_no.disabled=false,this.dcc_no.disabled=false" >
+            <form action="./zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.formcase_dcc_no.disabled=false,this.dcc_no.disabled=false" >
                 <div class="modal-body px-3">
                     <div class="row">
 
@@ -123,8 +115,8 @@
     
                                 <div class="input-group">
                                     <input type="file" id="dcc_no" name="upload_file" class="form-control mb-0" accept=".json" placeholder="上傳檔案">
-                                    <!-- <button type="button" class="btn btn-outline-success" onclick="uploadFile('dcc_no')">Upload</button> -->
-                                    <!-- <button type="button" class="btn btn-outline-danger" onclick="unlinkFile('dcc_no')">Delete</button> -->
+                                    <button type="button" class="btn btn-outline-success" onclick="uploadFile('dcc_no')">Upload</button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="unlinkFile('dcc_no')">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -173,15 +165,13 @@
     </div>
 </div>
 
-<script src="../../libs/aos/aos.js"></script>
-<script src="../../libs/aos/aos_init.js"></script>
+<script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>
 <script src="../../libs/sweetalert/sweetalert.min.js"></script>
 
 <script>
 
     var formcase        = <?=json_encode($formcases)?>;                                       // 引入formcases資料
     var formcase_item   = ['id', '_type', 'title', 'dcc_no', '_icon', 'flag'];                // 交給其他功能帶入 delete_cate_id
-    var sw_json     = '<?=$sw_json?>';
 
     function uploadFile(key) {
         let formData = new FormData();
@@ -316,12 +306,6 @@
 
         }
     }
-
-    $(document).ready(function(){
-        // swal_action = 'error';
-        // swal_content = '套用失敗';
-        // swal('change_flag' ,swal_content ,swal_action, {buttons: false, timer:1000});
-    })
 
 </script>
 

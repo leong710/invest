@@ -1,7 +1,7 @@
 <?php
     // 检查文件是否成功上传
     if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../doc_json/temp/';              // 過度路徑，submit後再搬移到正是路徑
+        $uploadDir = '../doc_json/';              // 過度路徑，submit後再搬移到正是路徑
             if(!is_dir($uploadDir)){ mkdir($uploadDir); }
             $fileName = basename($_FILES['file']['name']);
         

@@ -36,10 +36,7 @@
                     if(empty($su['id'])) {
                         $aResult['error'] = $function.' - 參數錯誤!';
                     } else {
-                        if($su['table'] == "_formplan"){
-                            $cheng_flag = changeFormplan_flag($su);
-
-                        }else if($su['table'] == "_formcase"){
+                        if($su['table'] == "_formcase"){
                             $cheng_flag = changeformcase_flag($su);
 
                         }else{
