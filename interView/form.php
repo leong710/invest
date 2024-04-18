@@ -56,6 +56,9 @@
             color: blue;
             text-shadow: 3px 3px 5px rgba(0,0,0,.3);
         }
+        .signature {
+            box-shadow: 0px 0px 8px rgba(0,0,0,.5);
+        }
         /* 使用 CSS 將 canvas 的寬度設置為 100% */
         /* canvas {
             width: 100%;
@@ -186,13 +189,13 @@
                                         <textarea name="sign_comm" id="sign_comm" class="form-control" rows="5"></textarea>
                                     </div>
                                     <div class="modal-footer">
-                                        <input type="hidden" name="created_emp_id"  id="created_emp_id" value="<?php echo $auth_emp_id;?>">
-                                        <input type="hidden" name="created_cname"   id="created_cname"  value="<?php echo $auth_cname;?>">
-                                        <input type="hidden" name="updated_user"    id="updated_user"   value="<?php echo $auth_cname;?>">
-                                        <input type="hidden" name="uuid"            id="uuid"           value="">
-                                        <input type="hidden" name="dcc_no"          id="dcc_no"         value="">
-                                        <input type="hidden" name="action"          id="action"         value="<?php echo $action;?>">
-                                        <input type="hidden" name="idty"            id="idty"           value="1">
+                                        <input type="hidden"  name="created_emp_id"  id="created_emp_id"  value="<?php echo $auth_emp_id;?>">
+                                        <input type="hidden"  name="created_cname"   id="created_cname"   value="<?php echo $auth_cname;?>">
+                                        <input type="hidden"  name="updated_user"    id="updated_user"    value="<?php echo $auth_cname;?>">
+                                        <input type="hidden"  name="action"          id="action"          value="<?php echo $action;?>">
+                                        <input type="hidden"  name="idty"            id="idty"            value="1">
+                                        <input type="hidden"  name="uuid"            id="uuid"            value="">
+                                        <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <?php if($sys_role <= 3){ ?>
                                             <button type="submit" value="Submit" name="receive_submit" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                                         <?php } ?>
@@ -411,11 +414,10 @@
                 break;
                 
             case 'signature':   // 簽名模組
-                int_a = '<div class="col-12 border rounded">'
+                int_a = '<div class="col-12 border rounded ">'
                     +'<snap class="p-0" ><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap>'
-                    + '<div class="row">'
-                        + '<div class="col-12 col-md-6 text-center">'
-                        + '<canvas id="' + item_a.name + '_signaturePad" width="350" height="250" class=" border rounded p-2 bg-light"></canvas>'
+                    + '<div class="row">' + '<div class="col-12 col-md-6 text-center">'
+                        + '<canvas id="' + item_a.name + '_signaturePad" width="400" height="250" class=" border rounded p-2 bg-light signature"></canvas>'
                         + '<div class="py-1">'
                         + '<button type="button" class="btn btn-outline-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
                         + '<button type="button" class="btn btn-outline-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
