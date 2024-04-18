@@ -55,6 +55,7 @@
         <div class="row justify-content-center">
             <div class="col-8 border rounded px-3 py-5 bg-light" >
                 <div class="row" id="btn_list">
+                    <!-- append button here -->
                 </div>
             </div>
         </div>
@@ -66,8 +67,12 @@
     var formcases_length = formcases.length;
 
     function make_btn(value_1){
-        var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + value_1._icon + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
-        return int_b;
+        if(value_1.dcc_no){
+            var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + value_1._icon + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
+            return int_b;
+        }else{
+            return '<snap class="btn btn-outline-secondary">' + value_1.title + '</br>-- 無效json表單 --</snap>';
+        }
     }
 
     $(function () {

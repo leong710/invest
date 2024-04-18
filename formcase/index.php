@@ -2,17 +2,10 @@
     require_once("../pdo.php");
     require_once("../sso.php");
     require_once("function.php");
+    require_once("../user_info.php");
     accessDeniedAdmin($sys_id);
 
-    $auth_cname = $_SESSION["AUTH"]["cname"];     // 取出$_session引用
-    $sys_role   = $_SESSION[$sys_id]["role"];     // 取出$_session引用
-
-    // CRUD
-        if(isset($_POST["submit_formcase"])){ store_formcase($_REQUEST); }  // 新增
-        if(isset($_POST["edit_formcase"]))  { update_formcase($_REQUEST); } // 更新
-        if(isset($_POST["delete_formcase"])){ delete_formcase($_REQUEST); } // 刪除
-        // 調整flag ==> 20230712改用AJAX
-
+    // 調整flag ==> 20230712改用AJAX
     $formcases = show_formcase();
 ?>
 <?php include("../template/header.php"); ?>
@@ -24,18 +17,20 @@
     <script src="../../libs/jquery/jquery.mloading.js"></script>
     <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">
     <script src="../../libs/jquery/mloading_init.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../libs/dataTables/jquery.dataTables.css">  <!-- dataTable參照 https://ithelp.ithome.com.tw/articles/10230169 --> <!-- data table CSS+JS -->
+        <script type="text/javascript" charset="utf8" src="../../libs/dataTables/jquery.dataTables.js"></script>
 </head>
 
 <div class="container my-2">
     <div class="row justify-content-center">
         <div class="col-xl-12 col-12 border rounded bg-white p-4 ">
             <div class="row">
-                <div class="col-md-6 pb-0">
+                <div class="col-md-6">
                     <div>
                         <h5>表單管理 列表 - 共 <?php echo count($formcases);?> 筆</h5>
                     </div>
                 </div>
-                <div class="col-md-6 pb-0 text-end">
+                <div class="col-md-6 text-end">
                     <a href="https://fontawesome.com/v6/icons/" target="_blank" title="fontawesome" class="btn btn-info text-white"><i class="fa-solid fa-font-awesome"></i> fontawesome</a>
                     <?php if($sys_role <= 1){ ?>
                         <button type="button" id="add_formcase_btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit_modal" onclick="add_module('formcase')" > <i class="fa fa-plus"></i> 新增表單</button>
@@ -43,42 +38,43 @@
                     <a href="index.php" title="回上層列表" class="btn btn-secondary"><i class="fa fa-external-link" aria-hidden="true"></i> 返回管理</a>
                 </div>
             </div>
+            <hr>
             <!-- 分類列表 -->
-            <hr>
-            <div class="px-4">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>_type / title</th>
-                            <th>dcc_no / json</th>
-                            <th>_icon</th>
-                            <th>flag</th>
-                            <th>created/updated</th>
-                            <th>updated_user/action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($formcases as $formcase){ ?>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-striped table-hover" id="formcase_list">
+                        <thead>
                             <tr>
-                                <td><?php echo $formcase["id"];?></td>
-                                <td><?php echo $formcase["_type"]."</br>".$formcase["title"];?></td>
-                                <td><?php echo $formcase["dcc_no"];?></td>
-                                <td><?php echo $formcase["_icon"];?></td>
-                                <td><button type="button" name="_formcase" id="<?php echo $formcase['id'];?>" value="<?php echo $formcase['flag'];?>"
-                                        class="btn btn-sm btn-xs flagBtn <?php echo $formcase['flag'] == 'On' ? 'btn-success':'btn-warning';?>"><?php echo $formcase['flag'];?></button>
-                                </td>
-                                <td><?php echo $formcase["created_at"]."</br>".$formcase["updated_at"];?></td>
-                                <td><?php echo $formcase["updated_user"]."&nbsp";?>    
-                                    <button type="button" id="edit_formcase_btn" value="<?php echo $formcase['id'];?>" class="btn btn-sm btn-xs btn-info" 
-                                        data-bs-toggle="modal" data-bs-target="#edit_modal" onclick="edit_module('formcase',this.value)" >編輯</button>
-                                </td>
+                                <th>id</th>
+                                <th>_type / title</th>
+                                <th>dcc_no / json</th>
+                                <th>_icon</th>
+                                <th>flag</th>
+                                <th>created/updated</th>
+                                <th>updated_user/action</th>
                             </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach($formcases as $formcase){ ?>
+                                <tr>
+                                    <td><?php echo $formcase["id"];?></td>
+                                    <td><?php echo $formcase["_type"]."</br>".$formcase["title"];?></td>
+                                    <td><?php echo $formcase["dcc_no"];?></td>
+                                    <td class="text-primary"><?php echo $formcase["_icon"];?></td>
+                                    <td><button type="button" name="_formcase" id="<?php echo $formcase['id'];?>" value="<?php echo $formcase['flag'];?>"
+                                            class="btn btn-sm btn-xs flagBtn <?php echo $formcase['flag'] == 'On' ? 'btn-success':'btn-warning';?>"><?php echo $formcase['flag'];?></button>
+                                    </td>
+                                    <td><?php echo $formcase["created_at"]."</br>".$formcase["updated_at"];?></td>
+                                    <td><?php echo $formcase["updated_user"]."&nbsp";?>    
+                                        <button type="button" id="update_formcase_btn" value="<?php echo $formcase['id'];?>" class="btn btn-sm btn-xs btn-info" 
+                                            data-bs-toggle="modal" data-bs-target="#edit_modal" onclick="edit_module('formcase',this.value)" >編輯</button>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <hr>
         </div>
     </div>
 </div>
@@ -89,35 +85,35 @@
         <div class="modal-content">
             <div class="modal-header border rounded p-3 m-2">
                 <h5 class="modal-title"><span id="modal_action"></span>表單</h5>
-                <form action="" method="post">
+                <form action="process.php" method="post">
                     <input type="hidden" name="id" id="formcase_delete_id">&nbsp&nbsp&nbsp&nbsp&nbsp
                     <span id="modal_delect_btn" class="<?php echo ($sys_role == 0) ? "":" unblock ";?>"></span>
                 </form>
                 <button type="button" class="btn-close border rounded mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <form action="" method="post" enctype="multipart/form-data" onsubmit="this.formcase_dcc_no.disabled=false,this.dcc_no.disabled=false" >
+            <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.formcase_dcc_no.disabled=false,this.dcc_no.disabled=false" >
                 <div class="modal-body px-3">
                     <div class="row">
 
                         <div class="col-12 py-1">
                             <div class="form-floating">
                                 <input type="text" name="title" id="formcase_title" class="form-control" required placeholder="表單名稱">
-                                <label for="formcase_title" class="form-label">title/表單名稱：</label>
+                                <label for="formcase_title" class="form-label">title/表單名稱：<sup class="text-danger"> *</sup></label>
                             </div>
                         </div>
 
                         <div class="col-12 py-1">
                             <div class="form-floating">
                                 <input type="text" name="_type" id="formcase__type" class="form-control" required placeholder="表單代號">
-                                <label for="formcase__type" class="form-label">_type/表單代號：</label>
+                                <label for="formcase__type" class="form-label">_type/表單代號：<sup class="text-danger"> *</sup></label>
                             </div>
                         </div>
 
                         <div class="col-12 py-1">
                             <div class="col-12 border rounded">
                                 <div class="form-floating">
-                                    <input type="text" name="dcc_no" id="formcase_dcc_no" class="form-control" required readonly placeholder="套用文件">
+                                    <input type="text" name="dcc_no" id="formcase_dcc_no" class="form-control" readonly placeholder="套用文件">
                                     <label for="formcase_dcc_no" class="form-label">dcc_no/套用json文件：</label>
                                 </div>
     
@@ -131,7 +127,7 @@
 
                         <div class="col-12 py-1">
                             <div class="form-floating">
-                                <input type="text" name="_icon" id="formcase__icon" class="form-control" required placeholder="圖像代號">
+                                <input type="text" name="_icon" id="formcase__icon" class="form-control" placeholder="圖像代號">
                                 <label for="formcase__icon" class="form-label">_icon/fa圖像代號：</label>
                             </div>
                         </div>
@@ -181,44 +177,43 @@
 
     var formcase        = <?=json_encode($formcases)?>;                                       // 引入formcases資料
     var formcase_item   = ['id', '_type', 'title', 'dcc_no', '_icon', 'flag'];                // 交給其他功能帶入 delete_cate_id
-    var sw_json     = '<?=$sw_json?>';
+    
+    // 功能封存，改由process處理;
+        function uploadFile(key) {
+            let formData = new FormData();
+            let fileInput = document.getElementById(key);
+            formData.append('file', fileInput.files[0]);
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'upload.php', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);                                // 接收回傳
+                    document.getElementById('formcase_' + key).value = response.fileName;       // dcc_no
 
-    function uploadFile(key) {
-        let formData = new FormData();
-        let fileInput = document.getElementById(key);
-        formData.append('file', fileInput.files[0]);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);                                // 接收回傳
-                document.getElementById('formcase_' + key).value = response.fileName;       // dcc_no
+                } else {
+                    alert('Upload failed. Please try again.');
+                }
+            };
+            xhr.send(formData);
+        }
+        function unlinkFile(key) {
+            let formData = new FormData();
+            let unlinkFile = document.getElementById('formcase_'+key).value;                      // 取dcc_no file.name
+            formData.append('unlinkFile', unlinkFile);
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'unlink.php', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // let response = JSON.parse(xhr.responseText);                               // 接收回傳
+                    document.getElementById(key).value = '';                                      // 清除選擇檔案
+                    document.getElementById('formcase_'+key).value = '';                          // 清除md5
 
-            } else {
-                alert('Upload failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
-
-    function unlinkFile(key) {
-        let formData = new FormData();
-        let unlinkFile = document.getElementById('formcase_'+key).value;                      // 取dcc_no file.name
-        formData.append('unlinkFile', unlinkFile);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'unlink.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // let response = JSON.parse(xhr.responseText);                               // 接收回傳
-                document.getElementById(key).value = '';                                      // 清除選擇檔案
-                document.getElementById('formcase_'+key).value = '';                          // 清除md5
-
-            } else {
-                alert('unlink failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
+                } else {
+                    alert('unlink failed. Please try again.');
+                }
+            };
+            xhr.send(formData);
+        }
 
     function add_module(to_module){     // 啟用新增模式
         $('#modal_action, #modal_button, #modal_delect_btn, #formcase_info').empty();       // 清除model功能
@@ -262,7 +257,7 @@
 
                 // step3-3.開啟 彈出畫面模組 for user編輯
                 // edit_myTodo_btn.click();
-                var add_btn = '<input type="submit" name="edit_formcase" value="儲存" class="btn btn-primary">';
+                var add_btn = '<input type="submit" name="update_formcase" value="儲存" class="btn btn-primary">';
                 var del_btn = '<input type="submit" name="delete_formcase" value="刪除" class="btn btn-sm btn-xs btn-danger" onclick="return confirm(`確認刪除？`)">';
                 $('#modal_action').append('編輯');          // model標題
                 $('#modal_delect_btn').append(del_btn);     // 刪除鈕
@@ -304,23 +299,33 @@
                     }
                     swal_action = 'success';
                     swal_content += res_r_flag+' 套用成功';
+                    swal('change_flag' ,swal_content ,swal_action, {buttons: false, timer:1000});
 
                 },
                 error: function(e){
                     swal_action = 'error';
                     swal_content += res_r_flag+' 套用失敗';
                     console.log("error");
+                    swal('change_flag' ,swal_content ,swal_action);
                 }
             });
-            swal('change_flag' ,swal_content ,swal_action, {buttons: false, timer:1000});
 
         }
     }
 
     $(document).ready(function(){
-        // swal_action = 'error';
-        // swal_content = '套用失敗';
-        // swal('change_flag' ,swal_content ,swal_action, {buttons: false, timer:1000});
+         // dataTable 2 https://ithelp.ithome.com.tw/articles/10272439
+         $('#formcase_list').DataTable({
+            "autoWidth": false,
+            // 排序
+            // "order": [[ 4, "asc" ]],
+            // 顯示長度
+            "pageLength": 25,
+            // 中文化
+            "language":{
+                url: "../../libs/dataTables/dataTable_zh.json"
+            }
+        });
     })
 
 </script>
