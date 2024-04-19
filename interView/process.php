@@ -13,25 +13,25 @@
     // CRUD
         if(isset($_POST)){
             // 新增
-            if(isset($_POST["submit_formcase"])){
-                $action = "submit_formcase";
-                $swal_json = store_formcase($_REQUEST); 
+            if(isset($_POST["submit_document"])){
+                $action = "submit_document";
+                $swal_json = store_document($_REQUEST); 
             }  
             // 更新
-            if(isset($_POST["update_formcase"])){ 
-                $action = "update_formcase";
-                $swal_json = update_formcase($_REQUEST);
+            if(isset($_POST["update_document"])){ 
+                $action = "update_document";
+                $swal_json = update_document($_REQUEST);
              } 
              // 刪除
-            if(isset($_POST["delete_formcase"])){ 
-                $action = "delete_formcase";
-                $swal_json = delete_formcase($_REQUEST);
+            if(isset($_POST["delete_document"])){ 
+                $action = "delete_document";
+                $swal_json = delete_document($_REQUEST);
             } 
             
         }else{
             $action = "null function";
             $swal_json = array(                                 // for swal_json
-                "fun"     => "formCase",
+                "fun"     => "interView document",
                 "content" => "process處理--",
                 "action"  => "error",
                 "content" => '$_POST參數錯誤'

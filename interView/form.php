@@ -2,30 +2,44 @@
     require_once("../pdo.php");
     require_once("../sso.php");
     require_once("../user_info.php");
-    // require_once("function.php");
     accessDenied($sys_id);
 
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
 
-    // 決定表單開啟方式
-    $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
+    if(isset($_REQUEST["uuid"])){
+        require_once("function.php");
+        $document_row = edit_document($_REQUEST);
+        if(empty($document_row)){
+            echo "<script>alert('uuid-error：{$_REQUEST["uuid"]}')</script>";
+            header("refresh:0;url=index.php");
+            exit;
+        }
+        // logs紀錄鋪設前處理 
+        $logs_arr = (array) json_decode($document_row["logs"]);
+        $action = 'edit'; 
+        // 路径到 form_a.json 文件
+        $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
 
-    // 路径到 form_a.json 文件
-        // $json_file_path = 'form_a.json';
-        // $test_doc = '13ES100016-F002-V002';
-    $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
-    // $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "../doc_json/".$test_doc.".json" );
-    if(file_exists($form_doc)){
-        // 从 JSON 文件加载内容
-        $form_json = file_get_contents($form_doc);
-        // 解析 JSON 数据并将其存储在 $form_a_json 变量中
-        $form_json = json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
-        $init_error = '';
     }else{
-        $form_json = [];
-        $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
+        $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
+        $logs_arr = [];                             // 預設logs_arr=空array
+        // 決定表單開啟方式
+        $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
+        // 路径到 form_a.json 文件
+        $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
     }
+
+        if(file_exists($form_doc)){
+            // 从 JSON 文件加载内容
+            $form_json = file_get_contents($form_doc);
+            // 解析 JSON 数据并将其存储在 $form_a_json 变量中
+            $form_json = json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+            $init_error = '';
+        }else{
+            $form_json = [];
+            $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
+        }
 
 ?>
 
@@ -84,16 +98,16 @@
                 </div>
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-1">
-                        訪問單號：<?php echo ($action == 'create') ? "(尚未給號)": "receive_aid_".$receive_row['id']; ?></br>
-                        開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(實際以送出時間為主)":$receive_row['created_at']; ?></br>
-                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $receive_row["created_emp_id"]." / ".$receive_row["created_cname"] ;?>
+                        訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
+                        開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(實際以送出時間為主)":$document_row['created_at']; ?></br>
+                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
                     </div>
                     <div class="col-12 col-md-6 py-1 text-end">
                         <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
-                        <?php if(($sys_role <= 1 ) && (isset($receive_row['idty']) && $receive_row['idty'] != 0)){ ?>
+                        <?php if(($sys_role <= 1 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
                             <form action="" method="post">
-                                <input type="hidden" name="uuid" value="<?php echo $receive_row["uuid"];?>">
-                                <input type="submit" name="delete_receive" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
+                                <input type="hidden" name="uuid" value="<?php echo $document_row["uuid"];?>">
+                                <input type="submit" name="document_delete" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
                             </form>
                         <?php }?>
                     </div>
@@ -102,7 +116,7 @@
                 <!-- container -->
                 <div class="col-12">
                     <!-- 內頁 -->
-                    <form action="./zz/debug.php" method="post" onsubmit="this.cname.disabled=false" >
+                    <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" >
                         <div class="row rounded bg-light py-3" id="form_container">
                             <div class="col-12 p-3 ">
                                 <div class="row">
@@ -191,13 +205,14 @@
                                     <div class="modal-footer">
                                         <input type="hidden"  name="created_emp_id"  id="created_emp_id"  value="<?php echo $auth_emp_id;?>">
                                         <input type="hidden"  name="created_cname"   id="created_cname"   value="<?php echo $auth_cname;?>">
-                                        <input type="hidden"  name="updated_user"    id="updated_user"    value="<?php echo $auth_cname;?>">
+                                        <input type="hidden"  name="updated_cname"   id="updated_cname"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden"  name="action"          id="action"          value="<?php echo $action;?>">
+                                        <input type="hidden"  name="step"            id="step"            value="1">
                                         <input type="hidden"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <?php if($sys_role <= 3){ ?>
-                                            <button type="submit" value="Submit" name="receive_submit" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
+                                            <button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                                         <?php } ?>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     </div>
@@ -307,13 +322,17 @@
 
 <script>
     // 開局設定init
+    var action    = '<?=$action?>';                 // 取得表單開啟方式
     var form_json = <?=json_encode($form_json)?>;   // 取得表單
     var form_item = form_json.form_item;            // 抓item項目for form item
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
     var meeting_man_o = [];                         // 其他與會人員
     var meeting_man_s = [];                         // 環安人員
     var meeting_man_target;                         // 指向目標
+    
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
+    var document_row = <?=json_encode($document_row)?>;   // 取得表單資料
+
     // 以下為控制 iframe
         // var realName         = document.getElementById('realName');           // 上傳後，JSON存放處(給表單儲存使用)
         // var iframe           = document.getElementById('api');                // 清冊的iframe介面
@@ -404,11 +423,11 @@
             case 'file':       // session_2 事故位置簡圖
                 int_a = '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' 
                     + commonPart()
-                    + '<div class="input-group "><input type="file" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
+                    + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
                     + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
                     + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
                     + '</div>'
-                    + '<input type="hidden" name="' + item_a.name + '_md5" id="' + item_a.name + '_md5" ' + (item_a.required ? 'required' : '' ) + '>'
+                    + '<input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '" ' + (item_a.required ? 'required' : '' ) + '>'
                     +'</div></div>'
                     + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
                 break;
@@ -563,11 +582,10 @@
                     searchUser_modal.hide();      // 關閉searchUser_modal
 
                 }else{                                      // 來自會議title
-                    let parts = val.split(',');
-                    parts.pop();                 // 移除最后一个元素--部門資訊
-                    parts.pop();                 // 移除最后一个元素--職稱
-                    val = parts.join(',');
-
+                    val = JSON.stringify({
+                        "cname"  : cname,
+                        "emp_id" : emp_id
+                    })
                     window[meeting_man_target].push(val);
                     $('#'+meeting_man_target+'_show').append('<div class="tag">' + cname + '<span class="remove">x</span></div>');
                     let tag_user = document.getElementById(emp_id);
@@ -717,6 +735,37 @@
     //     // 绑定事件监听器
     //     attachEventListeners();
     // });
+    function edit_show(){
+        _content = JSON.parse(document_row['_content'])
+        console.log('_content:', _content);
+
+        // step1.將原陣列逐筆繞出來
+        // Object.keys(_content).forEach(function(content_key){
+            // if(content_key == 'ppty'){                      // ppty/需求類別
+            //     document.querySelector('#'+content_key+'_'+content_row[content_key]).checked = true;
+                
+            // }else if(content_key == 'cata_SN_amount'){      //cata_SN_amount 購物車
+            //     var content_row_cart = JSON.parse(content_row[content_key]);
+            //     Object.keys(content_row_cart).forEach(function(cart_key){
+            //         add_item(cart_key, content_row_cart[cart_key], 'off');
+            //     })
+            // }else{
+            //     document.querySelector('#'+content_key).value = content_row[content_key]; 
+            // }
+            // console.log(content_key, _content[content_key]);
+            // document.querySelector('#'+content_key).value = _content[content_key]; 
+        // })
+
+        // 鋪設logs紀錄
+        var json = <?=json_encode($logs_arr)?>;
+        var forTable = document.querySelector('.logs tbody');
+        for (var i = 0, len = json.length; i < len; i++) {
+            json[i].remark = json[i].remark.replaceAll('_rn_', '<br>');   // *20231205 加入換行符號
+            forTable.innerHTML += 
+                '<tr><td>' + json[i].step + '</td><td>' + json[i].cname + '</td><td>' + json[i].datetime + '</td><td>' + json[i].action + 
+                    '</td><td style="text-align: left; word-break: break-all;">' + json[i].remark + '</td></tr>';
+        }
+    }
 
     $(document).ready(function(){
         // 定義+監聽按鈕for與會人員...search btn id
@@ -738,6 +787,13 @@
                 meeting_man_target = this.id;               // 搜尋meeting_man_target
             })
         })    
+        
+        if(action == "edit" ){
+        
+            // var json         = <=json_encode($logs_arr)?>;                 // 鋪設logs紀錄 240124-改去除JSON.parse
+            // console.log('document_row:', document_row);
+            edit_show();
+        }
 
     })
 

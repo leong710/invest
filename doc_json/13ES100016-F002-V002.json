@@ -148,7 +148,7 @@
                     "name" : "s4_combo_4",
                     "options" : [
                         { "label" : "有（請於備註說明）" , "value" : "有" },
-                        { "label" : "無" , "value" : "無" }
+                        { "label" : "無"                , "value" : "無" }
                     ],
                     "required": true
                 },
@@ -291,7 +291,7 @@
                         "2" : "以上各項均由本人依照事實填具，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。"
                     },
                     "type" : "signature",
-                    "name" : "s5_confirm",
+                    "name" : "confirm_sign",
                     "options" : [
                         { "label" : "YES" , "value" : "YES" },
                         { "label" : "NO" , "value" : "NO" }
@@ -337,10 +337,10 @@
                     "label": "判定為非公傷，當事人簽認",
                     "info" : "(如判斷為公傷則不需再簽認)",
                     "type" : "signature",
-                    "name" : "s6_ruling",
+                    "name" : "ruling_sign",
                     "options" : [
                         { "label" : "YES" , "value" : "YES" },
-                        { "label" : "NO" , "value" : "NO" }
+                        { "label" : "NO"  , "value" : "NO" }
                     ],
                     "required": true
                 }
