@@ -63,7 +63,7 @@
 <script>    
     
     var swal_json = <?=json_encode($swal_json)?>;                   // 引入swal_json值
-    var url       = '<?=$up_href?>';
+    var url       = 'index.php';
 
     $(document).ready(function () {
         if(swal_json.length != 0){
