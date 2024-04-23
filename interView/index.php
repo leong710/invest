@@ -2,6 +2,9 @@
    require_once("../pdo.php");
    require_once("../sso.php");
    require_once("../user_info.php");
+   require_once("service_window.php");             // service window
+   $sw_arr = (array) json_decode($sw_json);        // service window 物件轉陣列
+
     //    accessDenied($sys_id);
     if(!empty($_SESSION["AUTH"]["pass"]) && empty($_SESSION[$sys_id])){
         accessDenied_sys($sys_id);
@@ -56,6 +59,70 @@
             <div class="col-8 border rounded px-3 py-5 bg-light" >
                 <div class="row" id="btn_list">
                     <!-- append button here -->
+                </div>
+                <hr>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <button type="button" id="service_window_btn" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#service_window"><i class="fa-solid fa-circle-info"></i> 各廠聯絡窗口</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模組 service window 20240319 -->
+    <div class="modal fade" id="service_window" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header rounded bg-success text-white p-2 m-2">
+                    <h5 class="modal-title"><i class="fa-solid fa-circle-info"></i> Service Window / 各廠聯絡窗口</h5>
+                    <button type="button" class="btn-close border rounded mx-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-3 pt-1">
+                    <div class="col-12 border rounded p-3">
+                        <table id="service_window">
+                            <thead>
+                                <tr>
+                                    <th>FAB</th>
+                                    <th>窗口姓名</th>
+                                    <th>分機</th>
+                                    <th>email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($sw_arr as $sw_key => $sw_value){
+                                    $value_length = count($sw_value);
+                                    if($value_length < 1){
+                                        $append_str = '<tr><td>'.$sw_key.'</td><td>null</td><td></td><td></td></tr>';
+                                    }else{
+                                        if(is_object($sw_value)) { $sw_value = (array)$sw_value; }                      // 物件轉陣列
+                                        $td_key = '<td rowspan="'.$value_length.'">'.$sw_key.'</td>';
+                                        $append_str = "";
+                                        $i = 1;
+                                        foreach($sw_value as $sw_item => $sw_item_value){
+                                            if(is_object($sw_item_value)) { $sw_item_value = (array)$sw_item_value; }   // 物件轉陣列
+                                            $td_value = '. '.$sw_item_value["cname"].'</td><td>'.$sw_item_value["tel_no"].'</td><td>'.strtolower($sw_item_value["email"]).'</td></tr>';
+                                            if($i === 1){
+                                                $append_str .= '<tr>'.$td_key.'<td>'.$i.$td_value;
+                                            }else{
+                                                $append_str .= '<tr><td>'.$i.$td_value;
+                                            }
+                                            $i++;
+                                        }
+                                    };
+                                    echo $append_str;
+                                }?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>

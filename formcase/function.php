@@ -23,10 +23,10 @@
             $flag = "Off";
         }
 
-        $sql = "INSERT INTO _formcase(_type, title, dcc_no, _icon, flag, updated_user, created_at, updated_at)VALUES(?,?,?,?,?,? ,now(),now())";
+        $sql = "INSERT INTO _formcase(_type, title, short_name, dcc_no, _icon, flag, updated_user, created_at, updated_at)VALUES(?,?,?,?,?,?,? ,now(),now())";
         $stmt = $pdo->prepare($sql);
         try {
-            $stmt->execute([$_type, $title, $dcc_no, $_icon, $flag, $updated_user]);
+            $stmt->execute([$_type, $title, $short_name, $dcc_no, $_icon, $flag, $updated_user]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '儲存成功';
 
@@ -79,10 +79,10 @@
             $dcc_no = uploadFile($_FILES["upload_file"]);
         }
 
-        $sql = "UPDATE _formcase SET _type=?, title=?, dcc_no=?, _icon=?, flag=?, updated_user=?, updated_at=now() WHERE id=?";
+        $sql = "UPDATE _formcase SET _type=?, title=?, short_name=?, dcc_no=?, _icon=?, flag=?, updated_user=?, updated_at=now() WHERE id=?";
         $stmt = $pdo->prepare($sql);
         try {
-            $stmt->execute([$_type, $title, $dcc_no, $_icon, $flag, $updated_user, $id]);
+            $stmt->execute([$_type, $title, $short_name, $dcc_no, $_icon, $flag, $updated_user, $id]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '儲存成功';
         }catch(PDOException $e){

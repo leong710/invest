@@ -24,7 +24,7 @@
 
             $_content = $_REQUEST;
             // 使用迴圈刪除指定的元素
-            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic',         'case_title','a_dept','meeting_time','meeting_local'         ,'submit_document'
+            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic',         'case_title','a_dept','meeting_time','meeting_local'         ,'submit_document','fab_id','local_id'
                                 ,'meeting_man_a','meeting_man_o','meeting_man_s','created_emp_id','created_cname','updated_cname','action','step','idty','uuid','dcc_no');
                 foreach ($unset_keys as $key) {
                     unset($_content[$key]);
@@ -49,13 +49,13 @@
             $logs_enc = toLog($logs_request);
 
         $sql = "INSERT INTO _document( _focus, _content, confirm_sign, ruling_sign, a_pic 
-                            , idty, dcc_no, case_title, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s
-                            , created_emp_id, created_cname, updated_cname, logs,  meeting_time, created_at, updated_at, uuid)
-                    VALUES( ?,?,?,?,?   ,?,?,?,?,?,?,?,?  ,?,?,?,?  ,now() ,now() ,now() ,uuid())";
+                            , idty, dcc_no, fab_id, local_id, case_title,   a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s
+                            , created_emp_id, created_cname, updated_cname, logs,   meeting_time, created_at, updated_at, uuid)
+                    VALUES( ?,?,?,?,?   ,?,?,?,?,? ,?,?,?,?,?  ,?,?,?,?  ,now() ,now() ,now() ,uuid())";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
-                            , $idty, $dcc_no, $case_title, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s
+                            , $idty, $dcc_no, $fab_id, $local_id, $case_title, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s
                             , $created_emp_id, $created_cname, $updated_cname, $logs_enc]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '儲存成功';
@@ -94,6 +94,7 @@
             "fun"       => "update_document",
             "content"   => "更新表單--"
         );
+
         // 處理dcc_no上傳更換檔案
         if($_FILES["upload_file"]["name"]){                                         // 檢查是否有上傳檔案
             $upload_fileNameExt = $_FILES["upload_file"]["name"];                   // 取得上傳檔名
@@ -363,3 +364,20 @@
         }
     }
 // // // CSV & Log tools -- end
+
+    function show_fab_lists(){
+        $pdo = pdo();
+        $sql = "SELECT _fab.*, _site.site_title, _site.site_remark, _site.flag AS site_flag
+                FROM _fab
+                LEFT JOIN _site ON _site.id = _fab.site_id
+                -- WHERE _fab.flag = 'On' AND _site.flag = 'On'
+                ORDER BY _site.id, _fab.id ASC ";
+        $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
+        try {
+            $stmt->execute();
+            $fabs = $stmt->fetchAll();
+            return $fabs;
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }

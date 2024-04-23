@@ -47,7 +47,7 @@
                             <tr>
                                 <th>id</th>
                                 <th>_type / title</th>
-                                <th>dcc_no / json</th>
+                                <th>dcc_no / short_name</th>
                                 <th>_icon</th>
                                 <th>flag</th>
                                 <th>created/updated</th>
@@ -59,7 +59,7 @@
                                 <tr>
                                     <td><?php echo $formcase["id"];?></td>
                                     <td><?php echo $formcase["_type"]."</br>".$formcase["title"];?></td>
-                                    <td><?php echo $formcase["dcc_no"];?></td>
+                                    <td><?php echo $formcase["dcc_no"]."</br>".$formcase["short_name"];?></td>
                                     <td class="text-primary"><?php echo $formcase["_icon"];?></td>
                                     <td><button type="button" name="_formcase" id="<?php echo $formcase['id'];?>" value="<?php echo $formcase['flag'];?>"
                                             class="btn btn-sm btn-xs flagBtn <?php echo $formcase['flag'] == 'On' ? 'btn-success':'btn-warning';?>"><?php echo $formcase['flag'];?></button>
@@ -95,6 +95,13 @@
             <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.formcase_dcc_no.disabled=false,this.dcc_no.disabled=false" >
                 <div class="modal-body px-3">
                     <div class="row">
+                        
+                        <div class="col-12 py-1">
+                            <div class="form-floating">
+                                <input type="text" name="_type" id="formcase__type" class="form-control" required placeholder="表單代號">
+                                <label for="formcase__type" class="form-label">_type/表單代號：<sup class="text-danger"> *</sup></label>
+                            </div>
+                        </div>
 
                         <div class="col-12 py-1">
                             <div class="form-floating">
@@ -105,8 +112,8 @@
 
                         <div class="col-12 py-1">
                             <div class="form-floating">
-                                <input type="text" name="_type" id="formcase__type" class="form-control" required placeholder="表單代號">
-                                <label for="formcase__type" class="form-label">_type/表單代號：<sup class="text-danger"> *</sup></label>
+                                <input type="text" name="short_name" id="formcase_short_name" class="form-control" required placeholder="簡稱">
+                                <label for="formcase_short_name" class="form-label">short_name/簡稱：<sup class="text-danger"> *</sup></label>
                             </div>
                         </div>
 
@@ -176,7 +183,7 @@
 <script>
 
     var formcase        = <?=json_encode($formcases)?>;                                       // 引入formcases資料
-    var formcase_item   = ['id', '_type', 'title', 'dcc_no', '_icon', 'flag'];                // 交給其他功能帶入 delete_cate_id
+    var formcase_item   = ['id', '_type', 'title', 'short_name', 'dcc_no', '_icon', 'flag'];                // 交給其他功能帶入 delete_cate_id
     
     // 功能封存，改由process處理;
         function uploadFile(key) {

@@ -26,10 +26,14 @@
 
                         <?php if($sys_role <= 2.5 ){ ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDD_2" role="button" data-bs-toggle="dropdown" aria-expanded="false" disabled >
-                                    <i class="fas fa-warehouse"></i>&nbsp其他管理<span class="badge rounded-pill bg-danger"></span></a>
+                                <a class="nav-link dropdown-toggle" id="navbarDD_2" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                                    <i class="fas fa-warehouse"></i>&nbsp表單應用<span class="badge rounded-pill bg-danger"></span></a>
                                               
                                 <ul class="dropdown-menu" aria-labelledby="navbarDD_2">
+
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/caseList/"><i class="fa-solid fa-list-check"></i>&nbsp<b>訪問清單</b></a></li>
+                                    <li><hr class="dropdown-divider"></li>
+
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/stock/"><i class="fa-solid fa-boxes-stacked"></i>&nbsp<b>倉庫庫存</b>
                                         <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-car-on"></i></span>
                                         </a></li>
@@ -56,9 +60,6 @@
                                         <?php if($numIssue !=0){?>
                                             &nbsp<span class="badge rounded-pill bg-danger"><?php echo $numIssue; ?></span>
                                         <?php }?></a></li>
-
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/checked/"><i class="fa-solid fa-list-check"></i>&nbsp<b>半年檢紀錄表</b></a></li>
 
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/pt_stock/sum_report.php"><i class="fa-solid fa-chart-column"></i>&nbsp<b>除汙器材管控清單</b></a></li>

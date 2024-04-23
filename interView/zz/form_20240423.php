@@ -2,35 +2,50 @@
     require_once("../pdo.php");
     require_once("../sso.php");
     require_once("../user_info.php");
-    require_once("function.php");
     accessDenied($sys_id);
 
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
-    $action  = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
 
     if(isset($_REQUEST["uuid"])){
-
+        require_once("function.php");
         $document_row = edit_document($_REQUEST);
         if(empty($document_row['uuid'])){
             echo "<script>alert('uuid-error：{$_REQUEST["uuid"]}')</script>";
             header("refresh:0;url=index.php");
             return;
         }
-
         // logs紀錄鋪設前處理 
         $logs_arr = (array) json_decode($document_row["logs"]);
+        $action = 'edit'; 
         // 路径到 form_a.json 文件
         $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
 
     }else{
-        // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
-        // logs紀錄鋪設前處理 
         $logs_arr = [];                             // 預設logs_arr=空array
+        // 決定表單開啟方式
+        $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
         // 路径到 form_a.json 文件
         $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
     }
+
+        function show_fab_listsx(){
+            $pdo = pdo();
+            $sql = "SELECT _fab.*, _site.site_title, _site.site_remark, _site.flag AS site_flag
+                    FROM _fab
+                    LEFT JOIN _site ON _site.id = _fab.site_id
+                    -- WHERE _fab.flag = 'On' AND _site.flag = 'On'
+                    ORDER BY _site.id, _fab.id ASC ";
+            $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
+            try {
+                $stmt->execute();
+                $fabs = $stmt->fetchAll();
+                return $fabs;
+            }catch(PDOException $e){
+                echo $e->getMessage();
+            }
+        }
 
     $fabs = show_fab_lists();
 
@@ -356,7 +371,6 @@
 <script>
     // 開局設定init
     var action    = '<?=$action?>';                 // 取得表單開啟方式
-    var disbaled_action = (action == "edit" || action == "review") ? true : false;  // 唯讀狀態
     var form_json = <?=json_encode($form_json)?>;   // 取得表單
     var form_item = form_json.form_item;            // 抓item項目for form item
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
@@ -409,18 +423,14 @@
         function formatDate(date) {
             return date.toISOString().slice(0, item_a.type === 'date' ? 10 : 16);
         }
-        function check_action() {
-            let disbaled_action = (action == "edit" || action == "review") ? true : false;  // 唯讀狀態
-            return (disbaled_action ? "disabled" : "");
-        }
         // 主要fun：內層問項生成：根據字段類型生成相應的表單元素
         switch(item_a.type) {
             case 'text':
-                int_a = '<input type="text" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" placeholder="' + item_a.label + '" '+ (item_a.required ? 'required' : '') + ' '+ check_action() +' >' + commonPart();
+                int_a = '<input type="text" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" placeholder="' + item_a.label + '" '+ (item_a.required ? 'required' : '') + '>' + commonPart();
                 if(item_a.name == 'emp_id'){
                     int_a = '<div class="input-group form-floating">' + int_a 
                         + '<button type="button" class="btn btn-outline-primary search_btn" id="emp_id_btn" data-toggle="tooltip" data-placement="bottom" title="以工號自動帶出其他資訊" '
-                        + ' data-bs-target="#searchUser" data-bs-toggle="modal" '+ check_action() +' >'+'<i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>'+'</div>';
+                        + ' data-bs-target="#searchUser" data-bs-toggle="modal" >'+'<i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>'+'</div>';
                 }else{
                     int_a = dcff + int_a + '</div>';
                 }
@@ -430,11 +440,11 @@
                 int_a = dcff +
                         // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
                         '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="" ' +
-                        (item_a.required ? 'required' : '') + ' ' + check_action() + ' >' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
+                        (item_a.required ? 'required' : '') + '>' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
                 break;
             case 'textarea':
                 int_a = dcff +
-                    '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '" ' + check_action() + ' ' 
+                    '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
                     + (item_a.required ? 'required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
 
                 int_a = '<div class="p-2">' + int_a + '</div>';
@@ -447,7 +457,7 @@
                     let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
                     // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
-                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' + check_action() + ' '
+                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
                           + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') + '" >'
                           + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
 
@@ -463,11 +473,11 @@
             case 'file':       // session_2 事故位置簡圖
                 int_a = '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' 
                     + commonPart()
-                    + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + ' ' + check_action() +' >'
-                    + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')" '+ check_action() +' >Upload</button>' 
-                    + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')" '+ check_action() +' >Delete</button>' 
+                    + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
+                    + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
+                    + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
                     + '</div>'
-                    + '<input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '" ' + (item_a.required ? 'required' : '' ) + ' ' + check_action() +' >'
+                    + '<input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '" ' + (item_a.required ? 'required' : '' ) + '>'
                     +'</div></div>'
                     + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
                 break;
@@ -478,11 +488,11 @@
                     + '<div class="row">' + '<div class="col-12 col-md-6 text-center">'
                         + '<canvas id="' + item_a.name + '_signaturePad" width="400" height="250" class=" border rounded p-2 bg-light signature"></canvas>'
                         + '<div class="py-1">'
-                        + '<button type="button" class="btn btn-outline-info clear-btn" data-pad="' + item_a.name + '" '+ check_action() +' >Clear</button>'+'&nbsp'
-                        + '<button type="button" class="btn btn-outline-success save-btn" data-pad="' + item_a.name + '" '+ check_action() +' >Save Signature</button>'
+                        + '<button type="button" class="btn btn-outline-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
+                        + '<button type="button" class="btn btn-outline-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
                         + '</div>' + '</div>'
                         + '<div class="col-12 col-md-6 text-center"><img id="' + item_a.name + '_signature-image" src="../image/signin_empty.png" alt="Signature Image" class="img-thumbnail" >'
-                        + '<br><input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + ' ' + check_action() + ' >'
+                        + '<br><input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
                         +'</div>' + '</div>' + '</div>'
                 break;
         }
@@ -496,7 +506,6 @@
         }
         // 渲染form
         $('#' + session_key +' .accordion-body').append(int_a);      
-
     }
 
     // Option其他選項遮蔽：On、Off
@@ -626,11 +635,7 @@
                         "emp_id" : emp_id
                     })
                     window[meeting_man_target].push(val);
-                    if(disbaled_action){
-                        $('#'+meeting_man_target+'_show').append('<div class="tag">' + cname + ' / '+ emp_id + '&nbsp</div>');
-                    }else{
-                        $('#'+meeting_man_target+'_show').append('<div class="tag">' + cname + ' / '+ emp_id + '<span class="remove">x</span></div>');
-                    }
+                    $('#'+meeting_man_target+'_show').append('<div class="tag">' + cname + ' / '+ emp_id + '<span class="remove">x</span></div>');
                     let tag_user = document.getElementById(emp_id);
                     if(tag_user){ tag_user.value = ''; }
                     let meeting_man_target_select = document.getElementById(meeting_man_target+'_select');
@@ -795,9 +800,6 @@
             if(document_row[meeting_info1]){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 
             }
-            if(disbaled_action){
-                document.querySelector('#'+meeting_info1).setAttribute("disabled", "disabled");
-            }
         })
         // 2.與會人員
         let meeting_info2_arr = ['meeting_man_a', 'meeting_man_o', 'meeting_man_s'];
@@ -809,9 +811,6 @@
                     tagsInput_me(JSON.stringify(meeting_man_val[i]));             // 轉成字串進行渲染
                 }
             }
-            if(disbaled_action){
-                $('#'+meeting_man).attr("disabled", "disabled");
-            }
         })
     }
 
@@ -819,9 +818,7 @@
         // edit step0.更換submit按鈕型態
             let edit_btn = '<button type="submit" value="edit" name="edit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> Edit (Submit)</button>'
             $('#submit_action').empty();
-            if(!disbaled_action){
-                $('#submit_action').append(edit_btn);
-            }
+            $('#submit_action').append(edit_btn);
         
         // edit step1.呼叫fun鋪設渲染_表頭：'case_title','a_dept','meeting_time','meeting_local','meeting_man_a','meeting_man_o','meeting_man_s','uuid'
             reShow_info();
@@ -863,11 +860,7 @@
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     option_value.forEach((item_value, index)=>{
                         if (['其他', '無', '否'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                            if(disbaled_action){
-                                $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').val(item_value);
-                            }else{
-                                $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
-                            }
+                            $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
                         }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
                             $('#' + content_key + '_' + item_value).prop('checked', true);
                         }
@@ -913,7 +906,7 @@
             })
         })    
         
-        if(action == "edit" || action == "review"){
+        if(action == "edit" ){
             edit_show();
         }
 
