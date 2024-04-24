@@ -24,7 +24,7 @@
 
             $_content = $_REQUEST;
             // 使用迴圈刪除指定的元素
-            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic',         'case_title','a_dept','meeting_time','meeting_local'         ,'submit_document','fab_id','local_id'
+            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
                                 ,'meeting_man_a','meeting_man_o','meeting_man_s','created_emp_id','created_cname','updated_cname','action','step','idty','uuid','dcc_no');
                 foreach ($unset_keys as $key) {
                     unset($_content[$key]);
@@ -74,7 +74,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$uuid]);
-            $_document = $stmt->fetch();
+            $_document = $stmt->fetch(PDO::FETCH_ASSOC);        // no index
 
             // 把特定物件轉json
             $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
@@ -90,45 +90,127 @@
     function update_document($request){
         $pdo = pdo();
         extract($request);
-        $swal_json = array(                                 // for swal_json
+        $stmt_arr = array();    // 初始查詢陣列
+        $sql = "UPDATE _document SET ";
+        $edited_log = [];
+        $swal_json = array(                                     // for swal_json
             "fun"       => "update_document",
             "content"   => "更新表單--"
         );
+        // 舊檔案處理
+        $row_document = edit_document(["uuid"=>$uuid]);         // 叫出舊檔案
 
-        // 處理dcc_no上傳更換檔案
-        if($_FILES["upload_file"]["name"]){                                         // 檢查是否有上傳檔案
-            $upload_fileNameExt = $_FILES["upload_file"]["name"];                   // 取得上傳檔名
-            $upload_fileName = str_ireplace(".json", "", $upload_fileNameExt);      // 把副檔名移除
+        // 使用迴圈刪除指定的元素
+        $unset_keys = array('_focus', '_content' );
+        foreach ($unset_keys as $unset_key) {
+            $$unset_key = (array) $row_document[$unset_key];            // 先帶出來
+            unset($row_document[$unset_key]);
+            $edited_log[$unset_key] = [];
 
-            if ($dcc_no && ($dcc_no == $upload_fileName)){          // 如果已有 dcc_no 且與上傳檔案名稱相符
-                // 清除舊檔
-                unlinkFile($dcc_no); 
-            }else{
-                // 檢查是否已存在同名檔案
-                if(check_is_file($upload_fileNameExt)){
-                    $swal_json["action"]   = "error";
-                    $swal_json["content"] .= "檔案名稱：{$upload_fileNameExt} 已存在，更新失敗";
-                    return $swal_json;
+            $row_keys = array_keys($$unset_key);         // 取出內圈的 key_list
+            foreach($row_keys as $row_key){
+                $edit_item = [];
+                if(gettype($$unset_key[$row_key]) == 'array' || gettype($$unset_key[$row_key]) == 'object'){
+                    $old_item = json_encode($$unset_key[$row_key], JSON_UNESCAPED_UNICODE );
+                    $new_item = json_encode($$row_key,             JSON_UNESCAPED_UNICODE );
+                    if($new_item != $old_item ){
+                        echo $row_key." : ".$old_item ." => ".$new_item. "</br>";
+                        $edit_item = $old_item." => ".$new_item;
+                    }
+                }else{
+                    if(isset($$row_key)){
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                            $$row_key = convertDateTimeFormat($$row_key);                   // 转换日期时间格式
+                        }
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$unset_key[$row_key])) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                            $$unset_key[$row_key] = convertDateTimeFormat($$unset_key[$row_key]);                   // 转换日期时间格式
+                        }
+                        if($$row_key != $$unset_key[$row_key]){
+                            echo $row_key." : ".$$unset_key[$row_key]." => ".$$row_key. "</br>";
+                            $edit_item = $$unset_key[$row_key]." => ".$$row_key;
+                        }
+                    }
                 }
-                // 清除舊檔
-                unlinkFile($dcc_no); 
+                if(!empty($edit_item)){
+                    // array_push($edited_log[$unset_key], $edit_item);
+                    $edited_log[$unset_key][$row_key] = $edit_item;
+                }
             }
-            // 處理上傳檔案
-            $dcc_no = uploadFile($_FILES["upload_file"]);
         }
 
-        $sql = "UPDATE _document SET _type=?, title=?, dcc_no=?, _icon=?, flag=?, updated_user=?, updated_at=now() WHERE id=?";
-        $stmt = $pdo->prepare($sql);
-        try {
-            $stmt->execute([$_type, $title, $dcc_no, $_icon, $flag, $updated_user, $id]);
-            $swal_json["action"]   = "success";
-            $swal_json["content"] .= '儲存成功';
-        }catch(PDOException $e){
-            echo $e->getMessage();
-            $swal_json["action"]   = "error";
-            $swal_json["content"] .= '儲存失敗';
+        $row_document_keys = array_keys($row_document);         // 取出外圈的 key_list
+        foreach($row_document_keys as $row_key){
+            $edited_log[$row_key] = [];
+            $edit_item = [];
+            if(isset($$row_key)){
+                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                    $$row_key = convertDateTimeFormat($$row_key);                   // 转换日期时间格式
+                }
+                if($$row_key != $row_document[$row_key]){
+                    echo $row_key." : ".$row_document[$row_key]." => ".$$row_key. "</br>";
+                    $edit_item = $row_document[$row_key]." => ".$$row_key;
+
+                        $sql .= $row_key."=?, ";
+                        array_push($stmt_arr, $$row_key);
+                }
+            }
+            if(!empty($edit_item)){
+                // array_push($edited_log[$unset_key], $edit_item);
+                $edited_log[$unset_key][$row_key] = $edit_item;
+            }
+
         }
-        return $swal_json;
+
+        echo "</br></br>";
+
+
+        
+        echo "<pre>";
+        // echo $sql;
+        // echo "</br>";
+        // echo  gettype($_content['remark'])."</br>";
+        print_r(array_filter($edited_log));
+        // print_r($stmt_arr);
+        // print_r($_content);
+        echo "</pre>";
+                    
+
+        // // 處理dcc_no上傳更換檔案
+        // if($_FILES["upload_file"]["name"]){                                         // 檢查是否有上傳檔案
+        //     $upload_fileNameExt = $_FILES["upload_file"]["name"];                   // 取得上傳檔名
+        //     $upload_fileName = str_ireplace(".json", "", $upload_fileNameExt);      // 把副檔名移除
+
+        //     if ($dcc_no && ($dcc_no == $upload_fileName)){          // 如果已有 dcc_no 且與上傳檔案名稱相符
+        //         // 清除舊檔
+        //         unlinkFile($dcc_no); 
+        //     }else{
+        //         // 檢查是否已存在同名檔案
+        //         if(check_is_file($upload_fileNameExt)){
+        //             $swal_json["action"]   = "error";
+        //             $swal_json["content"] .= "檔案名稱：{$upload_fileNameExt} 已存在，更新失敗";
+        //             return $swal_json;
+        //         }
+        //         // 清除舊檔
+        //         unlinkFile($dcc_no); 
+        //     }
+        //     // 處理上傳檔案
+        //     $dcc_no = uploadFile($_FILES["upload_file"]);
+        // }
+
+        // // $sql = "UPDATE _document SET _type=?, title=?, dcc_no=?, _icon=?, flag=?, updated_user=?, updated_at=now() WHERE id=?";
+        // $stmt = $pdo->prepare($sql);
+        // try {
+        //     $stmt->execute([$_type, $title, $dcc_no, $_icon, $flag, $updated_user, $id]);
+        //     $stmt->execute($stmt_arr);                          // 處理 byUser & byYear
+
+        //     $swal_json["action"]   = "success";
+        //     $swal_json["content"] .= '儲存成功';
+        // }catch(PDOException $e){
+        //     echo $e->getMessage();
+        //     $swal_json["action"]   = "error";
+        //     $swal_json["content"] .= '儲存失敗';
+        // }
+        // return $swal_json;
     }
     function delete_document($request){
         $pdo = pdo();
@@ -263,16 +345,16 @@
         return $result;
     }
 
-    // 20240419 檔名編碼
-    function encode_filename($filename) {
-        $encoded_filename = base64_encode($filename);
-        return $encoded_filename;
-    }
-    // 20240419 檔名解碼
-    function decode_filename($encoded_filename) {
-        $decoded_filename = base64_decode($encoded_filename);
-        return $decoded_filename;
-    }
+            // 20240419 檔名編碼
+            function encode_filename($filename) {
+                $encoded_filename = base64_encode($filename);
+                return $encoded_filename;
+            }
+            // 20240419 檔名解碼
+            function decode_filename($encoded_filename) {
+                $decoded_filename = base64_decode($encoded_filename);
+                return $decoded_filename;
+            }
 
 // // // CSV & Log tools
     // 製作記錄JSON_Log檔   20230803
@@ -380,4 +462,14 @@
         }catch(PDOException $e){
             echo $e->getMessage();
         }
+    }
+
+    function convertDateTimeFormat($datetime) {
+        // 创建 DateTime 对象，并指定原始时间格式
+        $datetime_obj = DateTime::createFromFormat("Y-m-d\TH:i", $datetime);
+
+        // 将时间格式化为目标格式
+        $formatted_datetime = $datetime_obj->format("Y-m-d H:i");
+
+        return $formatted_datetime;
     }

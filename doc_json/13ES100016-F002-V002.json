@@ -76,8 +76,8 @@
             "class" : "",
             "item"  : [
                 {
-                    "label": "上傳路線圖檔",
-                    "info"  : "(限傳jpg、png、gif、bmp)",
+                    "label": "上傳路線圖檔 (限傳 jpg、png、gif、bmp)",
+                    "info"  : "",
                     "type" : "file",
                     "name" : "a_pic",
                     "required": true

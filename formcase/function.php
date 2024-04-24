@@ -44,7 +44,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$id]);
-            $formcase = $stmt->fetch();
+            $formcase = $stmt->fetch(PDO::FETCH_ASSOC);          // no index
             return $formcase;
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -160,7 +160,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
-            $formcase = $stmt->fetchAll();
+            $formcase = $stmt->fetchAll(PDO::FETCH_ASSOC);          // no index
             return $formcase;
         }catch(PDOException $e){
             echo $e->getMessage();

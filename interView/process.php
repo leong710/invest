@@ -65,21 +65,21 @@
     var swal_json = <?=json_encode($swal_json)?>;                   // 引入swal_json值
     var url       = 'index.php';
 
-    $(document).ready(function () {
-        if(swal_json.length != 0){
-            // history.back();
-                // location.href = this.url;
-                // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:3000});         // 3秒
-                // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{window.close();});           // 關閉畫面
-            if(swal_json['action'] == 'success'){
-                swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:1000}).then(()=>{ location.href = url }); // 秒自動關閉畫面
-            }else if(swal_json['action'] == 'error'){
-                swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{history.back()});          // 手動關閉畫面
-            }
-        }else{
-            location.href = url;
-        }
-    })
+    // $(document).ready(function () {
+    //     if(swal_json.length != 0){
+    //         // history.back();
+    //             // location.href = this.url;
+    //             // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:3000});         // 3秒
+    //             // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{window.close();});           // 關閉畫面
+    //         if(swal_json['action'] == 'success'){
+    //             swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:1000}).then(()=>{ location.href = url }); // 秒自動關閉畫面
+    //         }else if(swal_json['action'] == 'error'){
+    //             swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{history.back()});          // 手動關閉畫面
+    //         }
+    //     }else{
+    //         location.href = url;
+    //     }
+    // })
     
 </script>
 

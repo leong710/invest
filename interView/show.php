@@ -123,7 +123,6 @@
                 <div class="col-12">
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
-                    <!-- <form action="./zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
                         <div class="row rounded bg-light py-3" id="form_container">
                             <div class="col-12 p-3 ">
                                 <span class="from-label"><b>表單分類：</b></span><br>
@@ -245,7 +244,6 @@
                                         <input type="hidden"  name="step"            id="step"            value="1">
                                         <input type="hidden"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
-                                        <input type="hidden"  name="id"              id="id"              value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>
@@ -324,7 +322,7 @@
                                         <input type="hidden" class="form-control" name="scomp_no[]" id="scomp_no" placeholder="已加入的">
                                     </div>
                                     <!-- 第二排的功能 : 搜尋功能 -->
-                                    <div class="col-12 col-md-6 px-4">
+                                    <div class="col-6 px-4">
                                         <div class="input-group search">
                                             <span class="input-group-text">查詢</span>
                                             <input type="text" class="form-control text-center mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >
@@ -356,12 +354,11 @@
 <script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>  <!-- goTop滾動畫面script.js 4/4-->
 <script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>
-<script src="../../libs/moment/moment.min.js"></script>
 
 <script>
     // 開局設定init
     var action    = '<?=$action?>';                 // 取得表單開啟方式
-    var check_action = ( action == "review") ? true : false;  // 唯讀狀態
+    var check_action = (action == "edit" || action == "review") ? true : false;  // 唯讀狀態
     var form_json = <?=json_encode($form_json)?>;   // 取得表單
     var form_item = form_json.form_item;            // 抓item項目for form item
     var json = <?=json_encode($logs_arr)?>;
@@ -385,8 +382,8 @@
         function search_fun(){
             mloading("show");                                           // 啟用mLoading
             const uuid = '39aad298-a041-11ed-8ed4-2cfda183ef4f';        // hrdb
-            let search = $('#key_word').val().trim();                   // search keyword取自user欄位
-            let request = {
+            var search = $('#key_word').val().trim();                   // search keyword取自user欄位
+            var request = {
                 functionname : 'search',                                // 操作功能
                 uuid         : uuid,                                    // ppe
                 search       : search                                   // 查詢對象key_word
@@ -397,7 +394,7 @@
                 dataType: 'json',
                 data: request,
                 success: function(res){
-                    let res_r = res["result"];
+                    var res_r = res["result"];
                     postList(res_r);                                    // 將結果轉給postList進行渲染
                 },
                 error (err){
@@ -415,14 +412,14 @@
             $('#result_table').empty();
             $("#result").addClass("bg-white");
             // 定義表格頭段
-            let div_result_table = document.querySelector('.result table');
-            let Rinner = "<thead><tr>"+
+            var div_result_table = document.querySelector('.result table');
+            var Rinner = "<thead><tr>"+
                             "<th>員工編號</th>"+"<th>員工姓名</th>"+"<th>職稱</th>"+"<th>user_ID</th>"+"<th>部門代號</th>"+"<th>部門名稱</th>"+"<th>select</th>"+
                         "</tr></thead>" + "<tbody id='tbody'>"+"</tbody>";
             // 鋪設表格頭段thead
             div_result_table.innerHTML += Rinner;
             // 定義表格中段tbody
-            let div_result_tbody = document.querySelector('.result table tbody');
+            var div_result_tbody = document.querySelector('.result table tbody');
             $('#tbody').empty();
             for (let i=0; i < res_r.length; i++) {
                 // 把user訊息包成json字串以便夾帶

@@ -45,7 +45,7 @@
             }else{
                 $stmt->execute();                                   //處理 byAll
             }
-            $caseList = $stmt->fetchAll();
+            $caseList = $stmt->fetchAll(PDO::FETCH_ASSOC);          // no index
             return $caseList;
 
         }catch(PDOException $e){

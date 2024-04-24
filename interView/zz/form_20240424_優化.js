@@ -98,6 +98,7 @@
 
                 int_a = '<div class="p-2">' + int_a + '</div>';
                 break;
+
             case 'radio':
             case 'checkbox':
                 int_a = '<div class=" border rounded p-2"><snap><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
@@ -117,34 +118,31 @@
                 }) 
                 int_a += '</div>';
                 break;
+
             case 'file':       // session_2 事故位置簡圖
-                int_a = '<div class="col-6 col-md-6 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>'
+                int_a = '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' 
+                    + commonPart()
+                    + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" ' + (item_a.required ? 'required' : '' ) + '>'
+                    + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
+                    + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
+                    + '</div>'
                     + '<input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '" ' + (item_a.required ? 'required' : '' ) + '>'
-                if(!check_action){
-                    int_a += '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
-                        + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" >'
-                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
-                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
-                        + '</div></div>' + '</div>'
-                }
-                break;  
+                    +'</div></div>'
+                    + '<div class="col-6 col-md-6 p-0 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>';
+                break;
+                
             case 'signature':   // 簽名模組
                 int_a = '<div class="col-12 border rounded ">'
-                    + '<snap class="p-0" ><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap>'
-                    + '<div class="row">' 
-
-                    + '<div class="col-12 col-md-6 text-center"><img id="' + item_a.name + '_signature-image" src="../image/signin_empty.png" alt="Signature Image" class="img-thumbnail" >'
-                    + '<br><input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
-                    +'</div>' 
-                if(!check_action){
-                    int_a += '<div class="col-12 col-md-6 text-center">'
+                    +'<snap class="p-0" ><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap>'
+                    + '<div class="row">' + '<div class="col-12 col-md-6 text-center">'
                         + '<canvas id="' + item_a.name + '_signaturePad" width="400" height="250" class=" border rounded p-2 bg-light signature"></canvas>'
                         + '<div class="py-1">'
                         + '<button type="button" class="btn btn-outline-info clear-btn" data-pad="' + item_a.name + '">Clear</button>'+'&nbsp'
                         + '<button type="button" class="btn btn-outline-success save-btn" data-pad="' + item_a.name + '">Save Signature</button>'
                         + '</div>' + '</div>'
-                }
-                int_a += '</div>' + '</div>'
+                        + '<div class="col-12 col-md-6 text-center"><img id="' + item_a.name + '_signature-image" src="../image/signin_empty.png" alt="Signature Image" class="img-thumbnail" >'
+                        + '<br><input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '_signature-input" ' + (item_a.required ? 'required' : '' ) + '>'
+                        +'</div>' + '</div>' + '</div>'
                 break;
         }
         // 有info就呼叫fun崁入
@@ -191,8 +189,6 @@
     }
 
     $(function () {
-        // 在任何地方啟用工具提示框
-        $('[data-toggle="tooltip"]').tooltip();
         // 20230817 禁用Enter鍵表單自動提交 
         document.onkeydown = function(event) { 
             var target, code, tag; 
@@ -300,7 +296,7 @@
     // edit鋪設渲染_表頭
     function reShow_info(){
         // 1.會議info
-        let meeting_info1_arr = ['fab_id','local_id','case_title', 'a_dept', 'meeting_time', 'meeting_local','uuid','id'];
+        let meeting_info1_arr = ['fab_id','local_id','case_title', 'a_dept', 'meeting_time', 'meeting_local','uuid'];
         meeting_info1_arr.forEach((meeting_info1)=>{
             if(document_row[meeting_info1]){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 
@@ -321,11 +317,11 @@
 
     function edit_show(){
         // edit step0.更換submit按鈕型態
-            let update_btn = '<button type="submit" value="update" name="update_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> Update (Submit)</button>'
+            let edit_btn = '<button type="submit" value="edit" name="edit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> Edit (Submit)</button>'
             $('#submit_action').empty();
-            $('#submit_action').append(update_btn);
+            $('#submit_action').append(edit_btn);
         
-        // edit step1.呼叫fun鋪設渲染_表頭：'case_title','a_dept','meeting_time','meeting_local','meeting_man_a','meeting_man_o','meeting_man_s','uuid','id'
+        // edit step1.呼叫fun鋪設渲染_表頭：'case_title','a_dept','meeting_time','meeting_local','meeting_man_a','meeting_man_o','meeting_man_s','uuid'
             reShow_info();
 
         // edit step2.特例呈現：'confirm_sign','ruling_sign','a_pic'
@@ -395,6 +391,7 @@
     // 定义一个函数来根据cherk_action的值设置表单元素的disabled属性
     function setFormDisabled(cherk_action) {
         
+        edit_show();
         // 获取表单中的所有可输入元素
         const formElements = mainForm.querySelectorAll('input, select, textarea, button');
         // 遍历每个表单元素，并根据cherk_action的值设置其disabled属性
@@ -418,36 +415,12 @@
         spans.forEach(function(span) {
             span.disabled = cherk_action;
         });
-        // 唯讀模式下，移除特定對象elements
-        if(cherk_action){
-            $('#submit_btn, #delete_btn, #saveSubmit, #searchUser').empty();
-        }
-
     }
     // setFormDisabled(true); // 当cherk_action为true时禁用表单元素
     // setFormDisabled(false); // 当cherk_action为false时启用表单元素
 // // "edit" "review" 下disabled特定元素
 
     $(document).ready(function(){
-        // 定義+監聽按鈕for與會人員...search btn id
-        var search_btns = Array.from(document.querySelectorAll(".search_btn"));
-        search_btns.forEach((s_btn)=>{
-            s_btn.addEventListener('mousedown',function(){
-                // 標籤
-                let modal_title
-                if(this.id == 'meeting_man_a'){
-                    modal_title = '事故當事者(或其委任代理人)'
-                }else if(this.id == 'meeting_man_o'){
-                    modal_title = '其他與會人員'
-                }else if(this.id == 'meeting_man_s'){
-                    modal_title = '環安人員'
-                }else if(this.id == 'emp_id_btn'){
-                    modal_title = '事故者基本資料'
-                }
-                $('#modal_title').append(modal_title)
-                meeting_man_target = this.id;               // 搜尋meeting_man_target
-            })
-        })    
         // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
         $('#a_work_s, #a_work_e').change(function() {
             var currentDate = new Date();                       // 取得今天日期
@@ -501,9 +474,9 @@
             }
         });
 
-        if(action == "edit" || action == "review" ){
-            edit_show();
-        }
+        // if(action == "edit" || action == "review" ){
+        //     edit_show();
+        // }
         
         // 调用函数，并传入cherk_action的值
         setFormDisabled(check_action); // 当cherk_action为false时启用表单元素
