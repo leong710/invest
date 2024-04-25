@@ -31,6 +31,9 @@
         $year_lists      = show_document_GB_year();     // get 立案year清單
         $shortName_lists = show_document_shortName();   // get 簡稱清單
 
+        $icon_s = '<i class="';
+        $icon_e = ' fa-2x"></i>&nbsp&nbsp';
+
     // echo "<pre>";
     // print_r($query_arr);
     // echo "</pre>";
@@ -177,7 +180,7 @@
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
                                     <td><?php echo $caseList["case_year"] ?></td>
-                                    <td><?php echo $caseList['short_name'];?></td>
+                                    <td><?php echo $icon_s.$caseList['_icon'].$icon_e.$caseList['short_name'];?></td>
                                     <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['case_title'];?></td>
 
                                     <td><?php echo $caseList['fab_title']."(".$caseList['fab_remark'].")";?></td>

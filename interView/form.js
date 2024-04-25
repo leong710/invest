@@ -300,7 +300,7 @@
     // edit鋪設渲染_表頭
     function reShow_info(){
         // 1.會議info
-        let meeting_info1_arr = ['fab_id','local_id','case_title', 'a_dept', 'meeting_time', 'meeting_local','uuid','id'];
+        let meeting_info1_arr = ['fab_id','local_id','case_title', 'a_dept', 'meeting_time', 'meeting_local','uuid'];
         meeting_info1_arr.forEach((meeting_info1)=>{
             if(document_row[meeting_info1]){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 
@@ -309,7 +309,7 @@
         // 2.與會人員
         let meeting_info2_arr = ['meeting_man_a', 'meeting_man_o', 'meeting_man_s'];
         meeting_info2_arr.forEach((meeting_man)=>{
-            if(document_row[meeting_man]){
+            if(document_row[meeting_man].length >=1 ){
                 meeting_man_target = meeting_man;                                 // let key => target
                 meeting_man_val = JSON.parse('['+document_row[meeting_man]+']');  // 取出的字串藥先用 [ ] 包起來，再轉成JSON物件
                 for(let i=0; i < meeting_man_val.length; i++){                    // 依照物件長度進行遶圈
@@ -331,26 +331,28 @@
         // edit step2.特例呈現：'confirm_sign','ruling_sign','a_pic'
             let special_items = ['confirm_sign','ruling_sign','a_pic']
             special_items.forEach((special_item)=>{
-                if(special_item == 'a_pic'){        // 路線圖檔
-                    let a_pic_path = '../image/a_pic/'                                                                          // 指定pic路徑
-                    let a_pic_val  = document_row[special_item];                                                                // 取得pic_value
-                    let preview_modal = '<a href="' + a_pic_path + a_pic_val + '" target="_blank" >';                           // 生成預覽按鈕a
-                    let src_img = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">';       // 生成img
-                    let preview_item = document.getElementById('preview_' + special_item); 
-                    if(preview_item){
-                        preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
-                    }            
-                    let input_item = document.getElementById(special_item);
-                    if(input_item){
-                        input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
+                if(document_row[special_item] != null){
+                    if(special_item == 'a_pic'){        // 路線圖檔
+                        let a_pic_path = '../image/a_pic/'                                                                          // 指定pic路徑
+                        let a_pic_val  = document_row[special_item];                                                                // 取得pic_value
+                        let preview_modal = '<a href="' + a_pic_path + a_pic_val + '" target="_blank" >';                           // 生成預覽按鈕a
+                        let src_img = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">';       // 生成img
+                        let preview_item = document.getElementById('preview_' + special_item); 
+                        if(preview_item){
+                            preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
+                        }            
+                        let input_item = document.getElementById(special_item);
+                        if(input_item){
+                            input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
+                        }
+    
+                    }else{                              // 簽名
+                        let base64_sign = document_row[special_item];
+                        let signatureImage = document.getElementById(special_item+'_signature-image');
+                        signatureImage.src = base64_sign;                           // 渲染預覽圖
+                        $('#'+special_item+'_signature-input').val(base64_sign);    // 填上base64儲存格
+    
                     }
-
-                }else{                              // 簽名
-                    let base64_sign = document_row[special_item];
-                    let signatureImage = document.getElementById(special_item+'_signature-image');
-                    signatureImage.src = base64_sign;                           // 渲染預覽圖
-                    $('#'+special_item+'_signature-input').val(base64_sign);    // 填上base64儲存格
-
                 }
             })
 
@@ -364,7 +366,7 @@
                     $('#'+content_key).val(option_value); 
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     option_value.forEach((item_value, index)=>{
-                        if (['其他', '無', '否'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                        if (['其他', '無', '1', '2', '3'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
                             $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
                         }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
                             $('#' + content_key + '_' + item_value).prop('checked', true);

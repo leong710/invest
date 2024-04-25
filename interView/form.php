@@ -245,7 +245,6 @@
                                         <input type="hidden"  name="step"            id="step"            value="1">
                                         <input type="hidden"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
-                                        <input type="hidden"  name="id"              id="id"              value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>

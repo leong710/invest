@@ -132,10 +132,12 @@
 <script>
     var formcases = <?=json_encode($formcases)?>;   // 取得表單清單
     var formcases_length = formcases.length;
+    var icon_s = '<i class="';
+    var icon_e = ' fa-10x"></i>';
 
     function make_btn(value_1){
         if(value_1.dcc_no){
-            var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + value_1._icon + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
+            var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + icon_s + value_1._icon + icon_e + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
             return int_b;
         }else{
             return '<snap class="btn btn-outline-secondary">' + value_1.title + '</br>-- 無效json表單 --</snap>';

@@ -7,7 +7,7 @@
         $stmt_arr = array();    // 初始查詢陣列
         $sql = "SELECT _d.id, _d.uuid, _d.idty, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local
                     , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year
-                    , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name
+                    , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
                 FROM _document _d
                 LEFT JOIN _fab _f ON _d.fab_id = _f.id 
                 LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no ";

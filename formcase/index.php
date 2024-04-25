@@ -7,6 +7,9 @@
 
     // 調整flag ==> 20230712改用AJAX
     $formcases = show_formcase();
+
+    $icon_s = '<i class="';
+    $icon_e = ' fa-5x"></i>';
 ?>
 <?php include("../template/header.php"); ?>
 <?php include("../template/nav.php"); ?>
@@ -60,7 +63,7 @@
                                     <td><?php echo $formcase["id"];?></td>
                                     <td><?php echo $formcase["_type"]."</br>".$formcase["title"];?></td>
                                     <td><?php echo $formcase["dcc_no"]."</br>".$formcase["short_name"];?></td>
-                                    <td class="text-primary"><?php echo $formcase["_icon"];?></td>
+                                    <td class="text-primary"><?php echo $icon_s.$formcase["_icon"].$icon_e;?></td>
                                     <td><button type="button" name="_formcase" id="<?php echo $formcase['id'];?>" value="<?php echo $formcase['flag'];?>"
                                             class="btn btn-sm btn-xs flagBtn <?php echo $formcase['flag'] == 'On' ? 'btn-success':'btn-warning';?>"><?php echo $formcase['flag'];?></button>
                                     </td>

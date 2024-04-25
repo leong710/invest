@@ -8,18 +8,24 @@
             "fun"       => "store_document",
             "content"   => "新增表單--"
         );
+        // 例外處理單元：s
             // 處理a_pic上傳檔案
             if(!empty($a_pic)){
                 $a_pic = uploadFile($a_pic);
+            }else{
+                $a_pic = null;
             }
             if(empty($confirm_sign)){
-                $confirm_sign = "";
+                $confirm_sign = null;
             }
             if(empty($ruling_sign)){
-                $ruling_sign = "";
+                $ruling_sign = null;
             }
             if(empty($_focus)){
-                $_focus = [];
+                $_focus = null;
+            }
+            if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $meeting_time)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                $meeting_time = convertDateTimeFormat($meeting_time);               // 转换日期时间格式
             }
 
             $_content = $_REQUEST;
@@ -35,6 +41,7 @@
                 foreach ($to_json_keys as $jkey) {
                     $$jkey = json_encode($$jkey);
                 }
+        // 例外處理單元：e
 
         // 製作log紀錄前處理：塞進去製作元素
             $logs_request = array(
@@ -76,7 +83,7 @@
             $stmt->execute([$uuid]);
             $_document = $stmt->fetch(PDO::FETCH_ASSOC);        // no index
 
-            // 把特定物件轉json
+            // 把特定json轉物件
             $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
                 foreach ($re_json_keys as $jkey) {
                     $_document[$jkey] = json_decode($_document[$jkey]);
@@ -92,63 +99,100 @@
         extract($request);
         $stmt_arr = array();    // 初始查詢陣列
         $sql = "UPDATE _document SET ";
-        $edited_log = [];
+        $edited_log = [];       // 起始-修改項目log
         $swal_json = array(                                     // for swal_json
             "fun"       => "update_document",
             "content"   => "更新表單--"
         );
+
+            // 例外處理單元：s
+                // *** 上傳檔案要後面處理
+                    // 處理a_pic上傳檔案
+                    if(!empty($a_pic)){
+                        $a_pic = uploadFile($a_pic);
+                    }else{
+                        $a_pic = null;
+                    }
+                if(empty($confirm_sign)){ $confirm_sign = null; }
+                if(empty($ruling_sign)) { $ruling_sign = null;  }
+                if(empty($_focus))      { $_focus = null; }
+                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $meeting_time)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                    $meeting_time = convertDateTimeFormat($meeting_time);               // 转换日期时间格式
+                }
+
+                $_content = $_REQUEST;
+                // 使用迴圈刪除指定的元素
+                $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
+                                    ,'meeting_man_a','meeting_man_o','meeting_man_s','created_emp_id','created_cname','updated_cname','action','step','idty','uuid','dcc_no','id');
+                    foreach ($unset_keys as $key) {
+                        unset($_content[$key]);
+                    }
+
+                // 把特定物件轉json
+                $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
+                    foreach ($to_json_keys as $jkey) {
+                        $$jkey = json_encode($$jkey);
+                    }
+            // 例外處理單元：e
+
         // 舊檔案處理
         $row_document = edit_document(["uuid"=>$uuid]);         // 叫出舊檔案
-
-        // 使用迴圈刪除指定的元素
+        // 使用迴圈刪除指定的元素，並將指定的元素提前進行比對(小圈)
         $unset_keys = array('_focus', '_content' );
         foreach ($unset_keys as $unset_key) {
-            $$unset_key = (array) $row_document[$unset_key];            // 先帶出來
+            $$unset_key = (array) $row_document[$unset_key];    // 先帶出來
             unset($row_document[$unset_key]);
-            $edited_log[$unset_key] = [];
+            $edited_log[$unset_key] = [];                       // 起始-修改項目log/主題key
 
-            $row_keys = array_keys($$unset_key);         // 取出內圈的 key_list
+            $row_keys = array_keys($$unset_key);                // 取出內圈的 key_list
             foreach($row_keys as $row_key){
-                $edit_item = [];
-                if(gettype($$unset_key[$row_key]) == 'array' || gettype($$unset_key[$row_key]) == 'object'){
-                    $old_item = json_encode($$unset_key[$row_key], JSON_UNESCAPED_UNICODE );
+                $edit_item = [];                                // 起始-修改項目 & 清空
+                if(gettype($$unset_key[$row_key]) == 'array' || gettype($$unset_key[$row_key]) == 'object'){        // 針對combo項目進行判別
+                    $old_item = json_encode($$unset_key[$row_key], JSON_UNESCAPED_UNICODE );            // 中文不編碼
                     $new_item = json_encode($$row_key,             JSON_UNESCAPED_UNICODE );
                     if($new_item != $old_item ){
-                        echo $row_key." : ".$old_item ." => ".$new_item. "</br>";
-                        $edit_item = $old_item." => ".$new_item;
+                        echo $row_key." : ".$old_item ." => ".$new_item. "</br>";                       // 螢幕顯示
+                        $edit_item = $old_item." => ".$new_item;                                        // 生成修改訊息
+                            $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
                     }
                 }else{
                     if(isset($$row_key)){
-                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                            $$row_key = convertDateTimeFormat($$row_key);                   // 转换日期时间格式
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {               // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                            $$row_key = convertDateTimeFormat($$row_key);                               // 转换日期时间格式
                         }
                         if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$unset_key[$row_key])) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                            $$unset_key[$row_key] = convertDateTimeFormat($$unset_key[$row_key]);                   // 转换日期时间格式
+                            $$unset_key[$row_key] = convertDateTimeFormat($$unset_key[$row_key]);       // 转换日期时间格式
                         }
                         if($$row_key != $$unset_key[$row_key]){
-                            echo $row_key." : ".$$unset_key[$row_key]." => ".$$row_key. "</br>";
-                            $edit_item = $$unset_key[$row_key]." => ".$$row_key;
+                            echo $row_key." : ".$$unset_key[$row_key]." => ".$$row_key. "</br>";        // 螢幕顯示
+                            $edit_item = $$unset_key[$row_key]." => ".$$row_key;                        // 生成修改訊息
+                                $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
                         }
                     }
                 }
                 if(!empty($edit_item)){
-                    // array_push($edited_log[$unset_key], $edit_item);
-                    $edited_log[$unset_key][$row_key] = $edit_item;
+                    $edited_log[$unset_key][$row_key] = $edit_item;                                     // 將修改訊息倒入指定陣列位置
                 }
             }
+            // 確認修改訊息，有值就是需要添加修改項目
+            if(!empty($edited_log[$unset_key])){
+                $sql .= $unset_key."=?, ";
+                $$unset_key = json_encode($$unset_key);
+                array_push($stmt_arr, $$unset_key);
+            }
         }
-
+        // 將大圈
         $row_document_keys = array_keys($row_document);         // 取出外圈的 key_list
         foreach($row_document_keys as $row_key){
-            $edited_log[$row_key] = [];
-            $edit_item = [];
+            $edited_log[$row_key] = [];                         // 起始-修改項目log/主題key
+            $edit_item = [];                                    // 起始-修改項目 & 清空
             if(isset($$row_key)){
-                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                    $$row_key = convertDateTimeFormat($$row_key);                   // 转换日期时间格式
+                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {                       // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                    $$row_key = convertDateTimeFormat($$row_key);                                       // 转换日期时间格式
                 }
                 if($$row_key != $row_document[$row_key]){
-                    echo $row_key." : ".$row_document[$row_key]." => ".$$row_key. "</br>";
-                    $edit_item = $row_document[$row_key]." => ".$$row_key;
+                    echo $row_key." : ".$row_document[$row_key]." => ".$$row_key. "</br>";  // 螢幕顯示
+                    $edit_item = $row_document[$row_key]." => ".$$row_key;                  // 生成修改訊息
 
                         $sql .= $row_key."=?, ";
                         array_push($stmt_arr, $$row_key);
@@ -156,21 +200,25 @@
             }
             if(!empty($edit_item)){
                 // array_push($edited_log[$unset_key], $edit_item);
-                $edited_log[$unset_key][$row_key] = $edit_item;
+                $edited_log[$unset_key][$row_key] = $edit_item;                     // 將修改訊息倒入指定陣列位置
             }
-
         }
+
+
+
+
 
         echo "</br></br>";
 
 
         
         echo "<pre>";
-        // echo $sql;
-        // echo "</br>";
+        echo $sql;
+        echo "</br>";
         // echo  gettype($_content['remark'])."</br>";
         print_r(array_filter($edited_log));
-        // print_r($stmt_arr);
+        echo "</br>";
+        print_r($stmt_arr);
         // print_r($_content);
         echo "</pre>";
                     

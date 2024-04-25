@@ -31,7 +31,7 @@
                 {
                     "label": "事故權責單位",
                     "type" : "text",
-                    "name" : "a_dept",
+                    "name" : "a_belong_dept",
                     "required": true
 
                 },
@@ -79,20 +79,19 @@
                     "label": "工號",
                     "type" : "text",
                     "name" : "emp_id",
-                    "required": true
+                    "required": false
                 },
                 {
                     "label": "姓名",
                     "type" : "text",
                     "name" : "cname",
-                    "required": true
+                    "required": false
                 },
                 {
                     "label": "單位",
                     "type": "text",
                     "name" : "oftext",
-                    "required": true,
-                    "valid": true
+                    "required": false
                 },
                 {
                     "label": "職稱",
@@ -111,8 +110,7 @@
                     "label": "年資",
                     "type": "text",
                     "name" : "rload",
-                    "required": false,
-                    "valid": true
+                    "required": false
                 }
             ]
         },
@@ -161,7 +159,7 @@
                         { "label" : "其他"         , "value" : {
                                                         "label": "工時損失",
                                                         "type" : "text",
-                                                        "name" : "s4_combo_1",
+                                                        "name" : "s4_combo_2",
                                                         "value": "Other"
                                                     }}
                     ],
@@ -188,8 +186,8 @@
                 {
                     "label": "事故直接原因",
                     "type" : "textarea",
-                    "name" : "remark",
-                    "required": false
+                    "name" : "direct_cause",
+                    "required": true
                 },
                 {
                     "label": "事故間接原因",
@@ -205,14 +203,14 @@
                 {
                     "label": "間接原因說明 -- 不安全行為(unsafe behavior)",
                     "type" : "textarea",
-                    "name" : "remark",
-                    "required": false
+                    "name" : "indirect_cause_ub",
+                    "required": true
                 },
                 {
                     "label": "間接原因說明 -- 不安全環境(unsafe environment)",
                     "type" : "textarea",
-                    "name" : "remark",
-                    "required": false
+                    "name" : "indirect_cause_ue",
+                    "required": true
                 },
                 {
                     "label": "事故基本原因",
@@ -235,14 +233,14 @@
                 {
                     "label": "基本原因說明",
                     "type" : "textarea",
-                    "name" : "remark",
-                    "required": false
+                    "name" : "basic_reasons",
+                    "required": true
                 },
                 {
                     "label": "防範對策(矯正預防措施)說明",
                     "type" : "textarea",
-                    "name" : "remark",
-                    "required": false
+                    "name" : "preventive_measures",
+                    "required": true
                 }
             ]
         }

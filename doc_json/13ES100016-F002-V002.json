@@ -37,8 +37,7 @@
                     "label": "年資",
                     "type": "text",
                     "name" : "rload",
-                    "required": false,
-                    "valid": true
+                    "required": false
                 },
                 {
                     "label": "事故時間",
