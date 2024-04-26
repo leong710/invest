@@ -17,7 +17,8 @@
             return;
         }
         // logs紀錄鋪設前處理 
-        $logs_arr = (array) json_decode($document_row["logs"]);
+        $logs_arr     = (array) json_decode($document_row["logs"]);
+        $editions_arr = !empty($document_row["editions"]) ? (array) json_decode($document_row["editions"]) : [];
         // 路径到 form_a.json 文件
         $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
 
@@ -25,7 +26,8 @@
         // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
         // logs紀錄鋪設前處理 
-        $logs_arr = [];                             // 預設logs_arr=空array
+        $logs_arr     = [];                         // 預設logs_arr=空array
+        $editions_arr = [];                         // 預設editions_arr=空array
         // 路径到 form_a.json 文件
         $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
     }
@@ -240,7 +242,6 @@
                                     <div class="modal-footer">
                                         <input type="hidden"  name="created_emp_id"  id="created_emp_id"  value="<?php echo $auth_emp_id;?>">
                                         <input type="hidden"  name="created_cname"   id="created_cname"   value="<?php echo $auth_cname;?>">
-                                        <input type="hidden"  name="updated_cname"   id="updated_cname"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden"  name="action"          id="action"          value="<?php echo $action;?>">
                                         <input type="hidden"  name="step"            id="step"            value="1">
                                         <input type="hidden"  name="idty"            id="idty"            value="1">
@@ -261,7 +262,7 @@
                     <!-- 尾段logs訊息 -->
                     <div class="row rounded bg-light unblock" id="logs_div">
                         <div class="col-6 col-md-6 pb-0">
-                            表單記錄：
+                            流程記錄：
                         </div>
                         <div class="col-6 col-md-6 pb-0">
                         </div>
@@ -281,6 +282,31 @@
                         </div>
                         <div style="font-size: 12px;" class="text-end">
                             logs-end
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- 尾段Editions訊息 -->
+                    <div class="row rounded bg-light unblock" id="editions_div">
+                        <div class="col-6 col-md-6 pb-0">
+                            編輯記錄：
+                        </div>
+                        <div class="col-6 col-md-6 pb-0">
+                        </div>
+                        <div class="col-12 pt-1 px-4">
+                            <table class="for-table editions table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Step</th>
+                                        <th>Editor</th>
+                                        <th>Time Edited</th>
+                                        <th>Edit content</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div style="font-size: 12px;" class="text-end">
+                            editions-end
                         </div>
                     </div>
                 </div>
@@ -359,11 +385,12 @@
 
 <script>
     // 開局設定init
-    var action    = '<?=$action?>';                 // 取得表單開啟方式
-    var check_action = ( action == "review") ? true : false;  // 唯讀狀態
-    var form_json = <?=json_encode($form_json)?>;   // 取得表單
-    var form_item = form_json.form_item;            // 抓item項目for form item
-    var json = <?=json_encode($logs_arr)?>;
+    var action        = '<?=$action?>';                 // 取得表單開啟方式
+    var check_action  = ( action == "review") ? true : false;  // 唯讀狀態
+    var form_json     = <?=json_encode($form_json)?>;   // 取得表單
+    var form_item     = form_json.form_item;            // 抓item項目for form item
+    var json          = <?=json_encode($logs_arr)?>;
+    var editions_arr  = <?=json_encode($editions_arr)?>;
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
     var meeting_man_o = [];                         // 其他與會人員
     var meeting_man_s = [];                         // 環安人員
@@ -523,6 +550,8 @@
     //     // 绑定事件监听器
     //     attachEventListeners();
     // });
+
+        console.log('editions_arr:' , editions_arr);
 
 </script>
 

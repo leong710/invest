@@ -145,7 +145,7 @@
                                                         "value": "Other"
                                                     }}
                     ],
-                    "required": true
+                    "required": false
                 },
                 {
                     "label": "失能種類",

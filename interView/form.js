@@ -366,7 +366,8 @@
                     $('#'+content_key).val(option_value); 
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     option_value.forEach((item_value, index)=>{
-                        if (['其他', '無', '1', '2', '3'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                        // if (['其他', '無'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                        if (['其他', '無', '否', '1', '2', '3'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
                             $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
                         }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
                             $('#' + content_key + '_' + item_value).prop('checked', true);
@@ -383,6 +384,27 @@
                 forTable.innerHTML += 
                     '<tr><td>' + json[i].step + '</td><td>' + json[i].cname + '</td><td>' + json[i].datetime + '</td><td>' + json[i].action + 
                         '</td><td style="text-align: left; word-break: break-all;">' + json[i].remark + '</td></tr>';
+            }
+
+        // edit step10.鋪設Editions紀錄
+            if(editions_arr.length >0){
+                var editTable = document.querySelector('.editions tbody');
+                $('#editions_div').removeClass('unblock');                              // 解除隱藏
+                for (var i = 0; i < editions_arr.length;  i++) {
+                    var content_item =''
+                    for (const [u_key, u_value] of Object.entries(editions_arr[i].update_document)) {
+                        if(typeof u_value == 'object'){
+                            content_item += '<b>◎&nbsp'+u_key+'：</b></br>';
+                            for (const [u_item_key, u_item_value] of Object.entries(u_value)) {
+                                content_item += '&nbsp&nbsp&nbsp-&nbsp'+u_item_key+'：'+u_item_value+'</br>';
+                            }
+                        }else{
+                            content_item += '<b>◎&nbsp'+u_key+'：</b>'+u_value+'</br>';
+                        }
+                    }
+                    editTable.innerHTML += '<tr><td>' + (i+1) + '</td><td>' + editions_arr[i].updated_cname + '</td><td>' + editions_arr[i].updated_at 
+                            + '</td><td style="text-align: left; word-break: break-all;">' + content_item + '</td></tr>';
+                }
             }
 
         // let sinn = 'submit - ( '+swal_json['fun']+' : '+swal_json['content']+' ) <b>'+ swal_json['action'] +'</b>&nbsp!!';
