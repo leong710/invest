@@ -1,0 +1,248 @@
+{
+    "form_title" : "南廠區廠內事故訪談表",
+    "version"    : "V003",
+    "dcc_no"     : "13ES100016-F003",
+    "form_item"  : {
+        "session_1" : {
+            "label" : "事故基本資料",
+            "info"  : "調查小組成員(包含未與會人員)",
+            "class" : "col-6 col-md-4 p-2 ",
+            "item"  : [
+                {
+                    "label": "事故時間",
+                    "type": "datetime",
+                    "name" : "a_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "事故位置",
+                    "type": "text",
+                    "name" : "a_location",
+                    "required": true
+                },
+                {
+                    "label": "調查開始時間(ANIS系統立案日期)",
+                    "type" : "date",
+                    "name" : "anis_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "事故權責單位",
+                    "type" : "text",
+                    "name" : "a_belong_dept",
+                    "required": true
+
+                },
+                {
+                    "label": "環安單位",
+                    "type" : "text",
+                    "name" : "esh_dept",
+                    "required": true
+                },
+                {
+                    "label": "承攬商代表",
+                    "type" : "text",
+                    "name" : "vendor",
+                    "required": false
+                },
+                {
+                    "label": "其他",
+                    "type": "text",
+                    "name" : "other_dept",
+                    "required": false
+                }
+            ]
+        },
+
+        "session_2" : {
+            "label" : "事故內容",
+            "info"  : "",
+            "class" : "",
+            "item"  : [
+                {
+                    "label": "事故描述",
+                    "type" : "textarea",
+                    "name" : "a_description",
+                    "required": true
+                }
+            ]
+        },
+
+        "session_3" : {
+            "label" : "職業災害人員基本資料",
+            "info"  : "(無人員受傷，無需填寫)",
+            "class" : "col-6 col-md-4 p-2 ",
+            "item"  : [
+                {
+                    "label": "工號",
+                    "type" : "text",
+                    "name" : "emp_id",
+                    "required": false
+                },
+                {
+                    "label": "姓名",
+                    "type" : "text",
+                    "name" : "cname",
+                    "required": false
+                },
+                {
+                    "label": "單位",
+                    "type": "text",
+                    "name" : "oftext",
+                    "required": false
+                },
+                {
+                    "label": "職稱",
+                    "type" : "text",
+                    "name" : "cstext",
+                    "required": false
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
+                }
+            ]
+        },
+
+        "session_4" : {
+            "label" : "職業災害",
+            "info"  : "※ 如需申請公傷假，請檢附醫生診斷證明書影本。",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "受傷部位",
+                    "info" : "需填寫人員傷勢。",
+                    "type" : "checkbox",
+                    "name" : "s4_combo_1",
+                    "options": [
+                        { "label" : "1"      , "value" : {
+                                                        "label": "部位 1",
+                                                        "type" : "text",
+                                                        "name" : "s4_combo_1",
+                                                        "value": "Other"
+                                                    }},
+                        { "label" : "2"      , "value" : {
+                                                        "label": "部位 2",
+                                                        "type" : "text",
+                                                        "name" : "s4_combo_1",
+                                                        "value": "Other"
+                                                    }},
+                        { "label" : "3"      , "value" : {
+                                                        "label": "部位 3",
+                                                        "type" : "text",
+                                                        "name" : "s4_combo_1",
+                                                        "value": "Other"
+                                                    }}
+                    ],
+                    "required": false
+                },
+                {
+                    "label": "失能種類",
+                    "type" : "radio",
+                    "name" : "s4_combo_2",
+                    "options" : [
+                        { "label" : "死亡"         , "value" : "死亡" },
+                        { "label" : "永久全失能"   , "value" : "永久全失能" },
+                        { "label" : "永久部分失能" , "value" : "永久部分失能" },
+                        { "label" : "暫時全失能"   , "value" : "暫時全失能" },
+                        { "label" : "其他"         , "value" : {
+                                                        "label": "工時損失",
+                                                        "type" : "text",
+                                                        "name" : "s4_combo_2",
+                                                        "value": "Other"
+                                                    }}
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "是否住院",
+                    "type" : "radio",
+                    "name" : "s4_combo_3",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_5" : {
+            "label" : "事故分析",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "事故直接原因",
+                    "type" : "textarea",
+                    "name" : "direct_cause",
+                    "required": true
+                },
+                {
+                    "label": "事故間接原因",
+                    "type" : "radio",
+                    "name" : "s5_combo_1",
+                    "options" : [
+                        { "label" : "不安全行為(unsafe behavior)"    , "value" : "不安全行為" },
+                        { "label" : "不安全環境(unsafe environment)" , "value" : "不安全環境" },
+                        { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "間接原因說明 -- 不安全行為(unsafe behavior)",
+                    "type" : "textarea",
+                    "name" : "indirect_cause_ub",
+                    "required": true
+                },
+                {
+                    "label": "間接原因說明 -- 不安全環境(unsafe environment)",
+                    "type" : "textarea",
+                    "name" : "indirect_cause_ue",
+                    "required": true
+                },
+                {
+                    "label": "事故基本原因",
+                    "type" : "checkbox",
+                    "name" : "s5_combo_2",
+                    "options" : [
+                        { "label" : "作業程序不完整或不適當"            , "value" : "作業程序不完整或不適當" },
+                        { "label" : "工作紀律不良"                     , "value" : "工作紀律不良" },
+                        { "label" : "人員作業不慎"                     , "value" : "人員作業不慎" },
+                        { "label" : "教育訓練不足"                     , "value" : "教育訓練不足" },
+                        { "label" : "人因工程"                         , "value" : "人因工程" },
+                        { "label" : "施工品質不良"                     , "value" : "施工品質不良" },
+                        { "label" : "零件品質不良"                     , "value" : "零件品質不良" },
+                        { "label" : "未落實自動檢查或維護保養計畫"      , "value" : "未落實自動檢查或維護保養計畫" },
+                        { "label" : "設計瑕疵或防護措施不足"            , "value" : "設計瑕疵或防護措施不足" },
+                        { "label" : "作業危害鑑別及風險評估不確實或不足" , "value" : "作業危害鑑別及風險評估不確實或不足" }
+                    ],
+                    "required": false
+                },
+                {
+                    "label": "基本原因說明",
+                    "type" : "textarea",
+                    "name" : "basic_reasons",
+                    "required": true
+                },
+                {
+                    "label": "防範對策(矯正預防措施)說明",
+                    "type" : "textarea",
+                    "name" : "preventive_measures",
+                    "required": true
+                }
+            ]
+        }
+    }
+}

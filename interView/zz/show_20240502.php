@@ -10,15 +10,15 @@
     $action  = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
     $uuid    = (isset($_REQUEST["uuid"])) ? $_REQUEST["uuid"] : "";
 
-    if(!empty($uuid)){
+    if(isset($_REQUEST["uuid"])){
         $document_row = edit_document(["uuid" => $uuid]);
-            if(empty($document_row)){
-                echo "<script>alert('uuid-error：{$uuid}')</script>";
-                header("refresh:0;url=index.php");
-                return;
-            }
+        if(empty($document_row)){
+            echo "<script>alert('uuid-error：{$uuid}')</script>";
+            header("refresh:0;url=index.php");
+            return;
+        }
         // logs紀錄鋪設前處理 
-            // $logs_arr     = (array) json_decode($document_row["logs"]);
+            // $logs_arr = (array) json_decode($document_row["logs"]);
             // $editions_arr = !empty($document_row["editions"]) ? (array) json_decode($document_row["editions"]) : [];
         // 路径到 form_a.json 文件
         $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
@@ -28,7 +28,7 @@
         // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
         // logs紀錄鋪設前處理 
-            // $logs_arr     = [];                         // 預設logs_arr=空array
+            // $logs_arr = [];                             // 預設logs_arr=空array
             // $editions_arr = [];                         // 預設editions_arr=空array
         // 路径到 form_a.json 文件
         $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
@@ -264,7 +264,7 @@
                     <!-- 尾段logs訊息 -->
                     <div class="row rounded bg-light unblock" id="logs_div">
                         <div class="col-6 col-md-6 pb-0">
-                            流程記錄：
+                            表單記錄：
                         </div>
                         <div class="col-6 col-md-6 pb-0">
                         </div>
@@ -351,7 +351,7 @@
                                         <input type="hidden" class="form-control" name="scomp_no[]" id="scomp_no" placeholder="已加入的">
                                     </div>
                                     <!-- 第二排的功能 : 搜尋功能 -->
-                                    <div class="col-12 col-md-6 px-4">
+                                    <div class="col-6 px-4">
                                         <div class="input-group search">
                                             <span class="input-group-text">查詢</span>
                                             <input type="text" class="form-control text-center mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >
@@ -387,8 +387,8 @@
 
 <script>
     // init
-    var action        = '<?=$action?>';
-    var check_action  = ( action == 'review') ? true : false;
+    var action        = '<?=$action?>'; 
+    var check_action  = ( action == "review") ? true : false; 
     var dcc_no        = '<?=$dcc_no?>';
     var uuid          = '<?=$uuid?>';
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)

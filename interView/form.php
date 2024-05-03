@@ -7,43 +7,46 @@
 
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
-    $action = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
+    $action  = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
+    $uuid    = (isset($_REQUEST["uuid"])) ? $_REQUEST["uuid"] : "";
 
-    if(isset($_REQUEST["uuid"])){
-        $document_row = edit_document($_REQUEST);
-        if(empty($document_row['uuid'])){
-            echo "<script>alert('uuid-error：{$_REQUEST["uuid"]}')</script>";
-            header("refresh:0;url=index.php");
-            return;
-        }
+    if(!empty($uuid)){
+        $document_row = edit_document(["uuid" => $uuid]);
+            if(empty($document_row)){
+                echo "<script>alert('uuid-error：{$uuid}')</script>";
+                header("refresh:0;url=index.php");
+                return;
+            }
         // logs紀錄鋪設前處理 
-        $logs_arr     = (array) json_decode($document_row["logs"]);
-        $editions_arr = !empty($document_row["editions"]) ? (array) json_decode($document_row["editions"]) : [];
+            // $logs_arr     = (array) json_decode($document_row["logs"]);
+            // $editions_arr = !empty($document_row["editions"]) ? (array) json_decode($document_row["editions"]) : [];
         // 路径到 form_a.json 文件
         $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
+        $dcc_no   = (isset($document_row["dcc_no"]) ? $document_row["dcc_no"] : "" );
 
     }else{
         // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
         // logs紀錄鋪設前處理 
-        $logs_arr     = [];                         // 預設logs_arr=空array
-        $editions_arr = [];                         // 預設editions_arr=空array
+            // $logs_arr     = [];                         // 預設logs_arr=空array
+            // $editions_arr = [];                         // 預設editions_arr=空array
         // 路径到 form_a.json 文件
         $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
+        $dcc_no   = (isset($_REQUEST["dcc_no"]) ? $_REQUEST["dcc_no"] : "" );
     }
 
-    $fabs = show_fab_lists();
-
-        if(file_exists($form_doc)){
+    $fabs = show_fab_lists();   // load fab list for select item 
+    // load doc form
+    if(file_exists($form_doc)){
             // 从 JSON 文件加载内容
-            $form_json = file_get_contents($form_doc);
+            // $form_json = file_get_contents($form_doc);
             // 解析 JSON 数据并将其存储在 $form_a_json 变量中
-            $form_json = (array) json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
-            $init_error = '';
-        }else{
-            $form_json = [];
-            $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
-        }
+            // $form_json = (array) json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+        $init_error = '';
+    }else{
+            // $form_json = [];
+        $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
+    }
 
 ?>
 
@@ -52,8 +55,9 @@
 <head>
     <link href="../../libs/aos/aos.css" rel="stylesheet">                                           <!-- goTop滾動畫面aos.css 1/4-->
     <script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>            <!-- Jquery -->
-        <link rel="stylesheet" type="text/css" href="../../libs/dataTables/jquery.dataTables.css">  <!-- dataTable參照 https://ithelp.ithome.com.tw/articles/10230169 --> <!-- data table CSS+JS -->
-        <script type="text/javascript" charset="utf8" src="../../libs/dataTables/jquery.dataTables.js"></script>
+        <!-- dataTable參照 https://ithelp.ithome.com.tw/articles/10230169 --> <!-- data table CSS+JS -->
+        <!-- <link rel="stylesheet" type="text/css" href="../../libs/dataTables/jquery.dataTables.css">   -->
+        <!-- <script type="text/javascript" charset="utf8" src="../../libs/dataTables/jquery.dataTables.js"></script> -->
     <script src="../../libs/sweetalert/sweetalert.min.js"></script>                                 <!-- 引入 SweetAlert 的 JS 套件 參考資料 https://w3c.hexschool.com/blog/13ef5369 -->
     <script src="../../libs/jquery/jquery.mloading.js"></script>                                    <!-- mloading JS 1/3 -->
     <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">                            <!-- mloading CSS 2/3 -->
@@ -81,6 +85,16 @@
         /* canvas {
             width: 100%;
         } */
+        @keyframes fadeIn {
+            from { opacity: 0;}
+            to { opacity: 1;}
+        }
+        .unblock {
+            opacity: 0;
+            display: none;
+            transition: opacity 1s;
+            animation: none;
+        }
     </style>
 </head>
 
@@ -125,7 +139,7 @@
                 <div class="col-12">
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
-                    <!-- <form action="./zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
+                    <!-- <form action="zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
                         <div class="row rounded bg-light py-3" id="form_container">
                             <div class="col-12 p-3 ">
                                 <span class="from-label"><b>表單分類：</b></span><br>
@@ -172,7 +186,7 @@
                                         <!-- line 2 -->
                                         <div class="col-6 col-md-6 pb-0">
                                             <div class="form-floating">
-                                                <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="<?=date('Y-m-d\TH:i')?>" require>
+                                                <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="" require>
                                                 <label for="meeting_time" class="form-label">meeting_time/會議時間：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
@@ -264,9 +278,10 @@
                         <div class="col-6 col-md-6 pb-0">
                             流程記錄：
                         </div>
-                        <div class="col-6 col-md-6 pb-0">
+                        <div class="col-6 col-md-6 pb-0 text-end">
+                            <button type="button" id="logs_btn" class="op_tab_btn" value="logs" onclick="op_tab(this.value)" title="訊息收折"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></button>
                         </div>
-                        <div class="col-12 pt-1 px-4">
+                        <div class="col-12 pt-1 px-4" id="logs_table">
                             <table class="for-table logs table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -290,9 +305,10 @@
                         <div class="col-6 col-md-6 pb-0">
                             編輯記錄：
                         </div>
-                        <div class="col-6 col-md-6 pb-0">
+                        <div class="col-6 col-md-6 pb-0 text-end">
+                            <button type="button" id="editions_btn" class="op_tab_btn" value="editions" onclick="op_tab(this.value)" title="訊息收折"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></button>
                         </div>
-                        <div class="col-12 pt-1 px-4">
+                        <div class="col-12 pt-1 px-4" id="editions_table">
                             <table class="for-table editions table table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -380,32 +396,20 @@
 
 <script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>  <!-- goTop滾動畫面script.js 4/4-->
-<script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>
-<script src="../../libs/moment/moment.min.js"></script>
+<script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>     <!-- 簽名板外掛 -->
+<!-- <script src="../../libs/moment/moment.min.js"></script> -->
 
 <script>
-    // 開局設定init
-    var action        = '<?=$action?>';                 // 取得表單開啟方式
-    var check_action  = ( action == "review") ? true : false;  // 唯讀狀態
-    var form_json     = <?=json_encode($form_json)?>;   // 取得表單
-    var form_item     = form_json.form_item;            // 抓item項目for form item
-    var json          = <?=json_encode($logs_arr)?>;
-    var editions_arr  = <?=json_encode($editions_arr)?>;
+    // init
+    var action        = '<?=$action?>';
+    var check_action  = ( action == 'review') ? true : false;
+    var dcc_no        = '<?=$dcc_no?>';
+    var uuid          = '<?=$uuid?>';
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
     var meeting_man_o = [];                         // 其他與會人員
     var meeting_man_s = [];                         // 環安人員
     var meeting_man_target;                         // 指向目標
-    
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
-    var document_row = <?=json_encode($document_row)?>;   // 取得表單資料
-
-    // DOMContentLoaded 事件监听器
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     // 绑定事件监听器
-    //     attachEventListeners();
-    // });
-
-        // console.log('editions_arr:' , editions_arr);
 
 </script>
 

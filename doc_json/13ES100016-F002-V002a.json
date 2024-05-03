@@ -1,0 +1,73 @@
+{
+    "form_title" : "南廠區交通事故訪談表",
+    "version"    : "V002a",
+    "dcc_no"     : "13ES100016-F002",
+    "form_item"  : {
+        "session_1" : {
+            "label" : "事故者基本資料",
+            "info"  : "",
+            "class" : "col-6 col-md-4 p-2 ",
+            "item"  : [
+                {
+                    "label": "工號",
+                    "type" : "text",
+                    "name" : "emp_id",
+                    "required": true
+                },
+                {
+                    "label": "姓名",
+                    "type" : "text",
+                    "name" : "cname",
+                    "required": true
+                },
+                {
+                    "label": "職稱",
+                    "type" : "text",
+                    "name" : "cstext",
+                    "required": false
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
+                },
+                {
+                    "label": "事故時間",
+                    "type": "datetime",
+                    "name" : "a_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "發生事故當日當事者應工作起始時間",
+                    "type": "datetime",
+                    "name" : "a_work_s",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "發生事故當日當事者應工作訖止時間",
+                    "type": "datetime",
+                    "name" : "a_work_e",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "事故地點",
+                    "type": "text",
+                    "name" : "a_location",
+                    "required": true
+                }
+            ]
+        }
+
+    }
+}

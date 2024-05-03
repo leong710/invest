@@ -181,7 +181,7 @@
                                 <tr>
                                     <td><?php echo $caseList["case_year"] ?></td>
                                     <td><?php echo $icon_s.$caseList['_icon'].$icon_e.$caseList['short_name'];?></td>
-                                    <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['case_title'];?></td>
+                                    <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['id'].".".$caseList['case_title'];?></td>
 
                                     <td><?php echo $caseList['fab_title']."(".$caseList['fab_remark'].")";?></td>
                                     <td><?php echo $caseList['local_id'];?></td>
