@@ -20,14 +20,14 @@
             }
             $_content = $_REQUEST;
             // 使用迴圈刪除指定的元素
-            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
-                                ,'meeting_man_a','meeting_man_o','meeting_man_s','created_emp_id','created_cname','action','step','idty','uuid','dcc_no');
+            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'anis_no','case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
+                                ,'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d','created_emp_id','created_cname','action','step','idty','uuid','dcc_no');
                 foreach ($unset_keys as $key) {
                     unset($_content[$key]);
                 }
 
             // 把特定物件轉json
-            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
+            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
                 foreach ($to_json_keys as $jkey) {
                     $$jkey = json_encode($$jkey);
                 }
@@ -46,13 +46,13 @@
             $logs_enc = toLog($logs_request);
 
         $sql = "INSERT INTO _document( _focus, _content, confirm_sign, ruling_sign, a_pic 
-                            , idty, dcc_no, fab_id, local_id, case_title,   a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s
+                            , idty, dcc_no, fab_id, local_id, case_title,   anis_no, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s, meeting_man_d
                             , created_emp_id, created_cname, updated_cname, logs, meeting_time,   created_at, updated_at, uuid)
-                    VALUES( ?,?,?,?,?   ,?,?,?,?,? ,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
+                    VALUES( ?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
-                            , $idty, $dcc_no, $fab_id, $local_id, $case_title, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s
+                            , $idty, $dcc_no, $fab_id, $local_id, $case_title, $anis_no, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s, $meeting_man_d
                             , $created_emp_id, $created_cname, $created_cname, $logs_enc, $meeting_time]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '儲存成功';
@@ -227,20 +227,22 @@
 
         // step5.例外處理單元：s
             // 把特定物件轉json
-            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
+            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
             foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
         
-        // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
-            $editions = array(
-                'updated_cname'   => $created_cname." (".$created_emp_id.")",
-                'update_document' => $edited_log,
-                'editions'        => !empty($row_editions) ? $row_editions : ""
-            );
-        // step6-2.呼叫toEditLog製作EditionsLog檔
-            $editions_enc = toEditLog($editions);
-        // step6-3.確認修改訊息，有需要添加SQL修改項目
-            $sql .= "editions=?, ";
-            array_push($stmt_arr, $editions_enc);
+            if($idty != "6"){  // 表單狀態 = 暫存 > 不進行編輯紀錄
+                // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
+                    $editions = array(
+                        'updated_cname'   => $created_cname." (".$created_emp_id.")",
+                        'update_document' => $edited_log,
+                        'editions'        => !empty($row_editions) ? $row_editions : ""
+                    );
+                // step6-2.呼叫toEditLog製作EditionsLog檔
+                    $editions_enc = toEditLog($editions);
+                // step6-3.確認修改訊息，有需要添加SQL修改項目
+                    $sql .= "editions=?, ";
+                    array_push($stmt_arr, $editions_enc);
+            }
 
         // step7-1.製作log紀錄前處理：塞進去製作元素
             $logs_request = array(
@@ -322,6 +324,32 @@
             $swal_json["action"]   = "error";
             $swal_json["content"] .= '刪除失敗';
         }
+        return $swal_json;
+    }
+    function save_document($request){   // 20240506 -- 表單暫存
+        $action = isset($request["action"]) ? $request["action"] : "";
+        // $idty   = isset($request["idty"])   ? $request["idty"]   : "";
+
+        $swal_json = array(                                 // for swal_json
+            "fun"       => "save_document",
+            "content"   => "暫存表單--"
+        );
+
+        switch($action) {
+            // 根據action Create=新增 / Edit = 編輯
+            case 'create':
+                $fun_rtn_json = store_document($request);
+                break;
+            case 'edit':
+                $fun_rtn_json = update_document($request);
+                break;
+            default:
+                $fun_rtn_json["action"]   = "error";
+                $fun_rtn_json["content"]  = '呼叫失敗';
+                break;
+        }
+        $swal_json["action"]   = $fun_rtn_json["action"];
+        $swal_json["content"] .= $fun_rtn_json["content"];
         return $swal_json;
     }
 
@@ -555,8 +583,25 @@
         $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
         try {
             $stmt->execute();
-            $fabs = $stmt->fetchAll();
+            $fabs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $fabs;
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }
+
+    function show_local_lists(){
+        $pdo = pdo();
+        $sql = "SELECT _l.*
+                FROM _local _l
+                -- LEFT JOIN _fab _f ON _f.id = _l.fab_id
+                -- WHERE _fab.flag = 'On' AND _site.flag = 'On'
+                ORDER BY _l.id ASC ";
+        $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
+        try {
+            $stmt->execute();
+            $locals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $locals;
         }catch(PDOException $e){
             echo $e->getMessage();
         }

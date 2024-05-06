@@ -1,7 +1,7 @@
 
     function add_module(to_module){     // 啟用新增模式
         $('#'+to_module+'_modal_action, #'+to_module+'_modal_button, #'+to_module+'_modal_delect_btn, #edit_'+to_module+'_info').empty();   // 清除model功能
-        $('#'+to_module+'_reset_btn').click();                                                        // reset清除表單
+        // $('#'+to_module+'_reset_btn').click();                                                        // reset清除表單
         var add_btn = '<input type="submit" name="'+to_module+'_submit" class="btn btn-primary" value="新增">';
         $('#'+to_module+'_modal_action').append('新增');                      // model標題
         $('#'+to_module+'_modal_button').append(add_btn);                     // 儲存鈕
@@ -109,6 +109,33 @@
             swal('change_flag' ,swal_content ,swal_action, {buttons: false, timer:1000});
 
         }
+    }
+
+    // 篩選Local by fab_id
+    function groupBy_fab(fab_value){
+        mloading("show");                                               // 啟用mLoading
+        const arr_role = fab_value.split(',').map(item => parseInt(item));
+        let table_tr = document.querySelectorAll('#local_table > tbody > tr');
+        // console.log('fab_value:', fab_value);
+        if(fab_value === '0'){
+            table_tr.forEach(function(row){
+                row.classList.remove('unblock');
+            })  
+        } else {
+            table_tr.forEach(function(row){
+                let row_role = parseInt(row.children[1].innerText);         // 將字串轉換為數字
+                if(arr_role.includes(row_role)){
+                    row.classList.remove('unblock');
+                } else {
+                    row.classList.add('unblock');
+                }
+            })  
+            
+            var selectElement = document.getElementById("edit_fab_id");                         // 获取 select 元素
+            var optionToSelect = selectElement.querySelector("option[value='"+fab_value+"']");  // 找到要选中的 option
+            optionToSelect.selected = true;                                                     // 将该 option 设为选中状态
+        }
+        $("body").mLoading("hide");
     }
 
     // // // 第三頁：searchUser function 
@@ -224,7 +251,10 @@
     })
 
     $(document).ready(function(){
-        // 切換指定NAV分頁
-        //激活选项卡
+        // 切換指定NAV分頁 // 激活选项卡
         $('.nav-tabs button:eq(' + activeTab + ')').tab('show');
+
+        if(!isNaN(sortFab_id)){
+            groupBy_fab(sortFab_id);
+        }
     });

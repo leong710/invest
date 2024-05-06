@@ -8,7 +8,7 @@
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
     $action  = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
-    $uuid    = (isset($_REQUEST["uuid"])) ? $_REQUEST["uuid"] : "";
+    $uuid    = (isset($_REQUEST["uuid"]))   ? $_REQUEST["uuid"]   : "";
 
     if(!empty($uuid)){
         $document_row = edit_document(["uuid" => $uuid]);
@@ -17,9 +17,6 @@
                 header("refresh:0;url=index.php");
                 return;
             }
-        // logs紀錄鋪設前處理 
-            // $logs_arr     = (array) json_decode($document_row["logs"]);
-            // $editions_arr = !empty($document_row["editions"]) ? (array) json_decode($document_row["editions"]) : [];
         // 路径到 form_a.json 文件
         $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
         $dcc_no   = (isset($document_row["dcc_no"]) ? $document_row["dcc_no"] : "" );
@@ -27,15 +24,13 @@
     }else{
         // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
-        // logs紀錄鋪設前處理 
-            // $logs_arr     = [];                         // 預設logs_arr=空array
-            // $editions_arr = [];                         // 預設editions_arr=空array
         // 路径到 form_a.json 文件
         $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
         $dcc_no   = (isset($_REQUEST["dcc_no"]) ? $_REQUEST["dcc_no"] : "" );
     }
 
-    $fabs = show_fab_lists();   // load fab list for select item 
+    $fabs   = show_fab_lists();                     // load fab list for select item 
+    $locals = show_local_lists();                   // load local list for select item 
     // load doc form
     if(file_exists($form_doc)){
             // 从 JSON 文件加载内容
@@ -103,14 +98,17 @@
         <div class="row justify-content-center">
             <div class="col-10 border rounded px-4 py-4" style="background-color: #D4D4D4;">
                 <!-- 表頭1 -->
-                <div class="row px-4">
+                <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
                         <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
                         <span id="submit_btn">
                             <?php if(!$init_error){ ?>
-                                <a href="#" target="_blank" title="Submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
+                                <a href="#" target="_blank" title="Submit" class="btn btn-primary" onclick="changeMode('submit')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
+                            <?php } ?>
+                            <?php if(in_array($action,["create", "edit"])){ ?>
+                                <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
                         <a href="<?php echo $up_href;?>" class="btn btn-secondary" onclick="return confirm('確認返回？');" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</a>
@@ -146,22 +144,31 @@
                                 <div class="col-12 p-3 border rounded bg-white">
                                     <div class="row">
                                         <!-- line 0 -->
-                                        <div class="col-6 col-md-6 py-0">
+                                        <div class="col-12 col-md-12 py-0">
                                             <div class="form-floating">
-                                                <select name="fab_id" id="fab_id" class="form-select" required>
-                                                    <option value="" hidden>-- [請選擇 廠別] --</option>
-                                                    <?php foreach($fabs as $fab){ ?>
-                                                            <option value="<?php echo $fab["id"];?>" title="<?php echo $fab["fab_title"];?>" <?php echo ($fab["flag"] == "Off") ? "disabled":"";?>>
-                                                                <?php echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."&nbsp(".$fab["fab_remark"].")"; echo ($fab["flag"] == "Off") ? "&nbsp(已關閉)":"";?></option>
-                                                    <?php } ?>
-                                                </select>
-                                                <label for="fab_id" class="form-label">fab_id/廠別：<sup class="text-danger"> *</sup></label>
+                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center" placeholder="ANIS表單編號：" require>
+                                                <label for="anis_no" class="form-label">anis_no/ANIS表單編號：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
-                                        <div class="col-6 col-md-6 py-0">
+                                        <div class="col-6 col-md-6 pb-0">
                                             <div class="form-floating">
-                                                <input type="text" name="local_id" id="local_id" class="form-control" placeholder="小廠單位：" require >
-                                                <label for="local_id" class="form-label">local_id/小廠單位：<sup class="text-danger"> * </sup></label>
+                                                <select name="fab_id" id="fab_id" class="form-select" onchange="select_local(this.value)" required>
+                                                    <option value="" hidden>-- [請選擇 棟別] --</option>
+                                                    <?php foreach($fabs as $fab){ 
+                                                        echo "<option value='{$fab["id"]}' title='{$fab["fab_title"]}' ".($fab["flag"] == "Off" ? "disabled":"" ).">";
+                                                        echo "{$fab["id"]}：{$fab["site_title"]}&nbsp{$fab["fab_title"]}&nbsp({$fab["fab_remark"]})".($fab["flag"] == "Off" ? "&nbsp(已關閉)":"")."</option>";
+                                                    } ?>
+                                                </select>
+                                                <label for="fab_id" class="form-label">fab_id/棟別：<sup class="text-danger"> *</sup></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-6 pb-0">
+                                            <div class="form-floating">
+                                                <select name="local_id" id="local_id" class="form-select" required>
+                                                    <option value="" hidden>-- [請選擇 廠別] --</option>
+
+                                                </select>
+                                                <label for="local_id" class="form-label">local_id/廠別：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
                                     </div>
@@ -225,6 +232,11 @@
                                                 <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
+
+                                            <div class="input-group py-1">
+                                                <span class="input-group-text" style="width:25%;">其他非INX與會人員(請用,分隔)<sup class="text-danger"> * </sup></span>
+                                                <input type="text" id="meeting_man_d" name="meeting_man_d" class="form-control mb-0">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -243,22 +255,24 @@
 
                         <!-- 模組 saveSubmit-->
                         <div class="modal fade" id="saveSubmit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Do you submit this 事故訪談表：</h5>
+                                    <div class="modal-header rounded p-3 m-2 text-white">
+                                        <h5 class="modal-title">Do you want to <span id="modal_action"></span> this 事故訪談表</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body px-4">
-                                        <label for="sign_comm" class="form-check-label" >command：</label>
-                                        <textarea name="sign_comm" id="sign_comm" class="form-control" rows="5"></textarea>
+                                    <div class="modal-body">
+                                        <div class="row px-4" id="modal_body">
+                                            <label for="sign_comm" class="form-label" >command：</label>
+                                            <textarea name="sign_comm" id="sign_comm" class="form-control" rows="5"></textarea>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <input type="hidden"  name="created_emp_id"  id="created_emp_id"  value="<?php echo $auth_emp_id;?>">
                                         <input type="hidden"  name="created_cname"   id="created_cname"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden"  name="action"          id="action"          value="<?php echo $action;?>">
                                         <input type="hidden"  name="step"            id="step"            value="1">
-                                        <input type="hidden"  name="idty"            id="idty"            value="1">
+                                        <input type="text"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <snap id="submit_action">
@@ -405,6 +419,7 @@
     var check_action  = ( action == 'review') ? true : false;
     var dcc_no        = '<?=$dcc_no?>';
     var uuid          = '<?=$uuid?>';
+    var locals        = <?=json_encode($locals)?>;
     var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
     var meeting_man_o = [];                         // 其他與會人員
     var meeting_man_s = [];                         // 環安人員

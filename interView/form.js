@@ -41,6 +41,40 @@
         toast.show();
     }
 
+    // 20240506 local select生成
+    function select_local(sortFab_id){
+        $("#local_id").empty();
+        $("#local_id").append('<option value="" hidden>-- [請選擇 廠別] --</option>');
+        for (const [key, value] of Object.entries(locals)) {
+            if(value['fab_id'] == sortFab_id){
+                let lv = '<option value="'+value['id']+'" class="form-label" '+(value['flag'] == 'Off' ? 'disabled':'')+' >'+value['id']+'：'+value['local_title']+(value['flag'] == 'Off' ? ' -- disabled':'')+'</option>';
+                $("#local_id").append(lv);
+            }
+        }
+    }
+
+    // 20240506 saveSubmit modal添加save功能
+    function changeMode(mode){
+        $('#modal_action, #submit_action').empty();         // 清除model標題和btn功能
+        $('#modal_action').append(mode);                    // 炫染model標題
+
+        if(mode == 'submit'){
+            $('#idty').val('1');                            // 1 = 送出
+            $('#saveSubmit .modal-header').removeClass('bg-success').addClass("bg-primary");    // 切換標題底色
+            $('#modal_body').removeClass('unblock');        // 切換sign command
+            let submit_btn = '<button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>';
+            $('#submit_action').append(submit_btn);         // model_btn功能
+            
+        }else if(mode == 'save'){
+            $('#idty').val('6');                            // 6 = 暫存
+            $('#saveSubmit .modal-header').removeClass('bg-primary').addClass("bg-success");    // 切換標題底色
+            $('#modal_body').addClass("unblock");           // 切換sign command
+            let save_btn =   '<button type="submit" value="Save"   name="save_document"   class="btn btn-success" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 儲存 (Save)</button>';
+            $('#submit_action').append(save_btn);           // model_btn功能
+
+        }
+    }
+    
     // tab_table的顯示關閉功能
     function op_tab(tab_value){
         $("#"+tab_value+"_btn .fa-chevron-circle-down").toggleClass("fa-chevron-circle-up");
@@ -541,10 +575,13 @@
     // edit 副函數：鋪設渲染_表頭
     function reShow_info(document_row){
         // 1.會議info
-        let meeting_info1_arr = ['fab_id', 'local_id', 'case_title', 'a_dept', 'meeting_time', 'meeting_local', 'uuid'];
+        let meeting_info1_arr = ['anis_no','fab_id', 'local_id', 'case_title', 'a_dept', 'meeting_time', 'meeting_local', 'uuid' ,'meeting_man_d'];
         meeting_info1_arr.forEach((meeting_info1)=>{
             if(document_row[meeting_info1]){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 
+                if( meeting_info1 == "fab_id"){
+                    select_local(document_row[meeting_info1]);          // 使用fab_id.value呼叫select_local生成select option
+                }
             }
         })
         // 2.與會人員
