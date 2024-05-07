@@ -349,6 +349,49 @@
                     meeting_man_target = this.id;               // 搜尋meeting_man_target
                 })
             })    
+
+            // 20240507 -- 監聽 negative_opts 負向選項;
+         // let negative_opts = Array.from(document.querySelectorAll("input[type='radio'].negative"));
+            let radios = Array.from(document.querySelectorAll("input[type='radio']"));
+            let negative_opts = Array.from(document.querySelectorAll(".negative"));         // 負向選項
+            let get_negatives = Array.from(document.querySelectorAll(".get_negative"));     // 負向對象
+                radios.forEach((rdo) => {
+                    rdo.addEventListener('change', () => {
+                        console.log('rdo:', rdo.id);
+                        
+                        // 检查当前单选按钮是否是负向选项
+                        if (negative_opts.includes(rdo)) {
+                            // 计算 negative_arr 数组
+                            negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
+                        }
+                            
+                        // 根据 negative_arr 数组的长度设置 get_negatives 的状态
+                        get_negatives.forEach((get_n) => {
+                            let isChecked = negative_arr.length > 0;
+                            get_n.checked = isChecked;
+                            $('#' + get_n.id + '_o').toggleClass('unblock', !isChecked);
+                        });
+                    });
+                });
+            // 监听单选按钮组中的任何一个单选按钮的 change 事件
+                // radios.forEach((rdo) => {
+                //     rdo.addEventListener('change', () => {
+                //         console.log('rdo:', rdo.id);
+                        
+                //     });
+                // });
+                // negative_opts.forEach((n_opt) => {
+                //     n_opt.addEventListener('change', () => {
+                //         // 计算 negative_arr 数组
+                //         let negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
+                //         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
+                //         get_negatives.forEach((get_n) => {
+                //             let isChecked = negative_arr.length > 0;
+                //             get_n.checked = isChecked;
+                //             $('#' + get_n.id + '_o').toggleClass('unblock', !isChecked);
+                //         });
+                //     });
+                // });
             // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
             $('#a_work_s, #a_work_e').change(function() {
                 let currentDate = new Date();                       // 取得今天日期
@@ -473,8 +516,14 @@
                     // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
-                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') + '" >'
-                          + '<label class="form-check-label" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') +'</label></div>';
+                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
+                            + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
+                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                          + '" >' + '<label class="form-check-label '
+                            + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
+                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                          + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
+                          + '</label></div>';
 
                     if (typeof option.value === 'object' && option.value.type == 'text') {
                         // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
@@ -614,15 +663,15 @@
             special_items.forEach((special_item)=>{
                 if(document_row[special_item] != null){
                     if(special_item == 'a_pic'){        // 路線圖檔
-                        let a_pic_path = '../image/a_pic/'                                                                          // 指定pic路徑
-                        let a_pic_val  = document_row[special_item];                                                                // 取得pic_value
-                        let preview_modal = '<a href="' + a_pic_path + a_pic_val + '" target="_blank" >';                           // 生成預覽按鈕a
-                        let src_img = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">';       // 生成img
-                        let preview_item = document.getElementById('preview_' + special_item); 
+                        let a_pic_path     = '../image/a_pic/'                                                                      // 指定pic路徑
+                        let a_pic_val      = document_row[special_item];                                                            // 取得pic_value
+                        let preview_modal  = '<a href="'  + a_pic_path + a_pic_val + '" target="_blank" >';                         // 生成預覽按鈕a
+                        let src_img        = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">';// 生成img
+                        let preview_item   = document.getElementById('preview_' + special_item); 
                         if(preview_item){
                             preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
                         }            
-                        let input_item = document.getElementById(special_item);
+                        let input_item     = document.getElementById(special_item);
                         if(input_item){
                             input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
                         }
@@ -647,7 +696,7 @@
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     if(option_value !== null){                          // 預防空值null
                         option_value.forEach((item_value, index)=>{
-                            // if (['其他', '無'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                            // if (['其他', '無'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
                             if (['其他', '無', '否', 'Other', '1', '2', '3'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
                                 $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
                             }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
@@ -720,7 +769,6 @@
     }
 // // 20240430 -- step_2 由uuid取得document_row，再由edit_show(document_row)填入表單
     async function load_document(uuid) {
-        // console.log('step_2 load_document(uuid)：', uuid);
         return new Promise((resolve, reject) => {
             let formData = new FormData();
             formData.append('uuid', uuid);

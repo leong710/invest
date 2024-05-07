@@ -66,7 +66,7 @@
         .a_pic {
             width: 150px; 
             height: auto; 
-            text-align:center;
+            text-align: center;
         }
         .info {
             font-size: 14px;
@@ -89,6 +89,16 @@
             display: none;
             transition: opacity 1s;
             animation: none;
+        }
+        .negative {
+            color: darkred;
+            font-weight: bold;
+            text-shadow: 3px 3px 5px rgba(0,0,0,.3);
+        }
+        .get_negative {
+            color: blue;
+            font-weight: bold;
+            text-shadow: 3px 3px 5px rgba(0,0,0,.3);
         }
     </style>
 </head>
@@ -406,6 +416,12 @@
             <i class="fas fa-angle-up fa-2x"></i>
         </div>
 
+    <?php
+        echo "<div class='p-5 text-white'><pre>";
+        print_r($document_row);
+        echo "</pre></div>";    
+    ?>
+
 </body>
 
 <script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
@@ -424,6 +440,7 @@
     var meeting_man_o = [];                         // 其他與會人員
     var meeting_man_s = [];                         // 環安人員
     var meeting_man_target;                         // 指向目標
+    var negative_arr  = [];                         // 監聽負向選項
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
 
 </script>
