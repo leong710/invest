@@ -5,12 +5,13 @@
         $pdo = pdo();
         extract($request);
         $stmt_arr = array();    // 初始查詢陣列
-        $sql = "SELECT _d.id, _d.uuid, _d.idty, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local
+        $sql = "SELECT _d.id, _d.uuid, _d.idty, _d.anis_no, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local
                     , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year
-                    , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
+                    , _l.local_title, _l.local_remark , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
                 FROM _document _d
-                LEFT JOIN _fab _f ON _d.fab_id = _f.id 
-                LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no ";
+                LEFT JOIN _local _l     ON _d.local_id = _l.id 
+                LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
+                LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no ";
         // tidy query condition：
             if($_year != 'All'){
                 $sql .= " WHERE (year(_d.created_at) = ? )";              // ? = $year
@@ -64,7 +65,7 @@
         $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
         try {
             $stmt->execute();
-            $fabs = $stmt->fetchAll();
+            $fabs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $fabs;
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -110,7 +111,7 @@
             $stmt = $pdo->prepare($sql);
             try {
                 $stmt->execute([$sign_code]);
-                $coverFab_lists = $stmt->fetchAll();
+                $coverFab_lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 return $coverFab_lists;
             }catch(PDOException $e){
                 echo $e->getMessage();
@@ -127,7 +128,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
-            $document_years = $stmt->fetchAll();
+            $document_years = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $document_years;
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -144,7 +145,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
-            $shortName_lists = $stmt->fetchAll();
+            $shortName_lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $shortName_lists;
         }catch(PDOException $e){
             echo $e->getMessage();

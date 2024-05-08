@@ -8,6 +8,8 @@
             "fun"       => "store_document",
             "content"   => "新增表單--"
         );
+        $swal_json["content"] .= $idty == "6" ? "暫存表單--":"";                // 20240506 -- 表單暫存
+
         // 例外處理單元：s
             // 處理a_pic上傳檔案
             if(!empty($a_pic)){ $a_pic = uploadFile($a_pic);
@@ -97,6 +99,7 @@
                 "fun"       => "update_document",
                 "content"   => "更新表單--"
             );
+            $swal_json["content"] .= $idty == "6" ? "暫存表單--":"";                // 20240506 -- 表單暫存
 
         // step1.例外處理單元：s
             if(empty($a_pic))       { $a_pic = null; }                              // *** 上傳檔案要後面處理
@@ -127,10 +130,6 @@
                 $row_keys = array_keys($$unset_key);                // 取出內圈的 key_list
                 foreach($row_keys as $row_key){
                     $edit_item = [];                                // 起始-修改項目 & 清空
-
-                    echo "</br> >>> ".$row_key."：</br>";
-                    print_r($$row_key)."</br></br>";
-
                     if(gettype($$unset_key[$row_key]) == 'array' || gettype($$unset_key[$row_key]) == 'object'){        // 針對combo項目進行判別
                         $old_item = json_encode($$unset_key[$row_key]);            
                         $new_item = json_encode($$row_key);
@@ -158,7 +157,7 @@
                         if($$row_key != $$unset_key[$row_key]){
                             echo $row_key." : ".$$unset_key[$row_key]." => ".$$row_key. "</br>";            // 螢幕顯示
                             $edit_item = $$unset_key[$row_key]." => ".$$row_key;                            // 生成修改訊息
-                                $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
+                            $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
                         }
                     }
                     if(!empty($edit_item)){
@@ -221,21 +220,22 @@
             }
 
             $edited_log = array_filter($edited_log);                                            // 過濾空陣列
-            if(count($edited_log) == 0){                                                        // 當筆數=0
-                $edited_log["本次修改"] = "共 ".count($edited_log)." 處。";                      // 加上簡單提示。
-            }
+            // if(count($edited_log) == 0){                                                        // 當筆數=0
+            //     $edited_log["本次修改"] = "共 ".count($edited_log)." 處。";                      // 加上簡單提示。
+            // }
 
         // step5.例外處理單元：s
             // 把特定物件轉json
             $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
             foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
         
-            if($idty != "6"){  // 表單狀態 = 暫存 > 不進行編輯紀錄
+        // step6.編輯紀錄 => 1送出 6暫存
+            if($idty != "6" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
-                        'updated_cname'   => $created_cname." (".$created_emp_id.")",
-                        'update_document' => $edited_log,
-                        'editions'        => !empty($row_editions) ? $row_editions : ""
+                        "updated_cname"   => $created_cname." (".$created_emp_id.")",
+                        "update_document" => $edited_log,
+                        "editions"        => !empty($row_editions) ? $row_editions : ""
                     );
                 // step6-2.呼叫toEditLog製作EditionsLog檔
                     $editions_enc = toEditLog($editions);
@@ -258,39 +258,22 @@
         // step7-3.確認修改訊息，有需要添加SQL修改項目
             $sql .= "logs=?, ";
             array_push($stmt_arr, $logs_enc);
-
+        // step8.sql指令帶入基本要項
             $sql .= "updated_cname=?, updated_at=now() WHERE uuid=? ";
             array_push($stmt_arr, $created_cname);
             array_push($stmt_arr, $uuid);
-
-        // step.debug
-            if(isset($_REQUEST["debug"])){
-                echo "</br></br>";
-                echo "<pre>";
-                    echo $sql;
-                    echo "</br>";
-                    print_r(array_filter($edited_log));
-                    echo "</br>";
-                    print_r($editions);
-                    echo "</br>";
-                    print_r($stmt_arr);
-                    echo "</br>";
-                    print_r($_content);
-                echo "</pre>";
-            }
-        // step8.儲存工作
+        // step9.儲存工作
             // // $sql = "UPDATE _document SET _type=?, title=?, dcc_no=?, _icon=?, flag=?, updated_user=?, updated_at=now() WHERE id=?";
             // // $stmt->execute([$_type, $title, $dcc_no, $_icon, $flag, $updated_user, $id]);
             $stmt = $pdo->prepare($sql);
             try {
                 $stmt->execute($stmt_arr);                          // 處理 byUser & byYear
-
                 $swal_json["action"]   = "success";
-                $swal_json["content"] .= '儲存成功';
+                $swal_json["content"] .= "儲存成功";
             }catch(PDOException $e){
                 echo $e->getMessage();
                 $swal_json["action"]   = "error";
-                $swal_json["content"] .= '儲存失敗';
+                $swal_json["content"] .= "儲存失敗";
             }
         // step9.返回swal
         return $swal_json;
@@ -324,32 +307,6 @@
             $swal_json["action"]   = "error";
             $swal_json["content"] .= '刪除失敗';
         }
-        return $swal_json;
-    }
-    function save_document($request){   // 20240506 -- 表單暫存
-        $action = isset($request["action"]) ? $request["action"] : "";
-        // $idty   = isset($request["idty"])   ? $request["idty"]   : "";
-
-        $swal_json = array(                                 // for swal_json
-            "fun"       => "save_document",
-            "content"   => "暫存表單--"
-        );
-
-        switch($action) {
-            // 根據action Create=新增 / Edit = 編輯
-            case 'create':
-                $fun_rtn_json = store_document($request);
-                break;
-            case 'edit':
-                $fun_rtn_json = update_document($request);
-                break;
-            default:
-                $fun_rtn_json["action"]   = "error";
-                $fun_rtn_json["content"]  = '呼叫失敗';
-                break;
-        }
-        $swal_json["action"]   = $fun_rtn_json["action"];
-        $swal_json["content"] .= $fun_rtn_json["content"];
         return $swal_json;
     }
 

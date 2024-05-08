@@ -6,43 +6,41 @@
     accessDeniedAdmin($sys_id);
     extract($_REQUEST);
     
+    $swal_json = array();
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
 
-    $swal_json = array(                                 // for swal_json
-        "fun"     => "interView document",
-        "content" => "process處理--",
-        "action"  => "error",
-        "content" => '$action參數錯誤'
-    );
-
     // CRUD
-    switch($_REQUEST["action"]){
-
-        case "create":                                  // 開新.新增    $idty => 1(送出); 6(暫存);
-            $action_fun = "submit_document";
-            $swal_json  =  store_document($_REQUEST); 
-            break;
-
-        case "edit":                                    // 編輯.更新    $idty => 1(送出--詳細比對); 6(暫存--排除比對);
-            $action_fun = "update_document";
-            $swal_json  =  update_document($_REQUEST);
-            break;
-
-        case "delete":                                  // 刪除.刪除
-            $action_fun = "delete_document";
-            $swal_json  =  delete_document($_REQUEST);
-            break;
-
-        case "sign":                                    // 簽核
-
-            break;
-
-        default:                                        // 預定失效 
- 
-            break;
-    }
-
+        if(isset($_POST)){
+            // 新增
+            if(isset($_POST["submit_document"])){
+                $action = "submit_document";
+                $swal_json = store_document($_REQUEST); 
+            }  
+            // 更新
+            if(isset($_POST["update_document"])){ 
+                $action = "update_document";
+                $swal_json = update_document($_REQUEST);
+             } 
+             // 刪除
+            if(isset($_POST["delete_document"])){ 
+                $action = "delete_document";
+                $swal_json = delete_document($_REQUEST);
+            } 
+            // 儲存
+            if(isset($_POST["save_document"])){
+                $action = "save_document";
+                $swal_json = save_document($_REQUEST); 
+            }  
+        }else{
+            $action = "null function";
+            $swal_json = array(                                 // for swal_json
+                "fun"     => "interView document",
+                "content" => "process處理--",
+                "action"  => "error",
+                "content" => '$_POST參數錯誤'
+            );
+        }
     // 調整flag ==> 20230712改用AJAX
 
 ?>
@@ -62,7 +60,7 @@
 
 <body>
     <div class="col-12">
-        <snap><?php echo !empty($action_fun) ? $action_fun : '[process]'; ?> ...</snap>
+        <snap><?php echo !empty($action) ? $action : '[process]'; ?> ...</snap>
     </div>
 </body>
 
@@ -77,14 +75,11 @@
                 // location.href = this.url;
                 // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:3000});         // 3秒
                 // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{window.close();});           // 關閉畫面
-
             if(swal_json['action'] == 'success'){
                 // swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action'], {buttons: false, timer:2000}).then(()=>{ location.href = url }); // 秒自動關閉畫面
                 swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{history.back()});          // 手動關閉畫面
-
             }else if(swal_json['action'] == 'error'){
                 swal(swal_json['fun'] ,swal_json['content'] ,swal_json['action']).then(()=>{history.back()});          // 手動關閉畫面
-
             }
         }else{
             location.href = url;

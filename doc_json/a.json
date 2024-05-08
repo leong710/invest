@@ -1,0 +1,20 @@
+{
+    "form_title" : "南廠區交通事故訪談表",
+    "version"    : "a",
+    "dcc_no"     : "13ES100016-F002",
+    "form_item"  : {
+        "session_3" : {
+            "label" : "事故原因及經過說明",
+            "info"  : "",
+            "class" : "",
+            "item"  : [
+                {
+                    "label": "事故原因及經過說明",
+                    "type" : "textarea",
+                    "name" : "a_description",
+                    "required": true
+                }
+            ]
+        }
+    }
+}

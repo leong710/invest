@@ -246,8 +246,7 @@
                                         <option value="" hidden>-- [請選擇 棟別] --</option>
                                         <option value="0" selected >-- All Fab --</option>
                                         <?php foreach($fabs as $fab){
-                                            echo "<option value='{$fab["id"]}' title='{$fab["fab_title"]}' ".($fab["flag"] == "Off" ? "disabled":"");
-                                            echo ((isset($_REQUEST["fab_id"]) && $_REQUEST["fab_id"] == $fab["id"]) ? "selected":"" ) .">";
+                                            echo "<option value='{$fab["id"]}' title='{$fab["fab_title"]}' ".((isset($_REQUEST["fab_id"]) && $_REQUEST["fab_id"] == $fab["id"]) ? "selected":"" ) .">";
                                             echo "{$fab["id"]}：{$fab["site_title"]}&nbsp{$fab["fab_title"]}&nbsp({$fab["fab_remark"]})".($fab["flag"] == "Off" ? "&nbsp(已關閉)":"")."</option>";
                                         } ?>
                                     </select>

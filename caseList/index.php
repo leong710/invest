@@ -125,9 +125,9 @@
 
                                     <select name="select_fab_id" id="select_fab_id" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
-                                        <option for="select_fab_id" value="All" <?php echo $select_fab_id == "All" ? "selected":"";?>>-- All 所有fab --</option>
+                                        <option for="select_fab_id" value="All" <?php echo $select_fab_id == "All" ? "selected":"";?>>-- All 所有棟別 --</option>
                                         <option for="select_fab_id" value="allMy" <?php echo $select_fab_id == "allMy" ? "selected":"";?>>
-                                            -- allMy 部門轄下fab <?php echo $sfab_id_str ? "(".$sfab_id_str.")":"";?> --</option>
+                                            -- allMy 部門轄下 <?php echo $sfab_id_str ? "(".$sfab_id_str.")":"";?> --</option>
                                         <?php foreach($fab_lists as $fab){ ?>
                                             <option for="select_fab_id" value="<?php echo $fab["id"];?>" <?php echo $fab["id"] == $select_fab_id ? "selected":"";?>>
                                                 <?php echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; echo ($fab["flag"] == "Off") ? " - (已關閉)":"";?></option>
@@ -160,12 +160,12 @@
                     <table id="caseList" class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>立案年份</th>
+                                <th>ANSI單號</th>
                                 <th>案件簡稱</th>
                                 <th>事件名稱</th>
 
-                                <th>廠別</th>
-                                <th>小廠單位</th>
+                                <th>棟別</th>
+                                <th>廠處別</th>
                                 <th>事故單位</th>
 
                                 <th>表單狀態</th>
@@ -179,12 +179,12 @@
 
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
-                                    <td><?php echo $caseList["case_year"] ?></td>
+                                    <td><?php echo $caseList["anis_no"] ?></td>
                                     <td><?php echo $icon_s.$caseList['_icon'].$icon_e.$caseList['short_name'];?></td>
                                     <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['id'].".".$caseList['case_title'];?></td>
 
                                     <td><?php echo $caseList['fab_title']."(".$caseList['fab_remark'].")";?></td>
-                                    <td><?php echo $caseList['local_id'];?></td>
+                                    <td><?php echo $caseList['local_title'];?></td>
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
                                     <td><?php echo $caseList['idty'];?></td>
@@ -192,7 +192,7 @@
                                     <td><?php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td>
 
                                     <td>
-                                        <a href="..\interView\show.php?uuid=<?php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary" 
+                                        <a href="..\interView\form.php?uuid=<?php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary" 
                                             target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a>
                                         <a href="..\interView\form.php?uuid=<?php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success" 
                                             target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a>

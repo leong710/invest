@@ -90,16 +90,7 @@
             transition: opacity 1s;
             animation: none;
         }
-        .negative {
-            color: darkred;
-            font-weight: bold;
-            text-shadow: 3px 3px 5px rgba(0,0,0,.3);
-        }
-        .get_negative {
-            color: blue;
-            font-weight: bold;
-            text-shadow: 3px 3px 5px rgba(0,0,0,.3);
-        }
+
     </style>
 </head>
 
@@ -135,7 +126,8 @@
                         <span id="delete_btn">
                             <?php if(($sys_role <= 1 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
                                 <form action="process.php" method="post">
-                                    <input type="hidden" name="uuid" value="<?php echo $document_row["uuid"];?>">
+                                    <input type="hidden" name="action"          value="delete">
+                                    <input type="hidden" name="uuid"            value="<?php echo $document_row["uuid"];?>">
                                     <input type="submit" name="delete_document" value="刪除 (Delete)" title="刪除申請單" class="btn btn-danger" onclick="return confirm('確認徹底刪除此單？')">
                                 </form>
                             <?php }?>
@@ -223,28 +215,28 @@
                                         <!-- 第一排的功能 : 顯示已加入名單+input -->
                                         <div class="col-12 py-0">
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">事故當事者(或其委任代理人)<sup class="text-danger"> * </sup></span>
+                                                <span class="input-group-text" style="width:25%;">事故當事者(或其委任代理人)</span>
                                                 <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
                                                 <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表<sup class="text-danger"> * </sup></span>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表</span>
                                                 <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
                                                 <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">環安人員<sup class="text-danger"> * </sup></span>
+                                                <span class="input-group-text" style="width:25%;">環安人員</span>
                                                 <input type="hidden" id="meeting_man_s_select" name="meeting_man_s">
                                                 <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
 
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他非INX與會人員(請用,分隔)<sup class="text-danger"> * </sup></span>
+                                                <span class="input-group-text" style="width:25%;">其他非INX與會人員(請用,分隔)</span>
                                                 <input type="text" id="meeting_man_d" name="meeting_man_d" class="form-control mb-0">
                                             </div>
                                         </div>
@@ -282,7 +274,7 @@
                                         <input type="hidden"  name="created_cname"   id="created_cname"   value="<?php echo $auth_cname;?>">
                                         <input type="hidden"  name="action"          id="action"          value="<?php echo $action;?>">
                                         <input type="hidden"  name="step"            id="step"            value="1">
-                                        <input type="text"  name="idty"            id="idty"            value="1">
+                                        <input type="hidden"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <snap id="submit_action">
@@ -442,7 +434,7 @@
     var meeting_man_target;                         // 指向目標
     var negative_arr  = [];                         // 監聽負向選項
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
-
+    
 </script>
 
 <script src="form.js?v=<?=time()?>"></script>

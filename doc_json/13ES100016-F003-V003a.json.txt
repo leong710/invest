@@ -1,6 +1,6 @@
 {
     "form_title" : "南廠區廠內事故訪談表",
-    "version"    : "V003a",
+    "version"    : "V003",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "session_1" : {
@@ -97,9 +97,9 @@
             "item" : [
                 {
                     "label": "受傷部位",
-                    "type" : "textarea",
-                    "name" : "s4_textarea_1",
                     "info" : "需填寫人員傷勢。",
+                    "type" : "textarea",
+                    "name" : "s4_combo_1",
                     "required": false
                 },
                 {

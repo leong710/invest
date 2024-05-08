@@ -351,47 +351,28 @@
             })    
 
             // 20240507 -- 監聽 negative_opts 負向選項;
-         // let negative_opts = Array.from(document.querySelectorAll("input[type='radio'].negative"));
-            let radios = Array.from(document.querySelectorAll("input[type='radio']"));
+            let radios_all    = Array.from(document.querySelectorAll("input[type='radio'], input[type='checkbox']"));   // 取得所有radio和checkbox
             let negative_opts = Array.from(document.querySelectorAll(".negative"));         // 負向選項
-            let get_negatives = Array.from(document.querySelectorAll(".get_negative"));     // 負向對象
+            let get_negatives = Array.from(document.querySelectorAll(".get_negative"));     // 負向to對象
+            let radios        = radios_all.filter(radio => !get_negatives.includes(radio)); // 將所有radio和checkbox清單中移除 負向to對象，避免干擾
+            // 监听单选按钮组中的任何一个单选按钮的 change 事件
                 radios.forEach((rdo) => {
                     rdo.addEventListener('change', () => {
-                        console.log('rdo:', rdo.id);
-                        
                         // 检查当前单选按钮是否是负向选项
-                        if (negative_opts.includes(rdo)) {
+                        // if (negative_opts.includes(rdo)) {   // 原本是過濾點選事件是否為[負向選項]，取消原因是要讓非[負向選項]也可以進行滾算
                             // 计算 negative_arr 数组
                             negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
-                        }
-                            
+                        // }
                         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
                         get_negatives.forEach((get_n) => {
                             let isChecked = negative_arr.length > 0;
                             get_n.checked = isChecked;
-                            $('#' + get_n.id + '_o').toggleClass('unblock', !isChecked);
+                            // $('#'+get_n.id+'_o').toggleClass('unblock', !isChecked);
+                            $('#'+get_n.id+'_o').toggleClass('unblock', !isChecked).prop("disabled", !isChecked);
                         });
                     });
                 });
-            // 监听单选按钮组中的任何一个单选按钮的 change 事件
-                // radios.forEach((rdo) => {
-                //     rdo.addEventListener('change', () => {
-                //         console.log('rdo:', rdo.id);
-                        
-                //     });
-                // });
-                // negative_opts.forEach((n_opt) => {
-                //     n_opt.addEventListener('change', () => {
-                //         // 计算 negative_arr 数组
-                //         let negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
-                //         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
-                //         get_negatives.forEach((get_n) => {
-                //             let isChecked = negative_arr.length > 0;
-                //             get_n.checked = isChecked;
-                //             $('#' + get_n.id + '_o').toggleClass('unblock', !isChecked);
-                //         });
-                //     });
-                // });
+
             // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
             $('#a_work_s, #a_work_e').change(function() {
                 let currentDate = new Date();                       // 取得今天日期
@@ -690,14 +671,16 @@
             let match;
             Object.keys(_content).forEach(function(content_key){        // 將原陣列_content逐筆繞出來
                 let option_value = _content[content_key];
+                    // console.log('_key, _value : ', content_key, option_value);
                 const regex = new RegExp('combo', 'gi');                // 建立比對文字'combo'
                 if ((match = regex.exec(content_key)) === null) {       // 非combo選項，直接帶入value
                     $('#'+content_key).val(option_value); 
+                    
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     if(option_value !== null){                          // 預防空值null
                         option_value.forEach((item_value, index)=>{
-                            // if (['其他', '無'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                            if (['其他', '無', '否', 'Other', '1', '2', '3'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                            // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                            if (['其他', '無', '否', '有', 'Other'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
                                 $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
                             }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
                                 $('#' + content_key + '_' + item_value).prop('checked', true);

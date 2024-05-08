@@ -34,6 +34,44 @@
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/caseList/"><i class="fa-solid fa-list-check"></i>&nbsp<b>訪問清單</b></a></li>
                                     <li><hr class="dropdown-divider"></li>
 
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/stock/"><i class="fa-solid fa-boxes-stacked"></i>&nbsp<b>倉庫庫存</b>
+                                        <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-car-on"></i></span>
+                                        </a></li>
+
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/stock/sum_report.php"><i class="fa-solid fa-chart-column"></i>&nbsp<b>PPE器材管控清單</b></a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/dashBoard/sum_report.php"><i class="fa-solid fa-list"></i><i class="fa-solid fa-truck"></i>&nbsp進出量與成本匯總</a></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <?php if($sys_role <= 2 ){ ?>
+                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/trade/form.php"><i class="fa-solid fa-upload"></i>&nbsp調撥出庫</a></li>
+                                    <?php } if($sys_role <= 1 ){ ?>
+                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/trade/restock.php"><i class="fa-solid fa-download"></i>&nbsp其他入庫</a></li>
+                                    <?php }?>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/trade/"><i class="fa-solid fa-2"></i>&nbsp<b>出入作業總表</b>
+                                        <?php if($numTrade !=0){?>
+                                            &nbsp<span class="badge rounded-pill bg-danger"><?php echo $numTrade; ?></span>
+                                        <?php }?></a></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <?php if($sys_role <= 2 ){ ?>
+                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/issue/form.php"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp請購需求</a></li>
+                                    <?php }?>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/issue/"><i class="fa-solid fa-1"></i>&nbsp<b>請購需求總表</b>
+                                        <?php if($numIssue !=0){?>
+                                            &nbsp<span class="badge rounded-pill bg-danger"><?php echo $numIssue; ?></span>
+                                        <?php }?></a></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/pt_stock/sum_report.php"><i class="fa-solid fa-chart-column"></i>&nbsp<b>除汙器材管控清單</b></a></li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/pno/"><i class="fa-solid fa-list"></i>&nbsp料號管理</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/catalog/"><i class="fas fa-th-large"></i>&nbsp器材目錄管理</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/local/low_level.php"><i class="fa-solid fa-retweet"></i>&nbsp安全存量設定</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/supp/"><i class="fa-solid fa-address-book"></i>&nbsp供應商聯絡人管理</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+
                                 </ul>
                             </li>
                         <?php } ?>
