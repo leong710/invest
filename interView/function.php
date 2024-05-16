@@ -12,27 +12,27 @@
 
         // 例外處理單元：s
             // 處理a_pic上傳檔案
-            if(!empty($a_pic)){ $a_pic = uploadFile($a_pic);
-                }else{ $a_pic = null; }
-            if(empty($confirm_sign)){ $confirm_sign = null; }
-            if(empty($ruling_sign)) { $ruling_sign = null; }
-            if(empty($_focus))      { $_focus = null; }
+            $a_pic = !empty($a_pic) ? uploadFile($a_pic) : null; 
+
+            $confirm_sign = !empty($confirm_sign) ? $confirm_sign : null ; 
+            $ruling_sign  = !empty($ruling_sign)  ? $ruling_sign  : null ; 
+            $_focus       = !empty($_focus)       ? $_focus       : null ; 
+
             if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $meeting_time)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
                 $meeting_time = convertDateTimeFormat($meeting_time);               // 转换日期时间格式
             }
-            $_content = $_REQUEST;
+            $_content   = $_REQUEST;
             // 使用迴圈刪除指定的元素
             $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'anis_no','case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
                                 ,'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d','created_emp_id','created_cname','action','step','idty','uuid','dcc_no');
-                foreach ($unset_keys as $key) {
-                    unset($_content[$key]);
-                }
+            // foreach ($unset_keys as $key) { unset($_content[$key]); }
+            //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
+            $_content = array_diff_key($_content, array_flip($unset_keys));  
 
             // 把特定物件轉json
             $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
-                foreach ($to_json_keys as $jkey) {
-                    $$jkey = json_encode($$jkey);
-                }
+            foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
+
         // 例外處理單元：e
 
         // 製作log紀錄前處理：塞進去製作元素
@@ -50,7 +50,7 @@
         $sql = "INSERT INTO _document( _focus, _content, confirm_sign, ruling_sign, a_pic 
                             , idty, dcc_no, fab_id, local_id, case_title,   anis_no, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s, meeting_man_d
                             , created_emp_id, created_cname, updated_cname, logs, meeting_time,   created_at, updated_at, uuid)
-                    VALUES( ?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
+                VALUES( ?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
@@ -77,9 +77,10 @@
 
             // 把特定json轉物件
             $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
-                foreach ($re_json_keys as $jkey) {
-                    $_document[$jkey] = json_decode($_document[$jkey]);
-                }
+            foreach ($re_json_keys as $jkey) { $_document[$jkey] = json_decode($_document[$jkey]); }
+            // 可以使用 array_map() 函数结合匿名函数，这样就不需要显式地使用 foreach 循环了
+            // array_map(function($jkey) use (&$_document) { $_document[$jkey] = json_decode($_document[$jkey]); }, $re_json_keys);
+
             return $_document;
             
         }catch(PDOException $e){
@@ -102,10 +103,10 @@
             $swal_json["content"] .= $idty == "6" ? "暫存表單--":"";                // 20240506 -- 表單暫存
 
         // step1.例外處理單元：s
-            if(empty($a_pic))       { $a_pic = null; }                              // *** 上傳檔案要後面處理
-            if(empty($confirm_sign)){ $confirm_sign = null; }
-            if(empty($ruling_sign)) { $ruling_sign = null;  }
-            if(empty($_focus))      { $_focus = null; }
+        $a_pic        = !empty($a_pic)        ? $a_pic        : null ;                               // *** 上傳檔案要後面處理
+        $confirm_sign = !empty($confirm_sign) ? $confirm_sign : null ; 
+        $ruling_sign  = !empty($ruling_sign)  ? $ruling_sign  : null ; 
+        $_focus       = !empty($_focus)       ? $_focus       : null ; 
             if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $meeting_time)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
                 $meeting_time = convertDateTimeFormat($meeting_time);               // 转换日期时间格式
             }
@@ -117,9 +118,10 @@
 
         // step3.使用迴圈刪除指定的元素for舊紀錄 因為不需要比對
             $unset_keys = array( 'id','uuid','idty','created_emp_id','created_cname','created_at','updated_at','updated_cname','update_document','logs','editions'); 
-            foreach ($unset_keys as $key) {
-                unset($row_document[$key]);
-            }
+            // foreach ($unset_keys as $key) { unset($row_document[$key]); }
+            //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
+            $row_document = array_diff_key($row_document, array_flip($unset_keys));  
+
         // step4-1.使用迴圈刪除指定的元素，並將指定的元素提前進行比對(小圈)
             $unset_keys = array('_focus', '_content' );
             foreach ($unset_keys as $unset_key) {
@@ -205,8 +207,8 @@
                         }
                     }
 
-                    echo $row_key." : ".$row_document[$row_key]." => ".$$row_key. "</br>";                  // 螢幕顯示
                     $edit_item = $row_document[$row_key]." => ".$$row_key;                                  // 生成修改訊息
+                    echo $row_key." : ".$edit_item. "</br>";                  // 螢幕顯示
                     
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $row_key."=?, ";
@@ -278,6 +280,7 @@
         // step9.返回swal
         return $swal_json;
     }
+
     function delete_document($request){
         $pdo = pdo();
         extract($request);
@@ -315,18 +318,14 @@
         $pdo = pdo();
         extract($request);
 
-        $sql_check = "SELECT _document.* FROM _document WHERE id=?";
+        $sql_check = "SELECT _document.* FROM _document WHERE id=? ";
         $stmt_check = $pdo -> prepare($sql_check);
         $stmt_check -> execute([$id]);
-        $row = $stmt_check -> fetch();
+        $row = $stmt_check -> fetch(PDO::FETCH_ASSOC);
 
-        if($row['flag'] == "Off" || $row['flag'] == "chk"){
-            $flag = "On";
-        }else{
-            $flag = "Off";
-        }
+        $flag = ($row['flag'] == "Off" || $row['flag'] == "chk") ? "On" : "Off" ;        
 
-        $sql = "UPDATE _document SET flag=? WHERE id=?";
+        $sql = "UPDATE _document SET flag=? WHERE id=? ";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$flag, $id]);
@@ -346,7 +345,7 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
-            $formcase = $stmt->fetchAll();
+            $formcase = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $formcase;
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -495,7 +494,7 @@
                 $stmt = $pdo->prepare($sql);
                 try {
                     $stmt->execute([$uuid]);
-                    $receive_logs = $stmt->fetch();
+                    $receive_logs = $stmt->fetch(PDO::FETCH_ASSOC);
                     return $receive_logs;
 
                 }catch(PDOException $e){

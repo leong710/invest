@@ -192,7 +192,7 @@
                                     <td><?php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td>
 
                                     <td>
-                                        <a href="..\interView\form.php?uuid=<?php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary" 
+                                        <a href="..\interView\show.php?uuid=<?php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary" 
                                             target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a>
                                         <a href="..\interView\form.php?uuid=<?php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success" 
                                             target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a>
