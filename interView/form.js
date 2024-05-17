@@ -69,7 +69,7 @@
             $('#idty').val('6');                            // 6 = 暫存
             $('#saveSubmit .modal-header').removeClass('bg-primary').addClass("bg-success");    // 切換標題底色
             $('#modal_body').addClass("unblock");           // 切換sign command
-            let save_btn =   '<button type="submit" value="Save"   name="save_document"   class="btn btn-success" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 儲存 (Save)</button>';
+            let save_btn =   '<button type="submit" value="Save" name="save_document" class="btn btn-success" onclick="setFormBequired()" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 儲存 (Save)</button>';
             $('#submit_action').append(save_btn);           // model_btn功能
 
         }
@@ -305,10 +305,9 @@
                     var signatureImage = document.getElementById(padNumber + '_signature-image');
                     $('#' + padNumber + '_signature-input').val('');            // base64儲存格
                     signaturePad.clear();                                       // 手寫盤
-                    signatureImage.src = '../image/signin_empty.png';           // 預覽圖
+                    // signatureImage.src = '../image/signin_empty.png';           // 清除預覽圖並給預設值
                 });
             });
-
             var saveButtons = document.querySelectorAll('.save-btn');
             saveButtons.forEach(function(button) {
                 button.addEventListener('click', function(event) {
@@ -321,6 +320,15 @@
                         var dataURL = signaturePad.toDataURL();
                         signatureImage.src = dataURL;                           // 預覽圖
                         $('#' + padNumber + '_signature-input').val(dataURL);   // base64儲存格
+                            // // 20240517_創建包含簽名和UUID的對象
+                               // var uuid = 'a6c56412-0ce3-11ef-8582-2cfda183ef4f';
+                               // var signatureData = {
+                               //     uuid: uuid,
+                               //     signature: dataURL
+                               // };
+                               // var signatureJSON = JSON.stringify(signatureData);              // 將對象轉換為JSON字串
+                               // var encodedSignature = btoa(signatureJSON);                     // 將JSON字串進行base64編碼
+                               // $('#' + padNumber + '_signature-input').val(encodedSignature);  // 將編碼後的字串儲存在輸入框中
                     }
                 });
             });
@@ -389,10 +397,10 @@
             // 監聽到職日欄位(id=hired)，自動計算年資並output(id=rload)
             // 監聽事故時間欄位(id=a_day)，自動確認是否結束大於開始
             $('#hired, #a_day ,#anis_day').change(function() {
-                let currentDate = new Date();                       // 取得今天日期
-                let hired       = new Date($("#hired").val());            // 取得到職日
-                let a_day       = new Date($("#a_day").val());            // 取得事故日期
-                let anis_day    = new Date($("#anis_day").val());            // 取得事故日期
+                let currentDate = new Date();                               // 取得今天日期
+                let hired       = new Date($("#hired").val());              // 取得到職日
+                let a_day       = new Date($("#a_day").val());              // 取得事故日期
+                let anis_day    = new Date($("#anis_day").val());           // 取得事故日期
                 // 到職日不得大於現在時間....
                 if(this.id == 'hired'){
                     if(currentDate >= hired){
@@ -426,6 +434,16 @@
                 }
             });
             resolve(); // 文件載入成功，resolve
+        });
+    }
+    // 20240517 -- 暫存表單
+    function setFormBequired(){
+        console.log('setFormBequired...');
+        var form = document.getElementById('item_list');                // 獲取表單元素
+        var requiredElements = form.querySelectorAll('[required]');     // 獲取表單內所有含有 required 屬性的元素
+        requiredElements.forEach(function(element) {                    // 遍歷這些元素，移除 required 屬性並添加 bequired 屬性
+            element.removeAttribute('required');
+            element.setAttribute('bequired', 'true');
         });
     }
 
