@@ -46,7 +46,7 @@
 ?>
 
 <?php include("../template/header.php"); ?>
-<?php include("../template/nav.php"); ?>
+<!-- <php include("../template/nav.php"); ?> -->
 <head>
     <link href="../../libs/aos/aos.css" rel="stylesheet">                                           <!-- goTop滾動畫面aos.css 1/4-->
     <script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>            <!-- Jquery -->
@@ -97,7 +97,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-10 border rounded px-4 py-4" style="background-color: #D4D4D4;">
+            <div class="col-11 border rounded px-4 py-4" style="background-color: #D4D4D4;">
                 <!-- 表頭1 -->
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
@@ -112,7 +112,7 @@
                                 <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
-                        <a href="<?php echo $up_href;?>" class="btn btn-secondary" onclick="return confirm('確認返回？');" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</a>
+                        <button type="button" class="btn btn-secondary" onclick="closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
                 </div>
                 <div class="row px-2">
@@ -416,9 +416,10 @@
 
 </body>
 
-<script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
-<script src="../../libs/aos/aos_init.js"></script>  <!-- goTop滾動畫面script.js 4/4-->
+<script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
+<script src="../../libs/aos/aos_init.js"></script>          <!-- goTop滾動畫面script.js 4/4-->
 <script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>     <!-- 簽名板外掛 -->
+<script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 <!-- <script src="../../libs/moment/moment.min.js"></script> -->
 
 <script>

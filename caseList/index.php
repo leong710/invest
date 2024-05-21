@@ -108,19 +108,21 @@
                                     <select name="select_year" id="select_year" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷年度 --</option>
                                         <option for="select_year" value="All" <?php echo $select_year == "All" ? "selected":"";?>>-- All 所有年度 --</option>
-                                        <?php foreach($year_lists as $_year){ ?>
-                                            <option for="select_year" value="<?php echo $_year["_year"];?>" <?php echo $_year["_year"] == $select_year ? "selected":"";?>>
-                                                <?php echo $_year["_year"]."y";?></option>
-                                        <?php } ?>
+                                        <?php foreach($year_lists as $_year){
+                                            echo "<option for='select_year' value='{$_year["_year"]}' ";
+                                            echo $_year["_year"] == $select_year ? "selected" : "";
+                                            echo " >".$_year["_year"]."y</option>";
+                                        } ?>
                                     </select>
 
                                     <select name="select_short_name" id="select_short_name" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
                                         <option for="select_short_name" value="All" <?php echo $select_short_name == "All" ? "selected":"";?>>-- All 所有類型 --</option>
-                                        <?php foreach($shortName_lists as $shortName){ ?>
-                                            <option for="select_short_name" value="<?php echo $shortName["short_name"];?>" <?php echo $shortName["short_name"] == $select_short_name ? "selected":"";?>>
-                                                <?php echo $shortName["short_name"];?></option>
-                                        <?php } ?>
+                                        <?php foreach($shortName_lists as $shortName){
+                                            echo "<option for='select_short_name' value='{$shortName["short_name"]}' ";
+                                            echo $shortName["short_name"] == $select_short_name ? "selected" : "";
+                                            echo " >".$shortName["short_name"]."</option>";
+                                        } ?>
                                     </select>
 
                                     <select name="select_fab_id" id="select_fab_id" class="form-select" >
@@ -128,10 +130,12 @@
                                         <option for="select_fab_id" value="All" <?php echo $select_fab_id == "All" ? "selected":"";?>>-- All 所有棟別 --</option>
                                         <option for="select_fab_id" value="allMy" <?php echo $select_fab_id == "allMy" ? "selected":"";?>>
                                             -- allMy 部門轄下 <?php echo $sfab_id_str ? "(".$sfab_id_str.")":"";?> --</option>
-                                        <?php foreach($fab_lists as $fab){ ?>
-                                            <option for="select_fab_id" value="<?php echo $fab["id"];?>" <?php echo $fab["id"] == $select_fab_id ? "selected":"";?>>
-                                                <?php echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; echo ($fab["flag"] == "Off") ? " - (已關閉)":"";?></option>
-                                        <?php } ?>
+                                        <?php foreach($fab_lists as $fab){
+                                            echo "<option for='select_fab_id' value='{$fab["id"]}' ";
+                                            echo ($fab["id"] == $select_fab_id) ? "selected" : "" ." >";
+                                            echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                            echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
+                                        } ?>
                                     </select>
 
                                     <button type="submit" class="btn btn-outline-secondary search_btn" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
@@ -152,6 +156,7 @@
                                     <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($select_fab["id"]) ? $select_fab["fab_title"]." (".$select_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
                                         <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
                                 </form>
+                                <button type="button" id="test_btn" class="btn btn-success" onclick="openUrl('google.com')" > test </button>
                             </div>
                         </div>
                         <!-- Bootstrap Alarm -->
@@ -192,10 +197,15 @@
                                     <td><?php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td>
 
                                     <td>
-                                        <a href="..\interView\show.php?uuid=<?php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary" 
-                                            target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a>
-                                        <a href="..\interView\form.php?uuid=<?php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success" 
-                                            target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <!-- <a href="..\interView\show.php?uuid=<php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary"  -->
+                                            <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a> -->
+                                        <!-- <a href="..\interView\form.php?uuid=<php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success"  -->
+                                            <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a> -->
+
+                                        <button type="button" value="..\interView\show.php?action=review&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-primary" 
+                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></button>
+                                        <button type="button" value="..\interView\form.php?action=edit&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-success" 
+                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></button>
                                     </td>
                                 </tr>
 
@@ -227,6 +237,7 @@
 <script src="../../libs/aos/aos.js"></script>                       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>                  <!-- goTop滾動畫面script.js 4/4-->
 <script src="../../libs/sweetalert/sweetalert.min.js"></script>     <!-- 引入 SweetAlert 的 JS 套件 參考資料 https://w3c.hexschool.com/blog/13ef5369 -->
+<script src="../../libs/openUrl/openUrl.js"></script>               <!-- 彈出子畫面 -->
 
 <script>
 // // // 開局導入設定檔

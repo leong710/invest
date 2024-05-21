@@ -403,9 +403,11 @@
                 let anis_day    = new Date($("#anis_day").val());           // 取得事故日期
                 // 到職日不得大於現在時間....
                 if(this.id == 'hired'){
-                    if(currentDate >= hired){
+                    // if(currentDate >= hired){
+                    if(a_day >= hired){
                         // 計算年月日
-                        let difference  = currentDate - hired;        // 計算日期差距（毫秒單位）
+                        // let difference  = currentDate - hired;        // 計算日期差距（毫秒單位）  ==> 開會當天-到職日 = 年資
+                        let difference  = a_day - hired;        // 計算日期差距（毫秒單位）  ==> 事故日-到職日 = 年資
                         let years       = Math.floor(difference / (365.25 * 24 * 60 * 60 * 1000));
                         let months      = Math.floor((difference % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
                         let days        = Math.floor((difference % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
@@ -496,7 +498,7 @@
             case 'datetime':
                 int_a = dcff +
                         // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
-                        '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="" ' +
+                        '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control text-center" id="' + item_a.name + '" value="" ' +
                         (item_a.required ? 'required' : '') + '>' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
                 break;
             case 'textarea':
@@ -504,7 +506,7 @@
                     '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
                     + (item_a.required ? 'required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
 
-                int_a = '<div class="p-2">' + int_a + '</div>';
+                // int_a = '<div class="p-2">' + int_a + '</div>';
                 break;
             case 'radio':
             case 'checkbox':
@@ -635,9 +637,11 @@
         // 2.與會人員
         let meeting_info2_arr = ['meeting_man_a', 'meeting_man_o', 'meeting_man_s'];
         meeting_info2_arr.forEach((meeting_man)=>{
-            if(document_row[meeting_man].length >=1 ){
+            // console.log(meeting_man, document_row[meeting_man]);
+            if(Object.keys(document_row[meeting_man]).length >=1 ){
                 meeting_man_target = meeting_man;                                 // let key => target
                 meeting_man_val = JSON.parse('['+document_row[meeting_man]+']');  // 取出的字串藥先用 [ ] 包起來，再轉成JSON物件
+
                 for(let i=0; i < meeting_man_val.length; i++){                    // 依照物件長度進行遶圈
                     tagsInput_me(JSON.stringify(meeting_man_val[i]));             // 轉成字串進行渲染
                 }
@@ -834,10 +838,10 @@
                 await load_form(dcc_no);                    // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
                 await eventListener();                      // step_1-2 eventListener();             // 
+                await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
             if(action == "edit" || action == "review" ){
                 await load_document(uuid);                  // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
             }
-                await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
 
         } catch (error) {
             console.error(error);

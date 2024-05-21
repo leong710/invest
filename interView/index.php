@@ -47,9 +47,9 @@
    <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">                            <!-- mloading CSS 2/3 -->
    <script src="../../libs/jquery/mloading_init.js"></script>                                      <!-- mLoading_init.js 3/3 -->
    <style>
-        a:hover {
+        /* a:hover {
             color: blue;
-        }
+        } */
    </style>
 </head>
 
@@ -128,6 +128,7 @@
         </div>
     </div>
 </body>
+<script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 
 <script>
     var formcases = <?=json_encode($formcases)?>;   // 取得表單清單
@@ -137,7 +138,7 @@
 
     function make_btn(value_1){
         if(value_1.dcc_no){
-            var int_b = '<a class="btn btn-outline-primary " href="form.php?dcc_no='+ value_1.dcc_no +'" >' + icon_s + value_1._icon + icon_e + '</br>' + value_1.dcc_no + '</br>' + value_1.title + '</a>' 
+            var int_b = "<button type='button' class='btn btn-outline-primary ' value='form.php?dcc_no="+ value_1.dcc_no +"' onclick='openUrl(this.value)' ><div class='p-3'>" + icon_s + value_1._icon + icon_e + "</br><hr>" + value_1.dcc_no + "</br>" + value_1.title + "</div></button>";
             return int_b;
         }else{
             return '<snap class="btn btn-outline-secondary">' + value_1.title + '</br>-- 無效json表單 --</snap>';
@@ -148,9 +149,9 @@
         if(formcases){                                                                          // confirm form_item is't empty
             for (const [key_1, value_1] of Object.entries(formcases)) {
                 if(formcases_length % 3 == 0){
-                    int_btn = '<div class="col-12 col-md-4 text-center p-2">' + make_btn(value_1) + '</div>';
+                    int_btn = '<div class="col-6 col-md-4 text-center p-2 ">' + make_btn(value_1) + '</div>';
                 }else if(formcases_length % 2 == 0){
-                    int_btn = '<div class="col-12 col-md-6 text-center p-2">' + make_btn(value_1) + '</div>';
+                    int_btn = '<div class="col-6 col-md-6 text-center p-2 ">' + make_btn(value_1) + '</div>';
                 }else{
                     int_btn = '<div class="col-12 text-center p-2">' + make_btn(value_1) + '</div>';
                 }

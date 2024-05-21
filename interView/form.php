@@ -46,7 +46,7 @@
 ?>
 
 <?php include("../template/header.php"); ?>
-<?php include("../template/nav.php"); ?>
+<!-- <php include("../template/nav.php"); ?> -->
 <head>
     <link href="../../libs/aos/aos.css" rel="stylesheet">                                           <!-- goTop滾動畫面aos.css 1/4-->
     <script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>            <!-- Jquery -->
@@ -97,7 +97,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-10 border rounded px-4 py-4" style="background-color: #D4D4D4;">
+            <div class="col-11 border rounded px-4 py-4" style="background-color: #D4D4D4;">
                 <!-- 表頭1 -->
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-0" id="home_title">
@@ -112,13 +112,13 @@
                                 <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
-                        <a href="<?php echo $up_href;?>" class="btn btn-secondary" onclick="return confirm('確認返回？');" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</a>
+                        <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
                 </div>
                 <div class="row px-2">
                     <div class="col-12 col-md-6 py-1">
                         訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
-                        開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(實際以送出時間為主)":$document_row['created_at']; ?></br>
+                        開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
                         填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
                     </div>
                     <div class="col-12 col-md-6 py-1 text-end">
@@ -215,28 +215,28 @@
                                         <!-- 第一排的功能 : 顯示已加入名單+input -->
                                         <div class="col-12 py-0">
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">事故當事者(或其委任代理人)</span>
+                                                <span class="input-group-text" style="width:30%;">事故當事者(或委任代理人)</span>
                                                 <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
                                                 <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表</span>
+                                                <span class="input-group-text" style="width:30%;">其他與會人員/勞工代表</span>
                                                 <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
                                                 <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">環安人員</span>
+                                                <span class="input-group-text" style="width:30%;">環安人員</span>
                                                 <input type="hidden" id="meeting_man_s_select" name="meeting_man_s">
                                                 <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
 
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他非INX與會人員(請用,分隔)</span>
+                                                <span class="input-group-text" style="width:30%;">其他與會人員(請用,分隔)</span>
                                                 <input type="text" id="meeting_man_d" name="meeting_man_d" class="form-control mb-0">
                                             </div>
                                         </div>
@@ -416,9 +416,10 @@
 
 </body>
 
-<script src="../../libs/aos/aos.js"></script>       <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
-<script src="../../libs/aos/aos_init.js"></script>  <!-- goTop滾動畫面script.js 4/4-->
+<script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
+<script src="../../libs/aos/aos_init.js"></script>          <!-- goTop滾動畫面script.js 4/4-->
 <script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>     <!-- 簽名板外掛 -->
+<script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 <!-- <script src="../../libs/moment/moment.min.js"></script> -->
 
 <script>
