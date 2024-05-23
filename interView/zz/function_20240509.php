@@ -12,7 +12,7 @@
 
         // 例外處理單元：s
             // 處理a_pic上傳檔案
-            $a_pic        = !empty($a_pic)   ? uploadFile($a_pic) : null; 
+            $a_pic = !empty($a_pic) ? uploadFile($a_pic) : null; 
 
             $confirm_sign = !empty($confirm_sign) ? $confirm_sign : null ; 
             $ruling_sign  = !empty($ruling_sign)  ? $ruling_sign  : null ; 
@@ -23,32 +23,15 @@
             }
             $_content   = $_REQUEST;
             // 使用迴圈刪除指定的元素
-            $unset_keys = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d',
-                                'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
-                                'submit_document','update_document','save_document');
+            $unset_keys = array( 'confirm_sign','ruling_sign','a_pic'   ,'anis_no','case_title','a_dept','meeting_time','meeting_local'   ,'submit_document','fab_id','local_id','sign_comm'
+                                ,'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d','created_emp_id','created_cname','action','step','idty','uuid','dcc_no');
             // foreach ($unset_keys as $key) { unset($_content[$key]); }
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
             $_content = array_diff_key($_content, array_flip($unset_keys));  
 
             // 把特定物件轉json
-            // $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
-            // foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
-
-                    $data = [
-                        '_focus'        => $_focus,
-                        '_content'      => $_content,
-                        'meeting_man_a' => $meeting_man_a,
-                        'meeting_man_o' => $meeting_man_o,
-                        'meeting_man_s' => $meeting_man_s
-                    ];
-
-                    foreach ($data as $key => $value) { $data[$key] = json_encode($value); }
-                    
-                    $_focus        = $data['_focus'];
-                    $_content      = $data['_content'];
-                    $meeting_man_a = $data['meeting_man_a'];
-                    $meeting_man_o = $data['meeting_man_o'];
-                    $meeting_man_s = $data['meeting_man_s'];
+            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
+            foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
 
         // 例外處理單元：e
 
@@ -114,9 +97,9 @@
             $editions   = [];                           // 起始-修改項目log
             $edited_log = [];                           // 起始-修改項目log
             $swal_json  = array(                        // for swal_json
-                                "fun"       => "update_document",
-                                "content"   => "更新表單--"
-                            );
+                "fun"       => "update_document",
+                "content"   => "更新表單--"
+            );
             $swal_json["content"] .= $idty == "6" ? "暫存表單--":"";                // 20240506 -- 表單暫存
 
         // step1.例外處理單元：s
@@ -134,69 +117,49 @@
             $row_editions = $row_document["editions"];
 
         // step3.使用迴圈刪除指定的元素for舊紀錄 因為不需要比對
-            $unset_keys = array('uuid','idty',  'created_emp_id','created_cname','updated_cname',  'created_at','updated_at',
-                                'submit_document','update_document','save_document',  'id','logs','editions' ); 
+            $unset_keys = array( 'id','uuid','idty','created_emp_id','created_cname','created_at','updated_at','updated_cname','update_document','logs','editions'); 
             // foreach ($unset_keys as $key) { unset($row_document[$key]); }
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
-            $row_document = array_diff_key($row_document, array_flip($unset_keys));     // 舊文件--去殼成 純舊文件
-            $new_document = array_diff_key($request     , array_flip($unset_keys));     // 新文件--去殼成 純新文件
+            $row_document = array_diff_key($row_document, array_flip($unset_keys));  
 
         // step4-1.使用迴圈刪除指定的元素，並將指定的元素提前進行比對(小圈)
-            // $new_content = $request;
-            $unset_keys_content = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d',
-                                        'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
-                                        'submit_document','update_document','save_document' );
-
-            // $_content = array_diff_key($new_document, array_flip($unset_keys_content));      // 新文件--去殼成 新文件-內容
-            
-            // *** 這裡要重新拆內容，以符合save暫存的比對需求
-                    // $unset_keys = array('_focus', '_content' );
-            $unset_keys = [
-                // '_focus'    => $row_document['_focus'], 
-                '_focus'    => !empty($_focus) ? $_focus : null ,
-                // '_content'  => $_content
-                '_content'  => array_diff_key($new_document, array_flip($unset_keys_content))      // 新文件--去殼成 新文件-內容
-            ];
-            
-            // foreach ($unset_keys as $unset_key) {
-            foreach ($unset_keys as $unset_key => $new_key_obj ) {
-                    // $$unset_key = (array) $row_document[$unset_key];    // 先從記錄中帶出來 => 內圈 '_focus', '_content'
-                $row_key_obj = (array) $row_document[$unset_key];    // 先從記錄中帶出來 => 內圈 '_focus', '_content'
+            $unset_keys = array('_focus', '_content' );
+            foreach ($unset_keys as $unset_key) {
+                $$unset_key = (array) $row_document[$unset_key];    // 先從記錄中帶出來 => 內圈
                 unset($row_document[$unset_key]);                   // 從記錄中移除
                 $edited_log[$unset_key] = [];                       // 起始-修改項目log[主題key]
 
-                        // $row_keys = array_keys($$unset_key);                // 取出內圈的 key_list
-                $new_keys = array_keys($new_key_obj);                // 取出內圈的 key_list => new_document
-                foreach($new_keys as $new_key){
+                $row_keys = array_keys($$unset_key);                // 取出內圈的 key_list
+                foreach($row_keys as $row_key){
                     $edit_item = [];                                // 起始-修改項目 & 清空
-                    if(gettype($new_key_obj[$new_key]) == 'array' || gettype($new_key_obj[$new_key]) == 'object'){        // 針對combo項目進行判別
-                        $row_item = json_encode($row_key_obj[$new_key]);            
-                        $new_item = json_encode($new_key_obj[$new_key]);
-                        if( $row_item != $new_item){
-                            $row_item = json_encode($row_key_obj[$new_key], JSON_UNESCAPED_UNICODE );        // 中文不編碼
-                            $new_item = json_encode($new_key_obj[$new_key], JSON_UNESCAPED_UNICODE );
-                            echo $new_key." : ".$row_item ." => ".$new_item. "</br>";                       // 螢幕顯示
-                            $edit_item = $row_item." => ".$new_item;                                        // 生成修改訊息
-                            $row_key_obj[$new_key] = $new_key_obj[$new_key];                                // 把有修改的部分倒回去陣列
+                    if(gettype($$unset_key[$row_key]) == 'array' || gettype($$unset_key[$row_key]) == 'object'){        // 針對combo項目進行判別
+                        $old_item = json_encode($$unset_key[$row_key]);            
+                        $new_item = json_encode($$row_key);
+                        if($new_item != $old_item ){
+                            $old_item = json_encode($$unset_key[$row_key], JSON_UNESCAPED_UNICODE );        // 中文不編碼
+                            $new_item = json_encode($$row_key,             JSON_UNESCAPED_UNICODE );
+                            echo $row_key." : ".$old_item ." => ".$new_item. "</br>";                       // 螢幕顯示
+                            $edit_item = $old_item." => ".$new_item;                                        // 生成修改訊息
+                            $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
                         }
                     }else{
-                        if(isset($new_key_obj[$new_key])){
-                            if(gettype($new_key_obj[$new_key]) != 'array' && gettype($new_key_obj[$new_key]) != 'object'){            // 預防value是陣列或物件
-                                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_key_obj[$new_key])) {      // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                                    $new_key_obj[$new_key]  = convertDateTimeFormat($new_key_obj[$new_key]);        // 转换日期时间格式
+                        if(isset($$row_key)){
+                            if(gettype($$row_key) != 'array' && gettype($$row_key) != 'object'){            // 預防value是陣列或物件
+                                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$row_key)) {               // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                                    $$row_key = convertDateTimeFormat($$row_key);                               // 转换日期时间格式
                                 }
-                                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $row_key_obj[$new_key])) {      // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                                    $row_key_obj[$new_key]  = convertDateTimeFormat($row_key_obj[$new_key]);        // 转换日期时间格式
+                                if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $$unset_key[$row_key])) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                                    $$unset_key[$row_key] = convertDateTimeFormat($$unset_key[$row_key]);       // 转换日期时间格式
                                 }
                             }
                         }else{
-                            $new_key_obj[$new_key] = null;
+                            $$row_key = null;
                         }
 
-                        if($new_key_obj[$new_key] != $row_key_obj[$new_key]){
-                            echo $row_key." : ".$row_key_obj[$new_key]." => ".$new_key_obj[$new_key]. "</br>";            // 螢幕顯示
-                            $edit_item = $row_key_obj[$new_key]." => ".$new_key_obj[$new_key];                            // 生成修改訊息
-                            $row_key_obj[$new_key] = $new_key_obj[$new_key];                                              // 把有修改的部分倒回去陣列
+                        if($$row_key != $$unset_key[$row_key]){
+                            echo $row_key." : ".$$unset_key[$row_key]." => ".$$row_key. "</br>";            // 螢幕顯示
+                            $edit_item = $$unset_key[$row_key]." => ".$$row_key;                            // 生成修改訊息
+                            $$unset_key[$row_key] = $$row_key;                                              // 把有修改的部分倒回去陣列
                         }
                     }
                     if(!empty($edit_item)){
@@ -207,7 +170,7 @@
                 if(!empty($edited_log[$unset_key])){
                     $sql .= $unset_key."=?, ";
                     $$unset_key = json_encode($$unset_key);
-                    array_push($stmt_arr, $new_key_obj);
+                    array_push($stmt_arr, $$unset_key);
                 }
             }
 
@@ -244,8 +207,8 @@
                         }
                     }
 
-                    $edit_item = $row_document[$row_key]." => ".$$row_key;              // 生成修改訊息
-                    echo $row_key." : ".$edit_item. "</br>";                            // 螢幕顯示
+                    $edit_item = $row_document[$row_key]." => ".$$row_key;                                  // 生成修改訊息
+                    echo $row_key." : ".$edit_item. "</br>";                  // 螢幕顯示
                     
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $row_key."=?, ";
@@ -265,25 +228,11 @@
 
         // step5.例外處理單元：s
             // 把特定物件轉json
-            // 'meeting_man_d' 是字串
-            $to_json_keys = [
-                '_focus'        => $_focus,
-                '_content'      => $_content,
-                'meeting_man_a' => $meeting_man_a,
-                'meeting_man_o' => $meeting_man_o,
-                'meeting_man_s' => $meeting_man_s 
-            ];  
-            foreach ($to_json_keys as $jkey => $jkey_value) { 
-                $to_json_keys[$jkey] = json_encode($jkey_value); }
-
-            $_focus        = $to_json_keys['_focus'];
-            $_content      = $to_json_keys['_content'];
-            $meeting_man_a = $to_json_keys['meeting_man_a'];
-            $meeting_man_o = $to_json_keys['meeting_man_o'];
-            $meeting_man_s = $to_json_keys['meeting_man_s'];
-
+            $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
+            foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
+        
         // step6.編輯紀錄 => 1送出 6暫存
-            if($idty != "999" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
+            if($idty != "6" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
                         "updated_cname"   => $created_cname." (".$created_emp_id.")",

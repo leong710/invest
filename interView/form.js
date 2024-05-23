@@ -498,7 +498,7 @@
             case 'datetime':
                 int_a = dcff +
                         // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
-                        '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control text-center" id="' + item_a.name + '" value="" ' +
+                        '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control " id="' + item_a.name + '" value="" ' +
                         (item_a.required ? 'required' : '') + '>' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
                 break;
             case 'textarea':
@@ -838,10 +838,10 @@
                 await load_form(dcc_no);                    // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
                 await eventListener();                      // step_1-2 eventListener();             // 
-                await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
             if(action == "edit" || action == "review" ){
                 await load_document(uuid);                  // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
             }
+                await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
 
         } catch (error) {
             console.error(error);

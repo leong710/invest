@@ -215,7 +215,7 @@
                                         <!-- 第一排的功能 : 顯示已加入名單+input -->
                                         <div class="col-12 py-0">
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">事故當事者(或其委任代理人)</span>
+                                                <span class="input-group-text" style="width:25%;">事故當事者(或代理人)</span>
                                                 <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
                                                 <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
@@ -236,7 +236,7 @@
                                             </div>
 
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他非INX與會人員(請用,分隔)</span>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員(請用,分隔)</span>
                                                 <input type="text" id="meeting_man_d" name="meeting_man_d" class="form-control mb-0">
                                             </div>
                                         </div>
