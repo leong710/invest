@@ -223,6 +223,32 @@
                 $$unset_key = $row_key_obj;                     // 生成變數...
             }
 
+
+
+            $row_keys = array_keys($row_document); 
+            $new_document = array_intersect_key($new_document, array_flip($row_keys));  // 只保留指定的
+
+        // step5.例外處理單元：s
+            // 把特定物件轉json
+            // 'meeting_man_d' 是字串
+            $to_json_keys = [
+                'r_meeting_man_a' => $row_document["meeting_man_a"],
+                'r_meeting_man_o' => $row_document["meeting_man_o"],
+                'r_meeting_man_s' => $row_document["meeting_man_s"],
+                // 'n_meeting_man_a' => $new_document["meeting_man_a"],
+                // 'n_meeting_man_o' => $new_document["meeting_man_o"],
+                // 'n_meeting_man_s' => $new_document["meeting_man_s"]
+            ];  
+            foreach ($to_json_keys as $jkey => $jkey_value) { 
+                $to_json_keys[$jkey] = json_encode($jkey_value, JSON_UNESCAPED_UNICODE); }
+            // 倒回來~
+            $row_document["meeting_man_a"] = $to_json_keys['r_meeting_man_a'];
+            $row_document["meeting_man_o"] = $to_json_keys['r_meeting_man_o'];
+            $row_document["meeting_man_s"] = $to_json_keys['r_meeting_man_s'];
+            // $new_document["meeting_man_a"] = $to_json_keys['n_meeting_man_a'];
+            // $new_document["meeting_man_o"] = $to_json_keys['n_meeting_man_o'];
+            // $new_document["meeting_man_s"] = $to_json_keys['n_meeting_man_s'];
+
             echo "<pre></br>";
             echo "row_document：</br>";
             print_r($row_document);
@@ -236,8 +262,15 @@
 
 
 
-
-
+            // $row_item = isset($row_key_obj[$new_key]) ? json_encode($row_key_obj[$new_key]) : null;            
+            // $new_item = isset($new_key_obj[$new_key]) ? json_encode($new_key_obj[$new_key]) : null;
+            // if( $row_item != $new_item){
+            //     $row_item = isset($row_key_obj[$new_key]) ? json_encode($row_key_obj[$new_key], JSON_UNESCAPED_UNICODE) : null ;        // 中文不編碼
+            //     $new_item = isset($new_key_obj[$new_key]) ? json_encode($new_key_obj[$new_key], JSON_UNESCAPED_UNICODE) : null ;
+            //     echo $new_key." : ".$row_item ." => ".$new_item. "</br>";                       // 螢幕顯示
+            //     $edit_item = $row_item." => ".$new_item;                                        // 生成修改訊息
+            //     $row_key_obj[$new_key] = $new_key_obj[$new_key];                                // *** 把有修改的部分倒回去陣列
+            // }
 
 
 
@@ -245,23 +278,32 @@
             echo "step4-2.大圈：</br></br>";
             $new_keys = array_keys($new_document);         // 取出外圈的 key_list
             foreach($new_keys as $new_key){
-                    // echo $new_key."</br></br>";
                 $edited_log[$new_key] = [];                         // 起始-修改項目log[主題key]
                 $edit_item = [];                                    // 起始-修改項目 & 清空
+                // echo $new_key."</br></br>";
+                // echo $new_key."(".gettype($new_document[$new_key])."): ";
+                // print_r($new_document[$new_key]);
+                // echo ":</br>";
+                
                 if(isset($new_document[$new_key])){
-                    if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $new_document[$new_key])) {                 // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                        $new_document[$new_key] = convertDateTimeFormat($new_document[$new_key]);                                       // 转换日期时间格式
-                    }
-                    if($new_key == "meeting_time"){
-                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_document[$new_key])) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                            $new_document[$new_key] = convertDateTimeFormat($new_document[$new_key]);               // 转换日期时间格式
+                    if(gettype($new_document[$new_key]) !== 'array' && gettype($new_document[$new_key]) !== 'object'){        // 針對combo項目進行判別
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $new_document[$new_key])) {                 // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                            $new_document[$new_key] = convertDateTimeFormat($new_document[$new_key]);                                       // 转换日期时间格式
                         }
-                        $new_document[$new_key] = $new_document[$new_key].":00";                                                // 將送進來的meeting_time進行加工
+                        if($new_key == "meeting_time"){
+                            if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_document[$new_key])) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                                $new_document[$new_key] = convertDateTimeFormat($new_document[$new_key]);               // 转换日期时间格式
+                            }
+                            $new_document[$new_key] = $new_document[$new_key].":00";                                                // 將送進來的meeting_time進行加工
+                        }
                     }
                 }else{
                     $new_document[$new_key] = null;
                 }
 
+                if(!isset($row_document[$new_key])){
+                    $row_document[$new_key] = null;
+                }
 
                 if($row_document[$new_key] != $new_document[$new_key]){
                     // 處理a_pic上傳檔案
@@ -318,7 +360,7 @@
             $meeting_man_s = $to_json_keys['meeting_man_s'];
 
         // step6.編輯紀錄 => 1送出 6暫存
-            if($idty != "999" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
+            if($idty != "666" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
                         "updated_cname"   => $created_cname." (".$created_emp_id.")",
