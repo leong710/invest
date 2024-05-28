@@ -637,7 +637,7 @@
         // 2.與會人員
         let meeting_info2_arr = ['meeting_man_a', 'meeting_man_o', 'meeting_man_s'];
         meeting_info2_arr.forEach((meeting_man)=>{
-            // console.log(meeting_man, document_row[meeting_man]);
+            // console.log(meeting_man, Object.keys(document_row[meeting_man]).length);
             if(Object.keys(document_row[meeting_man]).length >=1 ){
                 meeting_man_target = meeting_man;                                 // let key => target
                 meeting_man_val = JSON.parse('['+document_row[meeting_man]+']');  // 取出的字串藥先用 [ ] 包起來，再轉成JSON物件
