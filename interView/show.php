@@ -46,7 +46,7 @@
 ?>
 
 <?php include("../template/header.php"); ?>
-<!-- <php include("../template/nav.php"); ?> -->
+<?php include("../template/nav.php"); ?>
 <head>
     <link href="../../libs/aos/aos.css" rel="stylesheet">                                           <!-- goTop滾動畫面aos.css 1/4-->
     <script src="../../libs/jquery/jquery.min.js" referrerpolicy="no-referrer"></script>            <!-- Jquery -->

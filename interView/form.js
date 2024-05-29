@@ -848,8 +848,27 @@
         }
     }
 
+    // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw074163p.cminl.oa
+    function checkPopup() {
+        var urlParams = new URLSearchParams(window.location.search);
+        if ((urlParams.has('popup') && urlParams.get('popup') === 'true') || (window.opener)) {
+            // console.log('这是 弹窗');
+            let nav = document.querySelector('nav');                // 獲取 <nav> 元素
+            nav.classList.add('unblock');                           // 添加 'unblock' class
+            let rtn_btns = document.querySelectorAll('.rtn_btn');   // 獲取所有帶有 'rtn_btn' class 的按鈕
+            rtn_btns.forEach(function(btn) {                        // 遍歷這些按鈕，並設置 onclick 事件
+                btn.onclick = function() {
+                    // window.close();
+                    closeWindow();                                  // true=更新 / false=不更新
+                };
+            });
+        }
+    }
+
     $(document).ready(function(){
-        
+
+        checkPopup();
+
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         loadData();
 
