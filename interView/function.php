@@ -182,6 +182,7 @@
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $check_key."=?, ";
                     array_push($stmt_arr, $new_item);
+
                 }
                 // 確認修改訊息，有值就是需要添加SQL修改項目
                 if(!empty($edit_item)){
@@ -194,22 +195,17 @@
             foreach($check_2 as $check_key){
                 $edited_log[$check_key] = [];                                                       // 起始-修改項目log[主題key]
                 $edit_item = [];                                                                    // 起始-修改項目 & 清空
-                // 把特定物件轉json
-                // $old_item = isset(($row_document[$check_key])) ? json_encode($row_document[$check_key]) : "";            
-                // $new_item = isset(($new_document[$check_key])) ? json_encode($new_document[$check_key]) : "";
                 $old_item = isset(($row_document[$check_key])) ? ($row_document[$check_key]) : "";            
                 $new_item = isset(($new_document[$check_key])) ? ($new_document[$check_key]) : "";
 
                 if($old_item != $new_item){
-                    // $old_item = json_encode($row_document[$check_key], JSON_UNESCAPED_UNICODE ); // 顯示--中文不編碼
-                    // $new_item = json_encode($new_document[$check_key], JSON_UNESCAPED_UNICODE );
                     $edit_item = $old_item." => ".$new_item;                                        // 生成修改訊息
                     $edit_item = str_replace(['"cname":',',"emp_id"'], '', $edit_item);
                     echo $check_key." : ".$edit_item. "</br>";                                      // 螢幕顯示
 
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $check_key."=?, ";
-                    array_push($stmt_arr, json_encode($new_document[$check_key]));
+                    array_push($stmt_arr, json_encode($new_item));                                 // , JSON_UNESCAPED_UNICODE--中文不編碼
                 }
                 // 確認修改訊息，有值就是需要添加SQL修改項目
                 if(!empty($edit_item)){
@@ -220,8 +216,8 @@
             // step4-3.*** 這裡要重新拆內容，以符合save暫存的比對需求
             // echo "</br>step4-3.check_3圈：</br></br>";
             // $new_document = array_intersect_key($new_document, array_flip($row_keys));           // new只保留指定的
-            $new_content = array_diff_key($new_document, array_flip($check_1));                     // new_document--去殼1 成new_content-內容
-            $new_content = array_diff_key($new_content,  array_flip($check_2));                     // new_content --去殼2 成new_content-內容 = 問卷內容
+            $new_content = array_diff_key($new_document, array_flip($check_1));
+            $new_content = array_diff_key($new_content,  array_flip($check_2)); 
 
             $check_3 = [
                     "_focus"    => [
@@ -251,61 +247,34 @@
                     $row_item = isset($row_obj[$a_key]) ? $row_obj[$a_key] : null;            
                     $new_item = isset($new_obj[$a_key]) ? $new_obj[$a_key] : null;
 
-                                     //   // if(gettype($new_item) == 'array' || gettype($new_item) == 'object'){            // 針對combo項目進行判別
-                                        //     $row_item = ($row_item !== null) ? json_encode($row_item) : null;            
-                                        //     $new_item = ($new_item !== null) ? json_encode($new_item) : null;
+                    if(in_array(gettype($row_item), ['array', 'object'])){                          // 針對combo項目進行判別
+                        $row_item_type = gettype($row_item);                                        // 取得row_type
+                        $row_item = !is_null($row_item) ? json_encode($row_item) : null;     
 
-                                        //     if( $row_item != $new_item){
-                                        //         $row_item = isset($row_obj[$a_key]) ? json_encode($row_obj[$a_key], JSON_UNESCAPED_UNICODE) : null ;        // 中文不編碼
-                                        //         $new_item = isset($new_obj[$a_key]) ? json_encode($new_obj[$a_key], JSON_UNESCAPED_UNICODE) : null ;
-                                        //         $edit_item = $row_item." => ".$new_item;                                // 生成修改訊息
-                                        //         echo $a_key." : ".$edit_item. "</br>";                                  // 螢幕顯示
-                                        //         $row_obj[$a_key] = $new_obj[$a_key];                                    // *** 把有修改的部分倒回去$row_obj陣列
-                                        //     }
-                                        // }else{
-                                        //     if(gettype($row_item) != 'array' && gettype($row_item) != 'object'){     // 預防value是陣列或物件     
-                                        //         if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $row_item)) {           // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                                        //             $row_item = convertDateTimeFormat($row_item);                   // 转换日期时间格式
-                                        //         }
-                                        //     }
-                                        //     if(gettype($new_item) != 'array' && gettype($new_item) != 'object'){     // 預防value是陣列或物件     
-                                        //         if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_item)) {           // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                                        //             $new_item = convertDateTimeFormat($new_item);                   // 转换日期时间格式
-                                        //         }
-                                        //     }
-
-                                        //     if($row_item != $new_item){
-                                        //         $edit_item = $row_item." => ".$new_item;                  // 生成修改訊息
-                                        //         echo $a_key." : ".$edit_item. "</br>";                                  // 螢幕顯示
-                                        //         $row_obj[$a_key] = $new_item;                                    // *** 把有修改的部分倒回去陣列
-                                        //     }
-                                        // }
-                    if(gettype($row_item) == 'array' || gettype($row_item) == 'object'){            // 針對combo項目進行判別
-                        $row_item_type = gettype($row_item);
-                        $row_item = ($row_item !== null) ? json_encode($row_item) : null;     
-
-                    }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $row_item)) {           // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                        $row_item = convertDateTimeFormat($row_item);                   // 转换日期时间格式
+                    }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $row_item)) {         // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                        $row_item = convertDateTimeFormat($row_item);                               // 转换日期时间格式
                     }
+                    if(in_array(gettype($new_item), ['array', 'object'])){                          // 針對combo項目進行判別
+                        $new_item_type = gettype($new_item);                                        // 取得new_type
+                        $new_item = !is_null($new_item) ? json_encode($new_item) : null;
 
-                    if(gettype($new_item) == 'array' || gettype($new_item) == 'object'){            // 針對combo項目進行判別
-                        $new_item_type = gettype($new_item);
-                        $new_item = ($new_item !== null) ? json_encode($new_item) : null;
-
-                    }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_item)) {           // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
-                        $new_item = convertDateTimeFormat($new_item);                   // 转换日期时间格式
+                    }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_item)) {         // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
+                        $new_item = convertDateTimeFormat($new_item);                               // 转换日期时间格式
                     }
 
                     if( $row_item != $new_item){
-                        if($row_item_type == 'array' || $row_item_type == 'object'){
+                        if(in_array($row_item_type, ['array', 'object'])){
                             $row_item = !is_null($row_item) ? json_encode($row_obj[$a_key], JSON_UNESCAPED_UNICODE ) : $row_item ;        // 中文不編碼
-                            $new_item = !is_null($new_item) ? json_encode($new_obj[$a_key], JSON_UNESCAPED_UNICODE ) : $new_item ;
-                            $row_obj[$a_key] = $new_obj[$a_key];                                    // *** 把有修改的部分倒回去$row_obj陣列
-                        }else{
-                            $row_obj[$a_key] = $new_item;                                           // *** 把有修改的部分倒回去陣列
                         }
-                        $edit_item = $row_item."({$row_item_type}) => ".$new_item."({$row_item_type})";                                // 生成修改訊息
-                        echo $a_key." : ".$edit_item. "</br>";                                  // 螢幕顯示
+                        if(in_array($new_item_type, ['array', 'object'])){
+                            $new_item = !is_null($new_item) ? json_encode($new_obj[$a_key], JSON_UNESCAPED_UNICODE ) : $new_item ;        // 中文不編碼
+                        }
+
+                        $edit_item = $row_item." => ".$new_item;                                    // 生成修改訊息
+                        echo $a_key." : ".$edit_item. "</br>";                                      // 螢幕顯示
+                        
+                        $new_item = isset($new_obj[$a_key]) ? $new_obj[$a_key] : null;
+                        $row_obj[$a_key] = $new_item;                                               // *** 把有修改的部分倒回去$row_obj陣列
                     }
     
                     if(!empty($edit_item)){
@@ -329,8 +298,8 @@
             if($idty != "666" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
-                        "updated_cname"   => $created_cname." (".$created_emp_id.")",
-                        "update_document" => $edited_log,
+                        "updated_cname"   => $created_cname." (".$created_emp_id.")" ,
+                        "update_document" => $edited_log ,
                         "editions"        => !empty($row_editions) ? $row_editions : ""
                     );
                 // step6-2.呼叫toEditLog製作EditionsLog檔

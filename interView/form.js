@@ -606,6 +606,9 @@
                         +'</div></div></div>'
     
                     $('#item_list').append(int_1);
+                    // 20240531 增加 session_group
+                    let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ key_1 + '">'+ key_1 + '</a>';
+                    $('#session-group').append(int_2);
                 }
                 // step_2.生成問項...將每一筆繞出來
                 Object(value_1.item).forEach((item_value)=>{
@@ -848,7 +851,7 @@
         }
     }
 
-    // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw074163p.cminl.oa
+    // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw123456p.cminl.oa
     function checkPopup() {
         var urlParams = new URLSearchParams(window.location.search);
         if ((urlParams.has('popup') && urlParams.get('popup') === 'true') || (window.opener)) {

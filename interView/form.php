@@ -58,7 +58,9 @@
     <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">                            <!-- mloading CSS 2/3 -->
     <script src="../../libs/jquery/mloading_init.js"></script>                                      <!-- mLoading_init.js 3/3 -->
     <style>
-
+        body {
+            position: relative;
+        }
         /* #emp_id, #excelFile{    
             margin-bottom: 0px;
             text-align: center;
@@ -90,16 +92,36 @@
             transition: opacity 1s;
             animation: none;
         }
-
+        #session-group {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 增加陰影以更明顯地看到效果 */
+        }
+        .list-group-item{
+            padding: .5rem .5rem;
+            /* word-wrap: break-word; */
+            white-space: nowrap;            /* 防止自動換行 */
+            overflow: hidden;               /* 確保溢出的文字被截斷並顯示省 */
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 
-<body>
+<body data-bs-spy="scroll" data-bs-target="#session-group">
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-11 border rounded px-4 py-4" style="background-color: #D4D4D4;">
+            <div class="col-12 col-md-2 col-lg-1 px-1 py-0">
+                <div id="session-group" class="list-group">
+                    <?php if(in_array($action,["create", "edit"])){ ?>
+                        <button class="list-group-item list-group-item-action text-center" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
+                    <?php } ?>
+                    <a class="list-group-item list-group-item-action" href="#form_top">Home</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-10 col-lg-11 border rounded" style="background-color: #D4D4D4;" id="form_top">
                 <!-- 表頭1 -->
-                <div class="row px-2">
+                <div class="row px-1">
                     <div class="col-12 col-md-6 py-0" id="home_title">
                         <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
                     </div>
@@ -115,7 +137,7 @@
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
                 </div>
-                <div class="row px-2">
+                <div class="row px-1">
                     <div class="col-12 col-md-6 py-1">
                         訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
                         開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
@@ -136,11 +158,11 @@
                 </div>
     
                 <!-- container -->
-                <div class="col-12">
+                <div class="col-12 px-1 p-t-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
                     <!-- <form action="zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
-                        <div class="row rounded bg-light py-3" id="form_container">
+                        <div class="row rounded bg-light py-1" id="form_container">
                             <div class="col-12 p-3 ">
                                 <span class="from-label"><b>表單分類：</b></span><br>
                                 <div class="col-12 p-3 border rounded bg-white">
@@ -236,7 +258,7 @@
                                             </div>
 
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他與會人員(請用,分隔)</span>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員 <sup class='text-danger'> (請用,分隔)</sup></span>
                                                 <input type="text" id="meeting_man_d" name="meeting_man_d" class="form-control mb-0">
                                             </div>
                                         </div>
