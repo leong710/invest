@@ -295,7 +295,7 @@
             // }
 
         // step6.編輯紀錄 => 1送出 6暫存
-            if($idty != "666" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
+            if($idty != "6" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
                         "updated_cname"   => $created_cname." (".$created_emp_id.")" ,

@@ -99,11 +99,34 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 增加陰影以更明顯地看到效果 */
         }
         .list-group-item{
-            padding: .5rem .5rem;
+            padding: .5rem 1rem;
             /* word-wrap: break-word; */
             white-space: nowrap;            /* 防止自動換行 */
             overflow: hidden;               /* 確保溢出的文字被截斷並顯示省 */
             text-overflow: ellipsis;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #form_top, #form_top * {
+                visibility: visible;
+            }
+            #form_top {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            /* 設置紙張大小為 A4 */
+            @page {
+                size: A3;
+                margin: 10mm; /* 設置頁面邊距 */
+            }
+        }
+        .confirm_sign_div {
+            height: 300px; 
+
         }
     </style>
 </head>
@@ -134,6 +157,8 @@
                                 <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
+                        <!-- <button type="button" class="btn btn-info text-white"  id="download_pdf" onclick="window.print()">&nbsp下載PDF</button> -->
+                        <button type="button" class="btn btn-info text-white"  id="download_pdf" >&nbsp下載PDF</button>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
                 </div>
@@ -141,7 +166,8 @@
                     <div class="col-12 col-md-6 py-1">
                         訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
                         開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
-                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
+                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?></br>
+                        idty   ：<?php echo $document_row["idty"]." / ".$document_row["created_cname"] ;?>
                     </div>
                     <div class="col-12 col-md-6 py-1 text-end">
                         <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
@@ -170,8 +196,9 @@
                                         <!-- line 0 -->
                                         <div class="col-12 col-md-12 py-0">
                                             <div class="form-floating">
-                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center" placeholder="ANIS表單編號：" require>
+                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" require >
                                                 <label for="anis_no" class="form-label">anis_no/ANIS表單編號：<sup class="text-danger"> * </sup></label>
+                                                <div class="invalid-feedback" id="anis_no_feedback">編號填入錯誤 ~ (大寫ANIS+數字流水號共21碼)</div>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6 pb-0">
@@ -272,6 +299,9 @@
                                     <div class="col-6 col-md-6 py-0 text-end"></div>
                                 </div>
                                 <div class="accordion" id="item_list" >
+                                    <!-- append -->
+                                </div>
+                                <div class="accordion" id="confirm_sign" >
                                     <!-- append -->
                                 </div>
                             </div>
@@ -431,9 +461,9 @@
         </div>
 
     <?php
-        echo "<div class='p-5 text-white'><pre>";
-        print_r($document_row);
-        echo "</pre></div>";    
+        // echo "<div class='p-5 text-white'><pre>";
+        // print_r($document_row);
+        // echo "</pre></div>";    
     ?>
 
 </body>
@@ -458,6 +488,16 @@
     var negative_arr  = [];                         // 監聽負向選項
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
     
+    document.getElementById('download_pdf').addEventListener('click', function() {
+
+        let confirm_word = '<div class="col-12 border rounded bg-light confirm_sign_div">'
+        confirm_word += '*** 以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。'
+        confirm_word += '</br></br></br></br></br></br><hr></div>'
+        $("#confirm_sign").append(confirm_word);
+
+
+    });
+
 </script>
 
 <script src="form.js?v=<?=time()?>"></script>

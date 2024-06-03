@@ -10,3 +10,11 @@
             1. 左側增加session-group，可以點選後快速跳到對應的session範圍，並根據畫面捲動到某個session時，對應的session-group按鈕會亮起。
             2. 增加另開浮動視窗功能，防止對user的使用干擾，增加判斷主畫面或popup畫面功能=>隱藏NAV、替換回上頁=window.close()、追蹤關閉視窗時判斷主視窗是否reloade更新
             3. 更新優化暫存功能update_document()，更新比對判斷與回存功能for _focus、_content。
+
+    -- 2024/06
+        2024/06/03 增加與優化功能
+            1. 增加 anis_no監聽輸入英文字轉大寫、限制為'ANIS'、確保文字總長21字元，增加驗證提示。
+            2. 優化setFormDisabled() 表單開啟狀態會決定input...等項目的disabled與否，誤把未選擇的other_value給解除，增加判定條件予以排除；同時優化onchange_option()，維持該disabled項目
+            3. 調整年齡層問項的value：20~未滿25 => 20u-25d，以確保edit_show可以正確選到option項目。
+            4. 優化edit_show() step_3 針對other_item的賦值和顯示功能。
+            

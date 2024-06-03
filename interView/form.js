@@ -231,7 +231,7 @@
                         if ((checkbox.id !== opt.id ) && checkbox.checked) {
                             // If so, uncheck it
                             checkbox.checked = false;
-                            $("#"+checkbox.id+'_o').addClass('unblock');
+                            $("#"+checkbox.id+'_o').addClass('unblock').prop('disabled', true);
                             opt_id_o.removeAttribute("disabled");
                         }
                     });
@@ -435,6 +435,31 @@
                     $("#a_day").removeClass("is-valid is-invalid").addClass(a_day <= anis_day && a_day < currentDate ? "is-valid" : "is-invalid");
                 }
             });
+            // 監聽與驗證anis_no是否合規
+            $('#anis_no').on('input', function() {
+                let input = event.target;
+                let value = input.value;
+                let value_valid = '';
+                value = value.toUpperCase();                                        // 自動轉大寫
+                value = value.replace(/[^A-Z0-9]/g, '');                            // 去掉所有非字母和數字的字符
+                value_valid += (!value.startsWith('ANIS')) ? '大寫ANIS' : '';      // 檢查前四個字是否為'ANIS'
+                if (value.length >= 21) {                                            // 限制字數為21個字符
+                    value = value.substring(0, 21);
+                    value_valid += '';
+                }else{
+                    if(value_valid.length > 0){
+                        value_valid += '+';
+                    }
+                    value_valid += '數字流水號共21碼';
+                }
+                input.value = value;                                                // 更新輸入框的值
+                if(value){                                                          // 更新驗證提示
+                    $("#anis_no").removeClass("is-valid is-invalid").addClass((value_valid.length > 0) ? "is-invalid" : "is-valid");
+                    $("#anis_no_feedback").empty().append(value_valid);
+                }else{
+                    $("#anis_no").removeClass("is-valid is-invalid")
+                }
+            })
             resolve(); // 文件載入成功，resolve
         });
     }
@@ -494,6 +519,10 @@
                     int_a = dcff + int_a + '</div>';
                 }
                 break;
+            case 'number':
+                int_a = '<input type="number" name="' + item_a.name + '" id="' + item_a.name + '" class="form-control mb-0" placeholder="' + item_a.label + '" '+ (item_a.required ? 'required' : '') + '>' + commonPart();
+                int_a = dcff + int_a + '</div>';
+                break;
             case 'date':
             case 'datetime':
                 int_a = dcff +
@@ -530,6 +559,15 @@
                         // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
                         int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
                             + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
+
+                    }else if (typeof option.value === 'object' && option.value.type == 'number') {
+                        int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
+                            // + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled  min="0" max="999" maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)">';
+                            + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled ';
+                        if(option.value.limit != undefined){
+                            int_a += option.value.limit;
+                        }
+                        int_a += ' >';
                     }
                 }) 
                 int_a += '</div>';
@@ -704,11 +742,18 @@
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     if(option_value !== null){                          // 預防空值null
                         option_value.forEach((item_value, index)=>{
+                            // console.log(content_key, item_value);
                             // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                            if (['其他', '無', '否', '有', 'Other'].includes(option_value[index-1])) {     // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                                $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
-                            }else{                                                         // ** 如果沒有就直接帶入value  // checkbox和redio都適用
-                                $('#' + content_key + '_' + item_value).prop('checked', true);
+                            // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
+                            // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
+                                // $('#' + content_key + '_' + item_value).prop('checked', true);
+                            // }
+                            $('#' + content_key + '_' + item_value).prop('checked', true);
+                            if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
+                                $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
+                            }else{
+                                $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
                             }
                         })
                     }
@@ -798,6 +843,7 @@
 // // 20240430 -- step_3 依cherk_action = true/false 啟閉表單特定元素
     async function setFormDisabled(cherk_action) {
         // console.log('step_3 setFormDisabled(cherk_action)：', cherk_action);
+        // return true;
         return new Promise((resolve) => {  
             // 获取表单元素
             const mainForm = document.getElementById('mainForm');  
@@ -806,18 +852,22 @@
             // 遍历每个表单元素，并根据cherk_action的值设置其disabled属性
             formElements.forEach(function(element) {
                 // 例外處理：检查元素的类名是否包含"accordion-button"於以排除
-                if (!element.classList.contains("accordion-button")) {
+                if (!element.classList.contains("accordion-button") && !element.classList.contains("unblock")) {
                     element.disabled = cherk_action;
                 }
             });
             // 对于radio和checkbox，也需要分别处理
             const radioButtons = mainForm.querySelectorAll('input[type="radio"]');
             radioButtons.forEach(function(radio) {
-                radio.disabled = cherk_action;
+                // if (!radio.classList.contains("other_item")) {      // 排除other_item
+                    radio.disabled = cherk_action;
+                // }
             });
             const checkboxes = mainForm.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(function(checkbox) {
-                checkbox.disabled = cherk_action;
+                // if (!checkbox.classList.contains("other_item")) {   // 排除other_item
+                    checkbox.disabled = cherk_action;
+                // }
             });
             // 例外處理：特別將與會人員的x關閉
             const spans = mainForm.querySelectorAll('span[class="remove"]');

@@ -204,7 +204,7 @@
                         { "label" : "有（領有駕駛車種之駕駛執照）" , "value" : "有" },
                         { "label" : "無" , "value" : "無" }
                     ],
-                    "negative": "無",
+                    
                     "required": true
                 },
                 {
@@ -336,8 +336,9 @@
                                                 "label": "否：原因",
                                                 "type" : "text",
                                                 "name" : "s6_combo_2",
-                                                "value": "否：原因"
-                                            }}
+                                                "value": "否：原因",
+                                                "only" : true
+                                                }}
                     ],
                     "get_negative": "否",
                     "required": true
@@ -414,18 +415,18 @@
                     "type" : "radio",
                     "name" : "s8_combo_3",
                     "options" : [
-                        { "label" : "未滿18"    , "value" : "未滿18"    },
-                        { "label" : "18~未滿20" , "value" : "18~未滿20" },
-                        { "label" : "20~未滿25" , "value" : "20~未滿25" },
-                        { "label" : "25~未滿30" , "value" : "25~未滿30" },
-                        { "label" : "30~未滿40" , "value" : "30~未滿40" },
-                        { "label" : "40~未滿45" , "value" : "40~未滿45" },
-                        { "label" : "45~未滿50" , "value" : "45~未滿50" },
-                        { "label" : "50~未滿55" , "value" : "50~未滿55" },
-                        { "label" : "55~未滿60" , "value" : "55~未滿60" },
-                        { "label" : "60~未滿65" , "value" : "60~未滿65" },
-                        { "label" : "65~未滿70" , "value" : "65~未滿70" },
-                        { "label" : "70~未滿75" , "value" : "70~未滿75" }
+                        { "label" : "未滿18"    , "value" : "18d"    },
+                        { "label" : "18~未滿20" , "value" : "18u-20d" },
+                        { "label" : "20~未滿25" , "value" : "20u-25d" },
+                        { "label" : "25~未滿30" , "value" : "25u-30d" },
+                        { "label" : "30~未滿40" , "value" : "30u-40d" },
+                        { "label" : "40~未滿45" , "value" : "40u-45d" },
+                        { "label" : "45~未滿50" , "value" : "45u-50d" },
+                        { "label" : "50~未滿55" , "value" : "50u-55d" },
+                        { "label" : "55~未滿60" , "value" : "55u-60d" },
+                        { "label" : "60~未滿65" , "value" : "60u-65d" },
+                        { "label" : "65~未滿70" , "value" : "65u-70d" },
+                        { "label" : "70~未滿75" , "value" : "70u-75d" }
                     ],
                     "negative": "否",
                     "required": true
@@ -447,7 +448,7 @@
                                                     "type" : "text",
                                                     "name" : "s8_combo_7",
                                                     "value": "Other"
-                                                }}
+                                                    }}
                     ],
                     "negative": "否",
                     "required": true
@@ -466,7 +467,7 @@
                                                     "type" : "text",
                                                     "name" : "s8_combo_6",
                                                     "value": "Other"
-                                                }}
+                                                    }}
                     ],
                     "negative": "否",
                     "required": false
@@ -475,21 +476,26 @@
                     "label": "損/限工",
                     "type" : "radio",
                     "name" : "s8_combo_8",
+                    "info" : "損工天數：以天計算； 限工時數：以小時計算。",
                     "options" : [
                         { "label" : "損工"   , "value" : {
-                                                    "label": "損工",
-                                                    "type" : "text",
+                                                    "label": "損工天數_以天計算",
+                                                    "type" : "number",
                                                     "name" : "s8_combo_8",
-                                                    "value": "損工天數",
+                                                    "value": "Other",
+                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
                                                     "only" : true
-                                                    } },
+                                                },
+                            "class" : "other_item" },
                         { "label" : "限工"   , "value" : {
-                                                    "label": "限工",
-                                                    "type" : "text",
+                                                    "label": "限工時數_以小時計算",
+                                                    "type" : "number",
                                                     "name" : "s8_combo_8",
-                                                    "value": "限工時數",
+                                                    "value": "Other",
+                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
                                                     "only" : true
-                                                }  }
+                                                },
+                            "class" : "other_item" }
                     ],
                     "negative": "無",
                     "required": false
