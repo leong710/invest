@@ -703,7 +703,7 @@
 
         // edit step2.特例呈現：'confirm_sign','ruling_sign','a_pic'
             // console.log('step_2-1-2 special_items.forEach((special_item)=> -- 特例呈現');
-            let special_items = ['confirm_sign','ruling_sign','a_pic']
+            let special_items = ['ruling_sign','a_pic']
             special_items.forEach((special_item)=>{
                 if(document_row[special_item] != null){
                     if(special_item == 'a_pic'){        // 路線圖檔

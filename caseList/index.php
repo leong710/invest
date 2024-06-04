@@ -83,7 +83,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col_xl_12 col-12 rounded" style="background-color: rgba(255, 255, 255, .8);">
+            <div class="col_xl_11 col-11 rounded" style="background-color: rgba(255, 255, 255, .8);">
                 <!-- NAV分頁標籤與統計 -->
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
@@ -156,7 +156,6 @@
                                     <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($select_fab["id"]) ? $select_fab["fab_title"]." (".$select_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
                                         <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
                                 </form>
-                                <button type="button" id="test_btn" class="btn btn-success" onclick="openUrl('google.com')" > test </button>
                             </div>
                         </div>
                         <!-- Bootstrap Alarm -->
@@ -165,7 +164,7 @@
                     <table id="caseList" class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>ANSI單號</th>
+                                <th data-toggle="tooltip" data-placement="bottom" title="操作">ANSI單號</th>
                                 <th>案件簡稱</th>
                                 <th>事件名稱</th>
 
@@ -174,17 +173,27 @@
                                 <th>事故單位</th>
 
                                 <th>表單狀態</th>
-                                <th>立案日期 / 填單人</th>
-                                <th>最後更新 / 更新人</th>
+                                <th>立案日 / 人</th>
+                                <!-- <th>最後更新 / 更新人</th> -->
 
-                                <th data-toggle="tooltip" data-placement="bottom" title="操作">action</th>
+                                <th>結案存檔</th>
+                                <!-- <th data-toggle="tooltip" data-placement="bottom" title="操作">action</th> -->
                             </tr>
                         </thead>
                         <tbody>
 
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
-                                    <td><?php echo $caseList["anis_no"] ?></td>
+                                    <td class="text-start">
+                                        <button type="button" value="..\interView\form.php?action=review&uuid=<?php echo $caseList['uuid'];?>" class="tran_btn" 
+                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷"><?php echo $caseList["anis_no"] ?></button>
+                                        <?php if(empty($caseList["confirm_sign"])){ ?>&nbsp;
+                                            <button type="button" value="..\interView\form.php?action=edit&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-success" 
+                                                onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="編輯問卷"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <?php } ?>
+                                    </td>
+
+
                                     <td><?php echo $icon_s.$caseList['_icon'].$icon_e.$caseList['short_name'];?></td>
                                     <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['id'].".".$caseList['case_title'];?></td>
 
@@ -193,20 +202,28 @@
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
                                     <td><?php echo $caseList['idty'];?></td>
-                                    <td><?php echo $caseList["created_at"]."</br>".$caseList['created_cname'];?></td>
-                                    <td><?php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td>
+                                    <td><?php echo substr($caseList["created_at"],0,10)."</br>".$caseList['created_cname'];?></td>
+                                    <!-- <td><php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td> -->
 
-                                    <td>
+                                    <td><?php
+                                        if(!empty($caseList["confirm_sign"])) {
+                                            echo "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' ";
+                                            echo "value='../doc_pdf/{$caseList["fab_title"]}/{$caseList["short_name"]}/{$caseList["case_year"]}/{$caseList["confirm_sign"]}' ";
+                                            echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
+                                        };
+                                        if(!empty($caseList["confirm_sign"]) || $sys_role <= 1){
+                                            echo "<button type='button' class='btn btn-outline-secondary add_btn' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
+                                            echo "value='../interView/process_pdf.php?uuid={$caseList['uuid']}' ";
+                                            echo " onclick='openUrl(this.value)' ><i class='fa fa-plus'></i></button>";
+                                        }; ?>
+                                    </td>
+                                        
+                                    <!-- <td> -->
                                         <!-- <a href="..\interView\show.php?uuid=<php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary"  -->
                                             <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a> -->
                                         <!-- <a href="..\interView\form.php?uuid=<php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success"  -->
                                             <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a> -->
-
-                                        <button type="button" value="..\interView\show.php?action=review&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-primary" 
-                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></button>
-                                        <button type="button" value="..\interView\form.php?action=edit&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-success" 
-                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    </td>
+                                    <!-- </td> -->
                                 </tr>
 
                             <?php } ?>

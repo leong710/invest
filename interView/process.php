@@ -3,7 +3,7 @@
     require_once("../sso.php");
     require_once("function.php");
     require_once("../user_info.php");
-    accessDeniedAdmin($sys_id);
+    accessDenied($sys_id);
     extract($_REQUEST);
     
     // 複製本頁網址藥用

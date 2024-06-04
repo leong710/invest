@@ -85,7 +85,11 @@
     function edit_document($request){
         $pdo = pdo();
         extract($request);
-        $sql = "SELECT * FROM _document WHERE uuid = ? ";
+        $sql = "SELECT _d.* , _fc.short_name, _f.fab_title
+                FROM _document _d
+                LEFT JOIN _fab _f       ON _d.fab_id   = _f.id 
+                LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no 
+                WHERE _d.uuid = ? ";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$uuid]);

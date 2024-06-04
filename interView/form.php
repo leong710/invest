@@ -114,19 +114,30 @@
             }
             #form_top {
                 position: absolute;
-                left: 0;
-                top: 0;
+                left : 0;
+                top  : 0;
                 width: 100%;
             }
             /* 設置紙張大小為 A4 */
             @page {
-                size: A3;
+                size  : A3;
                 margin: 10mm; /* 設置頁面邊距 */
             }
         }
         .confirm_sign_div {
-            height: 300px; 
+            height: 200px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
 
+        .confirm_sign_div::after {
+            content: '';
+            display: block;
+            width: 100%;
+            border-top: 1px solid #000;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -134,6 +145,7 @@
 <body data-bs-spy="scroll" data-bs-target="#session-group">
     <div class="col-12">
         <div class="row justify-content-center">
+            <!-- session-group -->
             <div class="col-12 col-md-2 col-lg-1 px-1 py-0">
                 <div id="session-group" class="list-group">
                     <?php if(in_array($action,["create", "edit"])){ ?>
@@ -145,20 +157,25 @@
             <div class="col-12 col-md-10 col-lg-11 border rounded" style="background-color: #D4D4D4;" id="form_top">
                 <!-- 表頭1 -->
                 <div class="row px-1">
-                    <div class="col-12 col-md-6 py-0" id="home_title">
-                        <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;?></h3>
+                    <div class="col-6 col-md-6 py-0" id="home_title">
+                        <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;echo isset($document_row["idty"]) ? " - ".$document_row["idty"]:"";?></h3>
                     </div>
-                    <div class="col-12 col-md-6 py-0 text-end">
+                    <div class="col-6 col-md-6 py-0 text-end head_btn">
                         <span id="submit_btn">
                             <?php if(!$init_error){ ?>
                                 <a href="#" target="_blank" title="Submit" class="btn btn-primary" onclick="changeMode('submit')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
-                            <?php } ?>
-                            <?php if(in_array($action,["create", "edit"])){ ?>
+                            <?php }
+                            if(in_array($action,["create", "edit"])){ ?>
                                 <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
                         <!-- <button type="button" class="btn btn-info text-white"  id="download_pdf" onclick="window.print()">&nbsp下載PDF</button> -->
-                        <button type="button" class="btn btn-info text-white"  id="download_pdf" >&nbsp下載PDF</button>
+                        <?php if(isset($action) && $action == "review"){
+                            echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp另存PDF</button> ";
+                            if(empty($document_row["confirm_sign"])){
+                                echo "<button type='button' class='btn btn-warning ' id='download_pdf' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button> ";
+                            }
+                        }?>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
                 </div>
@@ -166,16 +183,17 @@
                     <div class="col-12 col-md-6 py-1">
                         訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
                         開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
-                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?></br>
-                        idty   ：<?php echo $document_row["idty"]." / ".$document_row["created_cname"] ;?>
+                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
                     </div>
-                    <div class="col-12 col-md-6 py-1 text-end">
-                        <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span>
+                    <div class="col-12 col-md-6 py-1 text-end head_btn"  >
+                        <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>
+                        <span id="pdf_name" class="unblock">
+                            <?php echo isset($document_row["fab_title"]) ? $document_row["fab_title"]:""; echo isset($document_row["short_name"]) ? "_".$document_row["short_name"]:"";?></span>
                         <span id="delete_btn">
                             <?php if(($sys_role <= 1 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
                                 <form action="process.php" method="post">
-                                    <input type="hidden" name="action"          value="delete">
-                                    <input type="hidden" name="uuid"            value="<?php echo $document_row["uuid"];?>">
+                                    <input  type="hidden" name="action"          value="delete">
+                                    <input  type="hidden" name="uuid"            value="<?php echo $document_row["uuid"];?>">
                                     <button type="submit" name="delete_document" title="刪除申請單" class="btn btn-danger" onclick="return confirm(`確認徹底刪除此單？`)"><i class="fa-regular fa-trash-can"></i> 刪除</button>
                                 </form>
                             <?php }?>
@@ -184,7 +202,7 @@
                 </div>
     
                 <!-- container -->
-                <div class="col-12 px-1 p-t-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
+                <div class="col-12 px-1 py-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
                     <!-- <form action="zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
@@ -301,8 +319,16 @@
                                 <div class="accordion" id="item_list" >
                                     <!-- append -->
                                 </div>
-                                <div class="accordion" id="confirm_sign" >
-                                    <!-- append -->
+                                <div class="accordion unblock" id="confirm_sign">
+                                    <div class="col-12 border rounded bg-white mt-2">
+                                        <div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">
+                                            ●&nbsp以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。
+                                        </div>
+                                        <div class="border rounded bg-light p-3 ">
+                                            <div class="confirm_sign_div"><h3>&nbspX</h3></div>
+                                            <div class="pt-2 pb-0">當事人</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -340,9 +366,8 @@
                             </div>
                         </div>
                     </form>
-                    <hr>
                     <!-- 尾段logs訊息 -->
-                    <div class="row rounded bg-light unblock" id="logs_div">
+                    <div class="row rounded bg-light my-2 unblock" id="logs_div">
                         <div class="col-6 col-md-6 pb-0">
                             流程記錄：
                         </div>
@@ -367,9 +392,8 @@
                             logs-end
                         </div>
                     </div>
-                    <hr>
                     <!-- 尾段Editions訊息 -->
-                    <div class="row rounded bg-light unblock" id="editions_div">
+                    <div class="row rounded bg-light my-2 unblock" id="editions_div">
                         <div class="col-6 col-md-6 pb-0">
                             編輯記錄：
                         </div>
@@ -394,9 +418,13 @@
                         </div>
                     </div>
                 </div>
-                
-                <div style="font-size: 12px;" class="pb-0 text-end">
-                    universalForm v0
+                <div class="row" style="font-size: 12px;">
+                    <div class="col-6 col-md-6 py-0">
+                        <?php echo !empty($document_row["dcc_no"]) ? $document_row["dcc_no"]:""; ?>
+                    </div>
+                    <div class="col-6 col-md-6 py-0 text-end">
+                        universalForm v0
+                    </div>
                 </div>
             </div>
         </div>
@@ -490,11 +518,19 @@
     
     document.getElementById('download_pdf').addEventListener('click', function() {
 
-        let confirm_word = '<div class="col-12 border rounded bg-light confirm_sign_div">'
-        confirm_word += '*** 以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。'
-        confirm_word += '</br></br></br></br></br></br><hr></div>'
-        $("#confirm_sign").append(confirm_word);
-
+        $('#logs_div, #editions_div, .head_btn').addClass('unblock');                          // 遮蔽頂部按鈕
+        $('#confirm_sign').removeClass('unblock');                                  // 取消遮蔽簽名欄
+        // document.getElementById("confirm_sign").innerHTML = '';                     // 清除簽名欄內容
+        // let confirm_word = '<div class="col-12 border rounded bg-white mt-2">'      // 訂製簽名欄訊息
+        // confirm_word += '<div class="confirm_text px-2 pt-0 pb-1">以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>'
+        // confirm_word += '<div class="border rounded bg-light p-4 "><div class="confirm_sign_div"><h3>&nbspX</h3></div><div class="pt-2 pb-0">當事人</div></div>'
+        // confirm_word += '</div>'
+        // // 渲染簽名欄內容
+        // document.getElementById("confirm_sign").innerHTML = confirm_word;
+        // 訂製檔案名稱
+        document.title = document.getElementById('pdf_name').innerText + '_' + document.getElementById('anis_no').value
+        // 列印畫面
+        window.print();
 
     });
 
