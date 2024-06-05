@@ -2,13 +2,31 @@
     date_default_timezone_set("Asia/Taipei"); 
     // 检查文件是否成功上传
     if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            extract($_FILES['file']);
-            $pdf_name = $name."_".(date('Ymd-His'));   // 雜湊年月日時分秒生成fileName避免覆蓋
+        extract($_FILES['file']);
 
-        $uploadDir = '../doc_pdf/temp/';              // 過度路徑，submit後再搬移到正是路徑
-            if(!is_dir($uploadDir)){ mkdir($uploadDir); }
-            // $uploadFile = $uploadDir . basename($_FILES['file']['name']);
-            $uploadFile = $uploadDir . basename($pdf_name);
+        $uploadDir = '../doc_pdf/temp/';                            // let doc_pdf/temp 路徑
+        if(!is_dir($uploadDir)){ mkdir($uploadDir); }               // 检查uploadDir資料夾是否存在
+
+        // 確保資料夾是否有同名檔案存在
+        // $pdf_name = (is_file($uploadDir.$name)) ? (date('s'))."_".$name : $name; // 雜湊秒生成fileName避免覆蓋
+        // 分解路徑
+        $fileInfo = pathinfo($name);
+        $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';     // 副檔名
+        $baseName = $fileInfo['filename'];                                                  // 檔名(不含副檔名)
+        
+        // 初始化變量
+        $i = 1;
+        $pdf_name = $baseName.$extension;   // 組合成 檔名+副檔名
+        // // 迴圈檢查檔案是否存在
+        // while (is_file($uploadDir.$pdf_name)) {
+        //     $pdf_name =  $baseName ."_". $i. $extension;
+        //     $i++;
+        // }
+        if(is_file($uploadDir.$pdf_name)){  // 直接unlink
+            unlink($uploadDir.$pdf_name);
+        }
+
+        $uploadFile = $uploadDir . basename($pdf_name);
 
         // 将文件移动到指定目录
         if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {

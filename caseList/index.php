@@ -55,6 +55,9 @@
         .body > ul {
             padding-left: 0px;
         }
+        tr, td{
+            text-align: start; 
+        }
         /* 凸顯可編輯欄位 */
             .fix_amount:hover {
                 /* font-size: 1.05rem; */
@@ -173,6 +176,7 @@
                                 <th>事故單位</th>
 
                                 <th>表單狀態</th>
+                                <th>職災申報</th>
                                 <th>立案日 / 人</th>
                                 <!-- <th>最後更新 / 更新人</th> -->
 
@@ -184,7 +188,7 @@
 
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
-                                    <td class="text-start">
+                                    <td>
                                         <button type="button" value="..\interView\form.php?action=review&uuid=<?php echo $caseList['uuid'];?>" class="tran_btn" 
                                             onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷"><?php echo $caseList["anis_no"] ?></button>
                                         <?php if(empty($caseList["confirm_sign"])){ ?>&nbsp;
@@ -202,17 +206,18 @@
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
                                     <td><?php echo $caseList['idty'];?></td>
+                                    <td></td>
                                     <td><?php echo substr($caseList["created_at"],0,10)."</br>".$caseList['created_cname'];?></td>
                                     <!-- <td><php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td> -->
 
-                                    <td><?php
+                                    <td class="text-end"><?php
                                         if(!empty($caseList["confirm_sign"])) {
                                             echo "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' ";
                                             echo "value='../doc_pdf/{$caseList["fab_title"]}/{$caseList["short_name"]}/{$caseList["case_year"]}/{$caseList["confirm_sign"]}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
                                         };
                                         if(!empty($caseList["confirm_sign"]) || $sys_role <= 1){
-                                            echo "<button type='button' class='btn btn-outline-secondary add_btn' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
+                                            echo "<button type='button' class='btn btn-sm btn-xs btn-outline-secondary add_btn' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
                                             echo "value='../interView/process_pdf.php?uuid={$caseList['uuid']}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa fa-plus'></i></button>";
                                         }; ?>
