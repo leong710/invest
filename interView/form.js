@@ -248,7 +248,9 @@
     function uploadFile(key) {
         let formData = new FormData();
         let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
+        let uploadDir = '../image/temp/';                                                                               // a_pic temp dir
         formData.append('file', fileInput.files[0]);
+        formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'upload.php', true);
         xhr.onload = function () {

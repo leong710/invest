@@ -212,13 +212,14 @@
 
                                     <td class="text-end"><?php
                                         if(!empty($caseList["confirm_sign"])) {
+                                            $pdf_path = "{$caseList["fab_title"]}/{$caseList["short_name"]}/{$caseList["case_year"]}/";
                                             echo "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' ";
-                                            echo "value='../doc_pdf/{$caseList["fab_title"]}/{$caseList["short_name"]}/{$caseList["case_year"]}/{$caseList["confirm_sign"]}' ";
+                                            echo "value='../doc_pdf/{$pdf_path}{$caseList["confirm_sign"]}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
                                         };
                                         if(!empty($caseList["confirm_sign"]) || $sys_role <= 1){
                                             echo "<button type='button' class='btn btn-sm btn-xs btn-outline-secondary add_btn' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
-                                            echo "value='../interView/process_pdf.php?uuid={$caseList['uuid']}' ";
+                                            echo "value='../interView/process_pdf.php?uuid={$caseList["uuid"]}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa fa-plus'></i></button>";
                                         }; ?>
                                     </td>

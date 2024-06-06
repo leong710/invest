@@ -2,22 +2,31 @@
     date_default_timezone_set("Asia/Taipei"); 
     // 检查文件是否成功上传
     if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            extract($_FILES['file']);
-            // switch($type){
-                //     case "image/jpeg" : $ext = ".jpg"; break;
-                //     case "image/png"  : $ext = ".png"; break;
-                //     case "image/gif"  : $ext = ".gif"; break;
-                //     case "image/bmp"  : $ext = ".bmp"; break;
-                //     default : $msg = "請使用正確的圖檔"; return $msg;
-                // }
-                // $img_name = md5(time()).$ext;           // 雜湊生成fileName避免覆蓋
-            $img_name = (date('Ymd-His'))."_".$name;   // 雜湊年月日時分秒生成fileName避免覆蓋
+        extract($_FILES['file']);
 
-        // $uploadDir = '../image/a_pic/';             // 正式路徑...
-        $uploadDir = '../image/temp/';              // 過度路徑，submit後再搬移到正是路徑
-            if(!is_dir($uploadDir)){ mkdir($uploadDir); }
-        // $uploadFile = $uploadDir . basename($_FILES['file']['name']);
-            $uploadFile = $uploadDir . basename($img_name);
+        $uploadDir = $_REQUEST["uploadDir"];              // 過度路徑，submit後再搬移到正是路徑
+        if(!is_dir($uploadDir)){ mkdir($uploadDir); }
+
+        // 確保資料夾是否有同名檔案存在
+        // $upload_FileName = (is_file($uploadDir.$name)) ? (date('s'))."_".$name : $name; // 雜湊秒生成fileName避免覆蓋
+        // 分解路徑
+        $fileInfo = pathinfo($name);
+        $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';     // 副檔名
+        $baseName = $fileInfo['filename'];                                                  // 檔名(不含副檔名)
+            // $img_name = (date('Ymd-His'))."_".$name;   // << 原始方法--雜湊年月日時分秒生成fileName避免覆蓋
+        // 初始化變量
+        $i = 1;
+        $upload_FileName = $baseName.$extension;   // 組合成 檔名+副檔名
+        // // 迴圈檢查檔案是否存在
+        // while (is_file($uploadDir.$upload_FileName)) {
+        //     $upload_FileName =  $baseName ."_". $i. $extension;
+        //     $i++;
+        // }
+        if(is_file($uploadDir.$upload_FileName)){  // 直接unlink
+            unlink($uploadDir.$upload_FileName);
+        }
+            
+        $uploadFile = $uploadDir . basename($upload_FileName);
 
         // 将文件移动到指定目录
         if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
@@ -25,7 +34,7 @@
             echo json_encode([
                     'filePath' => $uploadFile,
                     'uploadDir'=> $uploadDir,
-                    'fileName' => $img_name
+                    'fileName' => $upload_FileName
                 ]);
         } else {
             http_response_code(500);

@@ -419,7 +419,7 @@
         }
     }
 
-    // 20240419_上傳檔案json
+    // 20240419_上傳檔案a_pic
     function uploadFile($fileName){
         $file_from = "../image/temp/";              // 過度路徑
         $file_to   = "../image/a_pic/";             // submit後正是路徑
@@ -443,7 +443,7 @@
             return false;                         // 返回錯誤
         }
     }    
-    // 20240417_移到垃圾桶json
+    // 20240417_移到垃圾桶a_pic
     function unlinkFile($unlinkFile){
                 
         $file_from = "../image/a_pic/";                // submit後正是路徑
@@ -476,115 +476,6 @@
         }
         return $result;
     }
-
-
-    function update_confirm_sign(){
-
-    }
-
-    // 20240605_上傳檔案pdf
-    function uploadFile_pdf($request){
-        $result = [];
-        $file_from = "../doc_pdf/temp/";                                            // temp過度路徑
-        $fileName = $request["confirm_sign"];                                       // 取得檔案名稱
-
-        // step.1-處理舊表單：
-        if(is_file($file_from.$fileName)){                                          // 確認過度路徑下的檔案是否存在
-            $row_doc = edit_document(["uuid"=>$request["uuid"]]);              // 叫出舊紀錄
-            $row_obj = array (
-                "confirm_sign" => (isset($row_doc["confirm_sign"])) ?        $row_doc["confirm_sign"]    : "" ,
-                "fab_title"    => (isset($row_doc["fab_title"]))    ?        $row_doc["fab_title"]       : "" ,
-                "short_name"   => (isset($row_doc["short_name"]))   ?        $row_doc["short_name"]      : "" ,
-                "case_year"    => (isset($row_doc["created_at"]))   ? substr($row_doc["created_at"],0,4) : "" 
-            );
-            // 處理舊pdf文件
-            if(!empty($row_obj["confirm_sign"])){  // 舊文件已有綁定檔案需要處理
-                $result["unlink"] = unlinkFile_pdf($row_obj);
-            }
-        
-        }else{
-            $result["error"] = $file_from.$fileName." 檔案不存在!";
-            return $result;
-        }
-
-        // step.2-處理新檔案：
-        if(is_file($file_from.$fileName)){                                          // 確認過度路徑下的檔案是否存在
-            
-            $doc_pdf_path = "../doc_pdf/";                                          // let 正式路徑
-            $to_path_arr = array (                                                  // 打包路徑
-                0 => isset($request["fab_title"])  ? $request["fab_title"]  : "",
-                1 => isset($request["short_name"]) ? $request["short_name"] : "",
-                2 => isset($request["case_year"])  ? $request["case_year"]  : ""
-            );
-            // -- 確認路徑
-            foreach($to_path_arr as $key){                                          // 逐筆繞出來
-                if(empty($key)){                                                    // 跳過空值
-                    continue;
-                }
-                $doc_pdf_path .= $key."/";                                          // 疊加
-                if(!is_dir($doc_pdf_path)){ mkdir($doc_pdf_path); }                 // 检查資料夾是否存在 then mkdir
-            }
-            // -- 解析檔案
-            $fileInfo = pathinfo($fileName);                                        // 分拆檔案名稱
-            $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';     // 副檔名
-            $baseName = $fileInfo['filename'];                                                  // 檔名(不含副檔名)
-            $i = 1;
-            $pdf_name = $baseName.$extension;                                       // 組合成 檔名+副檔名
-
-                // 迴圈檢查檔案是否存在-->應該要改rename搬移
-                while (is_file($doc_pdf_path.$pdf_name)) {
-                    $pdf_name =  $baseName ."_". $i. $extension;
-                    $i++;
-                }
-
-            // 移動文件到指定目錄
-            if (rename($file_from.$fileName , $doc_pdf_path.$pdf_name)) {
-                return $pdf_name;                   // 返回檔案名稱
-            } else {
-                return false;                       // 返回錯誤
-            }
-
-        }
-
-
-
-
-    
-    }    
-    // 20240605_移到垃圾桶pdf
-    function unlinkFile_pdf($unlinkFile){
-                
-        $file_from = "../image/a_pic/";                // submit後正是路徑
-        $file_to   = "../image/a_pic_offLine/";        // submit後再搬移到垃圾路徑
-
-        $rename_time = date('Ymd-His');
-
-        // 確認檔案在目錄下
-        if(is_file($file_from .$unlinkFile)) {
-            // // 移除檔案 unlink($unlinkFile); 
-            // 搬到垃圾桶
-            $moved = rename( $file_from .$unlinkFile , $file_to .$rename_time ."_" .$unlinkFile );
-            // 返回完成訊息
-            if($moved){
-                return true;
-            }else{
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-    // 20240605_確認檔案是否存在
-    function check_is_file_pdf($fileName){
-        $uploadDir = '../doc_json/';                    // 過度路徑，submit後再搬移到正是路徑
-        if(is_file($uploadDir .$fileName )) {
-            $result = true;
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
-
 
             // 20240419 檔名編碼
             function encode_filename($filename) {

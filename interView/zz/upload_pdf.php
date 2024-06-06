@@ -8,7 +8,7 @@
         if(!is_dir($uploadDir)){ mkdir($uploadDir); }               // 检查uploadDir資料夾是否存在
 
         // 確保資料夾是否有同名檔案存在
-        // $pdf_name = (is_file($uploadDir.$name)) ? (date('s'))."_".$name : $name; // 雜湊秒生成fileName避免覆蓋
+        // $upload_FileName = (is_file($uploadDir.$name)) ? (date('s'))."_".$name : $name; // 雜湊秒生成fileName避免覆蓋
         // 分解路徑
         $fileInfo = pathinfo($name);
         $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';     // 副檔名
@@ -16,17 +16,17 @@
         
         // 初始化變量
         $i = 1;
-        $pdf_name = $baseName.$extension;   // 組合成 檔名+副檔名
+        $upload_FileName = $baseName.$extension;   // 組合成 檔名+副檔名
         // // 迴圈檢查檔案是否存在
-        // while (is_file($uploadDir.$pdf_name)) {
-        //     $pdf_name =  $baseName ."_". $i. $extension;
+        // while (is_file($uploadDir.$upload_FileName)) {
+        //     $upload_FileName =  $baseName ."_". $i. $extension;
         //     $i++;
         // }
-        if(is_file($uploadDir.$pdf_name)){  // 直接unlink
-            unlink($uploadDir.$pdf_name);
+        if(is_file($uploadDir.$upload_FileName)){  // 直接unlink
+            unlink($uploadDir.$upload_FileName);
         }
 
-        $uploadFile = $uploadDir . basename($pdf_name);
+        $uploadFile = $uploadDir . basename($upload_FileName);
 
         // 将文件移动到指定目录
         if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
@@ -34,7 +34,7 @@
             echo json_encode([
                     'filePath' => $uploadFile,
                     'uploadDir'=> $uploadDir,
-                    'fileName' => $pdf_name
+                    'fileName' => $upload_FileName
                 ]);
         } else {
             http_response_code(500);
