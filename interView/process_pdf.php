@@ -55,26 +55,16 @@
                         <button type="button" class="btn btn-primary" id="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                     <?php } ?>
                 </snap>
-                <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
+                <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow(true)"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                 <hr>
             </div>
 
             <!-- 左側 -->
-            <div class="col-6 col-md-6" style="font-size: 12px;">
-                <?php 
-                    foreach($row_obj as $key => $key_value){
-                        echo "<li>{$key}：{$key_value}</li>";
-                    };
-                    echo "<snap name='row_json' id='row_json' class='t-left unblock' style='font-size: 10px;'>".$row_json."</snap>";
-                ?>
-            </div>
-
-            <!-- 右側 -->
             <div class="col-6 col-md-6 py-0 px-2">
                 <div class="col-12 bg-white border rounded text-center">
                     <!-- pdf icon -->
                     <div class="row">
-                        <div class="col-12 col-md-6 py-0" id="confirm_sign_asis" style="font-size: 12px;">
+                        <div class="col-6 col-md-7 py-0 t-right" id="confirm_sign_asis" style="font-size: 12px;">
                             <?php if(!empty($document_row["confirm_sign"])){
                                     echo "<button type='button' class='btn text-danger add_btn' id='doc_pdf_icon' data-toggle='tooltip' data-placement='bottom' title='{$document_row["confirm_sign"]}' ";
                                     echo " value='../doc_pdf/{$row_obj["fab_title"]}/{$row_obj["short_name"]}/{$row_obj["case_year"]}/{$document_row["confirm_sign"]}' ";
@@ -83,10 +73,40 @@
                                     echo "-- nothing --";
                             } ?>
                         </div>
-                        <div class="col-12 col-md-6 py-0" id="confirm_sign_tobe" style="font-size: 12px;">
-                            <!-- append new pdf icon -->
+                        <div class="col-6 col-md-5 py-0 t-right" >
+                            <?php 
+                                echo "<button type='button' class='btn btn-outline-danger' id='del_asis' onclick='return confirm(`確定要刪除此文件？`) &&unlinkFile_pdf(`confirm_sign`,`asis`)' ".(empty($document_row["confirm_sign"]) ? "disabled" : "")." data-toggle='tooltip' data-placement='bottom' title='刪除asis檔案'><i class='fa-solid fa-delete-left'></i></button>"; 
+                            ?>
                         </div>
                     </div>
+                    <hr>
+                    <!-- cow -->
+                    <div class="col-12 t-left py-0" style="font-size: 12px;">
+                        <?php 
+                            foreach($row_obj as $key => $key_value){
+                                echo "<li>{$key}：{$key_value}</li>";
+                            };
+                            echo "<snap name='row_json' id='row_json' class='t-left unblock' style='font-size: 10px;'>".$row_json."</snap>";
+                        ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側 -->
+            <div class="col-6 col-md-6 py-0 px-2">
+                <div class="col-12 bg-white border rounded text-center">
+                    <!-- pdf icon -->
+                    <div class="row">
+                        <div class="col-6 col-md-7 py-0 t-right" id="confirm_sign_tobe" style="font-size: 12px;">
+                            -- nothing --
+                            <!-- append new pdf icon -->
+                        </div>
+                        <div class="col-6 col-md-5 py-0 t-right" >
+                            <button type="button" class="btn btn-outline-danger" id='del_tobe' onclick="unlinkFile_pdf('confirm_sign','tobe')" disabled data-toggle="tooltip" data-placement="bottom" title="刪除tobe檔案"><i class="fa-solid fa-delete-left"></i></button>
+                        </div>
+                    </div>
+
+                    <hr>
                     <!-- cow -->
                     <div class="input-group my-3">
                         <span class="input-group-text">新文件</span>
@@ -96,7 +116,6 @@
                     <div class="input-group ">
                         <input type="file" name="confirm_sign_upload" id="confirm_sign_upload" class="form-control mb-0" accept=".pdf" >
                         <button type="button" class="btn btn-outline-success" onclick="uploadFile_pdf('confirm_sign')"  data-toggle="tooltip" data-placement="bottom" title="上傳PDF"><i class="fa fa-plus"></i></button> 
-                        <button type="button" class="btn btn-outline-danger"  onclick="unlinkFile_pdf('confirm_sign')"  data-toggle="tooltip" data-placement="bottom" title="刪除檔案"><i class="fa-solid fa-delete-left"></i></button> 
                     </div>
                 </div>
             </div>
@@ -104,7 +123,7 @@
             <!-- 下列 -->
             <div class="col-12 pb-0 text-end">
                 <hr>
-                <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
+                <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow(true)"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
             </div>
 
         </div>  
@@ -113,13 +132,10 @@
 
 <script>    
 
-    // var url       = 'index.php';
-    // var swal_json = <=json_encode($swal_json)?>;                   // 引入swal_json值
     swal_json = {                                 // for swal_json
         "fun"     : "interView document",
-        "content" : "process_PDF 處理--",
-        "action"  : "error",
-        "content" : '參數錯誤'
+        "content" : "process_PDF -- ",
+        "action"  : "error"
     };
     
 </script>

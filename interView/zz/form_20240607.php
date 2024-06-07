@@ -169,11 +169,11 @@
                                 <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
                             <?php } ?>
                         </span>
+                        <!-- <button type="button" class="btn btn-info text-white"  id="download_pdf" onclick="window.print()">&nbsp下載PDF</button> -->
                         <?php if(isset($action) && $action == "review"){
                             echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp另存PDF</button> ";
-                            if(empty($document_row["confirm_sign"]) || $sys_role <= 2){
-                                echo "<button type='button' class='btn btn-warning' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
-                                echo "value='../interView/process_pdf.php?uuid={$document_row["uuid"]}' onclick='openUrl(this.value)' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button>";
+                            if(empty($document_row["confirm_sign"])){
+                                echo "<button type='button' class='btn btn-warning ' id='download_pdf' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button> ";
                             }
                         }?>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
@@ -205,6 +205,7 @@
                 <div class="col-12 px-1 py-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
+                    <!-- <form action="zz/debug.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm"> -->
                         <div class="row rounded bg-light py-1" id="form_container">
                             <div class="col-12 p-3 ">
                                 <span class="from-label"><b>表單分類：</b></span><br>
@@ -318,8 +319,39 @@
                                 <div class="accordion" id="item_list" >
                                     <!-- append -->
                                 </div>
-                                 <div class="accordion unblock" id="confirm_sign">
-                                    <!-- append 簽名欄 -->
+                                <div class="accordion unblock">
+                                    <!-- 上 -->
+                                    <div class="col-12 border rounded bg-white mt-2">
+                                        <div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">
+                                            ●&nbsp以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。
+                                        </div>
+                                        <div class="border rounded bg-light p-3">
+                                            <div class="confirm_sign_div"><h3>&nbspX</h3></div>
+                                            <div class="pt-2 pb-0">當事人</div>
+                                        </div>
+                                    </div>
+                                    <!-- 下 -->
+                                    <div class="col-12 border rounded bg-white mt-2">
+                                        <div class="row">
+                                            <!-- 下左 -->
+                                            <div class="col-12 col-md-6 py-0">
+                                                <div class="border rounded bg-light p-3">
+                                                    <div class="confirm_sign_div"><h3>&nbspX</h3></div>
+                                                    <div class="pt-2 pb-0">環安人員</div>
+                                                </div>
+                                            </div>
+                                            <!-- 下右 -->
+                                            <div class="col-12 col-md-6 py-0">
+                                                <div class="border rounded bg-light p-3">
+                                                    <div class="confirm_sign_div"><h3>&nbspX</h3></div>
+                                                    <div class="pt-2 pb-0">勞工代表</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion nblock" id="confirm_sign">
+                                    <!-- append -->
                                 </div>
                             </div>
                         </div>
@@ -479,6 +511,12 @@
             <i class="fas fa-angle-up fa-2x"></i>
         </div>
 
+    <?php
+        // echo "<div class='p-5 text-white'><pre>";
+        // print_r($document_row);
+        // echo "</pre></div>";    
+    ?>
+
 </body>
 
 <script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
@@ -501,6 +539,33 @@
     var negative_arr  = [];                         // 監聽負向選項
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
     
+    document.getElementById('download_pdf').addEventListener('click', function() {
+
+        $('#logs_div, #editions_div, .head_btn').addClass('unblock');                          // 遮蔽頂部按鈕
+        $('#confirm_sign').empty().removeClass('unblock');                                  // 清除簽名欄內容+取消遮蔽簽名欄
+        // document.getElementById("confirm_sign").innerHTML = '';                     // 清除簽名欄內容
+
+        // let confirm_word = '<div class="col-12 border rounded bg-white mt-2">'      // 訂製簽名欄訊息
+        // confirm_word += '<div class="confirm_text px-2 pt-0 pb-1">以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>'
+        // confirm_word += '<div class="border rounded bg-light p-4 "><div class="confirm_sign_div"><h3>&nbspX</h3></div><div class="pt-2 pb-0">當事人</div></div>'
+        // confirm_word += '</div>'
+
+        let d1 ='<div class="col-12 border rounded bg-white mt-2">';
+        let confirm_text = '<div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">●&nbsp以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>';
+        let dx = '<div class="border rounded bg-light p-3"><div class="confirm_sign_div"><h3>&nbspX</h3></div><div class="pt-2 pb-0">';
+        let d2 = '<div class="col-12 col-md-6 py-0">';
+        let confirm_word = d1 + confirm_text + dx + '當事人' + '</div></div></div>';
+        confirm_word += d1 + '<div class="row">' + d2 + dx + '環安人員' + '</div></div></div>' + d2 + dx + '勞工代表' + '</div></div></div>' + '</div></div>';
+
+        // // 渲染簽名欄內容
+        document.getElementById("confirm_sign").innerHTML = confirm_word;
+        // 訂製檔案名稱
+        document.title = document.getElementById('pdf_name').innerText + '_' + document.getElementById('anis_no').value
+        // 列印畫面
+        // window.print();
+
+    });
+
 </script>
 
 <script src="form.js?v=<?=time()?>"></script>

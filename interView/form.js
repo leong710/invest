@@ -462,6 +462,29 @@
                     $("#anis_no").removeClass("is-valid is-invalid")
                 }
             })
+            // 列印PDF時，渲染簽名欄...
+            // document.getElementById('download_pdf').addEventListener('click', function() {
+            $('#download_pdf').on('click', function() {
+
+                $('#logs_div, #editions_div, .head_btn').addClass('unblock');         // 遮蔽頂部按鈕
+                $('#confirm_sign').empty().removeClass('unblock');                    // 清除簽名欄內容+取消遮蔽簽名欄
+                // 訂製簽名欄訊息
+                let d1 ='<div class="col-12 border rounded bg-white mt-2">';
+                let confirm_text = '<div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">●&nbsp以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>';
+                let dx = '<div class="border rounded bg-light p-3"><div class="confirm_sign_div"><h3>&nbspX</h3></div><div class="pt-2 pb-0">';
+                let d2 = '<div class="col-6 col-md-6 py-0">';
+                let confirm_word = d1 + confirm_text + dx + '當事人' + '</div></div></div>';
+                confirm_word += d1 + '<div class="row">' + d2 + dx + '環安人員' + '</div></div></div>' + d2 + dx + '勞工代表' + '</div></div></div>' + '</div></div>';
+                // 渲染簽名欄內容
+                // document.getElementById("confirm_sign").innerHTML = confirm_word;
+                $('#confirm_sign').append(confirm_word);
+                // 訂製檔案名稱
+                document.title = document.getElementById('pdf_name').innerText + '_' + document.getElementById('anis_no').value
+                // 列印畫面
+                window.print();
+        
+            });
+
             resolve(); // 文件載入成功，resolve
         });
     }

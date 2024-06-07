@@ -5,7 +5,7 @@
     // 加上安全性檢查，檢查請求的方法是否是 POST、驗證資料等
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         require_once("../pdo.php");
-        require_once("process_pdf_function.php");
+        require_once("update_confirm_sign_function.php");
 
     // step-1.確認基本數值
         $function = !empty($_REQUEST['function']) ? $_REQUEST['function'] : NULL;     // 操作功能
