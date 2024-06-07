@@ -11,17 +11,19 @@
     // default fab_scope
         $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";               // All :allMy
     // tidy query condition：
-        $select_fab_id     = (isset($_REQUEST["select_fab_id"]))     ? $_REQUEST["select_fab_id"]     : $fab_scope;   // 問卷fab
-        $select_year       = (isset($_REQUEST["select_year"]))       ? $_REQUEST["select_year"]       : date('Y');    // 問卷年度
-        $select_short_name = (isset($_REQUEST["select_short_name"])) ? $_REQUEST["select_short_name"] : "All";        // 問卷類別
+        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
+        $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
+        $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
+        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "All";        // 問卷類別
     // tidy sign_code scope 
         $sfab_id_str     = get_coverFab_lists("str");   // get signCode的管理轄區
         $sfab_id_arr     = explode(',', $sfab_id_str);  // 將管理轄區字串轉陣列
     // merge quesy array
         $query_arr = array(
-            'fab_id'        => $select_fab_id,
-            '_year'         => $select_year,
-            'short_name'    => $select_short_name,
+            'fab_id'        => $_fab_id,
+            '_year'         => $_year,
+            '_month'        => $_month,
+            'short_name'    => $_short_name,
             'sfab_id'       => $sfab_id_str,
         );
     // get mainData = caseList
@@ -33,7 +35,7 @@
 
         $icon_s = '<i class="';
         $icon_e = ' fa-2x"></i>&nbsp&nbsp';
-
+            
     // echo "<pre>";
     // print_r($query_arr);
     // echo "</pre>";
@@ -99,46 +101,54 @@
                     <!-- by各Local儲存點： -->
                     <div class="row">
                         <div class="col-md-3 pb-0 ">
-                            <h5><?php echo isset($select_fab["id"]) ? $select_fab["id"].".".$select_fab["fab_title"]." (".$select_fab["fab_remark"].")":"$select_fab_id";?>_訪談清單管理： </h5>
+                            <h5><?php echo isset($_fab["id"]) ? $_fab["id"].".".$_fab["fab_title"]." (".$_fab["fab_remark"].")":"$_fab_id";?>_訪談清單管理： </h5>
                         </div>
 
                         <!-- sort/groupBy function -->
                         <div class="col-md-6 pb-0 ">
-                            <form action="" method="POST">
+                            <form action="" method="GET">
                                 <div class="input-group">
                                     <span class="input-group-text">篩選</span>
 
-                                    <select name="select_year" id="select_year" class="form-select" >
+                                    <select name="_year" id="_year" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷年度 --</option>
-                                        <option for="select_year" value="All" <?php echo $select_year == "All" ? "selected":"";?>>-- All 所有年度 --</option>
-                                        <?php foreach($year_lists as $_year){
-                                            echo "<option for='select_year' value='{$_year["_year"]}' ";
-                                            echo $_year["_year"] == $select_year ? "selected" : "";
-                                            echo " >".$_year["_year"]."y</option>";
-                                        } ?>
+                                        <?php 
+                                            echo '<option for="_year" value="All" '.($_year == "All" ? "selected":"" ).' >-- All 所有年度 --</option>';
+                                            foreach($year_lists as $list_year){
+                                                echo "<option for='_year' value='{$list_year["_year"]}' ";
+                                                echo ($list_year["_year"] == $_year ? "selected" : "" )." >".$list_year["_year"]."y</option>";
+                                            } ?>
                                     </select>
-
-                                    <select name="select_short_name" id="select_short_name" class="form-select" >
+                                    <select name="_month" id="_month" class="form-select">
+                                        <?php 
+                                            echo "<option for='_month' value='All' ".(($_month == "All") ? "selected":"" )." >-- 全月份 / All --</option>";
+                                            foreach (range(1, 12) as $month_lists) {
+                                                $month_str = str_pad($month_lists, 2, '0', STR_PAD_LEFT);
+                                                echo "<option for='_month' value='{$month_str}' ".(($month_str == $_month ) ? "selected":"" )." >{$month_str}m</option>";
+                                            } ?>
+                                    </select>
+                                    <select name="_short_name" id="_short_name" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
-                                        <option for="select_short_name" value="All" <?php echo $select_short_name == "All" ? "selected":"";?>>-- All 所有類型 --</option>
-                                        <?php foreach($shortName_lists as $shortName){
-                                            echo "<option for='select_short_name' value='{$shortName["short_name"]}' ";
-                                            echo $shortName["short_name"] == $select_short_name ? "selected" : "";
-                                            echo " >".$shortName["short_name"]."</option>";
-                                        } ?>
+                                        <?php 
+                                            echo '<option for="_short_name" value="All" '.($_short_name == "All" ? "selected":"" ).' >-- All 所有類型 --</option>';
+                                            foreach($shortName_lists as $shortName){
+                                                echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
+                                                echo ($shortName["short_name"] == $_short_name ? "selected" : "" )." >".$shortName["short_name"]."</option>";
+                                            } ?>
                                     </select>
 
-                                    <select name="select_fab_id" id="select_fab_id" class="form-select" >
+                                    <select name="_fab_id" id="_fab_id" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
-                                        <option for="select_fab_id" value="All" <?php echo $select_fab_id == "All" ? "selected":"";?>>-- All 所有棟別 --</option>
-                                        <option for="select_fab_id" value="allMy" <?php echo $select_fab_id == "allMy" ? "selected":"";?>>
-                                            -- allMy 部門轄下 <?php echo $sfab_id_str ? "(".$sfab_id_str.")":"";?> --</option>
-                                        <?php foreach($fab_lists as $fab){
-                                            echo "<option for='select_fab_id' value='{$fab["id"]}' ";
-                                            echo ($fab["id"] == $select_fab_id) ? "selected" : "" ." >";
-                                            echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
-                                            echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
-                                        } ?>
+                                        <?php 
+                                            echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? "selected":"").' >-- All 所有棟別 --</option>';
+                                            echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? "selected":"");
+                                            echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
+                                            foreach($fab_lists as $fab){
+                                                echo "<option for='_fab_id' value='{$fab["id"]}' ";
+                                                echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
+                                                echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                                echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
+                                            } ?>
                                     </select>
 
                                     <button type="submit" class="btn btn-outline-secondary search_btn" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
@@ -156,7 +166,7 @@
                                 <!-- 20231128 下載Excel -->
                                 <form id="myForm" method="post" action="../_Format/download_excel.php">
                                     <input type="hidden" name="htmlTable" id="htmlTable" value="">
-                                    <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($select_fab["id"]) ? $select_fab["fab_title"]." (".$select_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
+                                    <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($_fab["id"]) ? $_fab["fab_title"]." (".$_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
                                         <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
                                 </form>
                             </div>

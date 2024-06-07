@@ -17,8 +17,13 @@
                 $sql .= " WHERE (year(_d.created_at) = ? )";              // ? = $year
                 array_push($stmt_arr, $_year);
             }
-            if($fab_id != "All"){                                           // 處理 fab_id != All 進行二階   
+            if($_month != 'All'){
                 $sql .= ($_year != "All" ? " AND ":" WHERE ") ;
+                $sql .= " (month(_d.created_at) = ? )";                  // ? = $month
+                array_push($stmt_arr, $_month);
+            }
+            if($fab_id != "All"){                                           // 處理 fab_id != All 進行二階   
+                $sql .= ($_year != "All" || $_month != "All" ? " AND ":" WHERE ") ;
                 if($fab_id == "allMy"){                                     // 處理 fab_id = allMy 我的轄區
                     $sql .= " _d.fab_id IN ({$sfab_id}) ";
                 }else{                                                      // 處理 fab_id != allMy 就是單點fab_id
@@ -27,7 +32,7 @@
                 }
             }                                                               // 處理 fab_id = All 就不用套用，反之進行二階
             if($short_name != "All"){                                        // 處理過濾 short_name != All  
-                $sql .= ($_year != "All" || $fab_id != "All" ? " AND ":" WHERE ") ;
+                $sql .= ($_year != "All" || $_month != "All" || $fab_id != "All" ? " AND ":" WHERE ") ;
                 $sql .= " _fc.short_name = ? ";                             // 查詢條件 short_name
                 array_push($stmt_arr, $short_name);
             }
@@ -41,7 +46,7 @@
                 $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
             }
         try {
-            if(($_year != 'All') || (($fab_id != "All") && ($fab_id != "allMy")) || ($short_name != "All")){
+            if(($_year != 'All') || ($_month != 'All') || (($fab_id != "All") && ($fab_id != "allMy")) || ($short_name != "All")){
                 $stmt->execute($stmt_arr);                          //處理 byUser & byYear
             }else{
                 $stmt->execute();                                   //處理 byAll

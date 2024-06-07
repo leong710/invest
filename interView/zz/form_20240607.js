@@ -824,67 +824,47 @@
         return true;
     }
 
-    async function load_fun(fun, parm, myCallback) {        // parm = 參數
+// // 20240430 -- step_1 由dcc_no取得表單form_json，再由bring_form(form_json)生成表單
+    async function load_form(dcc_no) {
+        // console.log('step_1 load_form(dcc_no)：', dcc_no);
         return new Promise((resolve, reject) => {
             let formData = new FormData();
-            formData.append('fun', fun);
-            formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
+            formData.append('dcc_no', dcc_no);
             let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'load_fun.php', true);
+            xhr.open('POST', 'load_form.php', true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);    // 接收回傳
-                    let result_obj = response['result_obj'];        // 擷取主要物件
-                    resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
-                                                                    // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+                    let form_json = response['form_json'];          // 取得所要的部分
+                    resolve(bring_form(form_json))                  // step_1-1 呼叫--生成表單 // resolve(true) = 表單載入成功，
                 } else {
-                    alert('fun load_'+fun+' failed. Please try again.');
-                    reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
+                    alert('fun load_form failed. Please try again.');
+                    reject('fun load_form failed. Please try again.'); // 表單載入失敗，reject
                 }
             };
             xhr.send(formData);
         });
     }
-// // 20240430 -- step_1 由dcc_no取得表單form_json，再由bring_form(form_json)生成表單
-    // async function load_form(dcc_no) {
-    //     return new Promise((resolve, reject) => {
-    //         let formData = new FormData();
-    //         formData.append('dcc_no', dcc_no);
-    //         let xhr = new XMLHttpRequest();
-    //         xhr.open('POST', 'load_form.php', true);
-    //         xhr.onload = function () {
-    //             if (xhr.status === 200) {
-    //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
-    //                 let form_json = response['form_json'];          // 取得所要的部分
-    //                 resolve(bring_form(form_json))                  // step_1-1 呼叫--生成表單 // resolve(true) = 表單載入成功，
-    //             } else {
-    //                 alert('fun load_form failed. Please try again.');
-    //                 reject('fun load_form failed. Please try again.'); // 表單載入失敗，reject
-    //             }
-    //         };
-    //         xhr.send(formData);
-    //     });
-    // }
 // // 20240430 -- step_2 由uuid取得document_row，再由edit_show(document_row)填入表單
-    // async function load_document(uuid) {
-    //     return new Promise((resolve, reject) => {
-    //         let formData = new FormData();
-    //         formData.append('uuid', uuid);
-    //         let xhr = new XMLHttpRequest();
-    //         xhr.open('POST', 'load_document.php', true);
-    //         xhr.onload = function () {
-    //             if (xhr.status === 200) {
-    //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
-    //                 let load_data = response['_document_row']    // 取得所要的部分
-    //                 resolve(edit_show(load_data));               // step_2-1 呼叫--填入表單 // resolve(true) = 表單填入成功，
-    //             } else {
-    //                 alert('fun load_document failed. Please try again.');
-    //                 reject('fun load_document failed. Please try again.'); // 文件載入失敗，reject
-    //             }
-    //         };
-    //         xhr.send(formData);
-    //     });
-    // }
+    async function load_document(uuid) {
+        return new Promise((resolve, reject) => {
+            let formData = new FormData();
+            formData.append('uuid', uuid);
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'load_document.php', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);    // 接收回傳
+                    let document_row = response['_document_row']    // 取得所要的部分
+                    resolve(edit_show(document_row));               // step_2-1 呼叫--填入表單 // resolve(true) = 表單填入成功，
+                } else {
+                    alert('fun load_document failed. Please try again.');
+                    reject('fun load_document failed. Please try again.'); // 文件載入失敗，reject
+                }
+            };
+            xhr.send(formData);
+        });
+    }
 // // 20240430 -- step_3 依cherk_action = true/false 啟閉表單特定元素
     async function setFormDisabled(cherk_action) {
         // console.log('step_3 setFormDisabled(cherk_action)：', cherk_action);
@@ -933,13 +913,11 @@
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData() {
         try {
-                // await load_form(dcc_no);                 // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
-                await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                await load_form(dcc_no);                    // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
                 await eventListener();                      // step_1-2 eventListener();             // 
             if(action == "edit" || action == "review" ){
-                // await load_document(uuid);               // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
-                await load_fun('document', uuid, edit_show);// step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
+                await load_document(uuid);                  // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
             }
                 await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
 
