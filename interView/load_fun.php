@@ -1,8 +1,30 @@
 <?php
     if(isset($_REQUEST['fun'])) {
-
-        switch (isset($_REQUEST['fun'])){
+        $result = [];
+        switch ($_REQUEST['fun']){
             case 'form':
+                if(isset($_REQUEST['parm'])) {
+                    extract($_REQUEST);
+                    $dcc_no = $parm;
+                    $form_doc     = "../doc_json/".$dcc_no.".json";
+                    if(file_exists($form_doc)){
+                        // 从 JSON 文件加载内容
+                        $form_json = file_get_contents($form_doc);
+                        // 解析 JSON 数据并将其存储在 $form_a_json 变量中
+                        $form_json = (array) json_decode($form_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+                        // 製作返回文件
+                        $result = [
+                                'result_obj' => $form_json,
+                                'fun'        => $fun,
+                                'success'    => 'Load '.$fun.' success.'
+                            ];
+                    }else{
+                        $result['error'] = 'Load '.$fun.' failed...(file not exist)';
+                    }
+                    
+                } else {
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                }
                 break;
 
             case 'document':
@@ -10,7 +32,6 @@
                     require_once("../pdo.php");
                     $pdo = pdo();
                     extract($_REQUEST);
-
                     $sql = "SELECT * FROM _document WHERE uuid = ? ";
                     $stmt = $pdo->prepare($sql);
                     try {
@@ -21,49 +42,57 @@
                             foreach ($re_json_keys as $jkey) {
                                 $_document[$jkey] = json_decode($_document[$jkey]);
                             }
-                        // 返回文件
-
-                        $result = json_encode(['result_obj' => $_document]);
-                        $result['fun']     = $fun;
-                        $result['success'] = 'Load '.$fun.' success.';
-                        
+                        // 製作返回文件
+                        $result = [
+                            'result_obj' => $_document,
+                            'fun'        => $fun,
+                            'success'    => 'Load '.$fun.' success.'
+                        ];
                     }catch(PDOException $e){
                         echo $e->getMessage();
-                        $result['fun'] = "error";
-                        $result['error'] = 'Load '.$fun.' failed.';
+                        $result['error'] = 'Load '.$fun.' failed...(e)';
                     }
 
                 }else{
-                    $result['fun'] = "error";
-
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
                 }
                 break;
+
             case 'locals':
+                require_once("../pdo.php");
+                $pdo = pdo();
+                extract($_REQUEST);
+                $sql = "SELECT _l.*
+                        FROM _local _l
+                        -- LEFT JOIN _fab _f ON _f.id = _l.fab_id
+                        -- WHERE _fab.flag = 'On' AND _site.flag = 'On'
+                        ORDER BY _l.id ASC ";
+                $stmt = $pdo->prepare($sql);
+                try {
+                    $stmt->execute();
+                    $locals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    // 製作返回文件
+                    $result = [
+                        'result_obj' => $locals,
+                        'fun'        => $fun,
+                        'success'    => 'Load '.$fun.' success.'
+                    ];
+                }catch(PDOException $e){
+                    echo $e->getMessage();
+                    $result['error'] = 'Load '.$fun.' failed...(e)';
+                }
                 break;
         };
 
-        if($result['fun'] == "error"){
-            
-        }else{
-            
-        }
-        
-        echo json_encode($result);
-
-    
-            
-        }catch(PDOException $e){
-            echo $e->getMessage();
+        if(isset($result["error"])){
             http_response_code(500);
-            echo json_encode(['error' => 'Load document failed.']);
+        }else{
+            http_response_code(200);
         }
-
-
-
-
+        echo json_encode($result);
 
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'uuid is lost.']);
+        echo json_encode(['error' => 'fun is lost.']);
     }
 ?>

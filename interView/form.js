@@ -41,6 +41,9 @@
         toast.show();
     }
 
+    // function init_locals(result){
+    //     const locals = result;
+    // }
     // 20240506 local select生成
     function select_local(sortFab_id){
         $("#local_id").empty();
@@ -52,7 +55,6 @@
             }
         }
     }
-
     // 20240506 saveSubmit modal添加save功能
     function changeMode(mode){
         $('#modal_action, #submit_action').empty();         // 清除model標題和btn功能
@@ -933,12 +935,11 @@
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData() {
         try {
-                // await load_form(dcc_no);                 // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                // await load_fun('locals','', init_locals);   // step_0 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
                 await eventListener();                      // step_1-2 eventListener();             // 
             if(action == "edit" || action == "review" ){
-                // await load_document(uuid);               // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
                 await load_fun('document', uuid, edit_show);// step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
             }
                 await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
