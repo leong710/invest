@@ -566,7 +566,7 @@
                 break;
             case 'radio':
             case 'checkbox':
-                int_a = '<div class=" border rounded p-2"><snap><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
+                int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
                 Object(item_a.options).forEach((option)=>{
                     // let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
                     let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
@@ -730,9 +730,10 @@
 
         // edit step2.特例呈現：'confirm_sign','ruling_sign','a_pic'
             // console.log('step_2-1-2 special_items.forEach((special_item)=> -- 特例呈現');
-            let special_items = ['ruling_sign','a_pic']
+            let special_items = ['ruling_sign','a_pic','_odd']
             special_items.forEach((special_item)=>{
                 if(document_row[special_item] != null){
+
                     if(special_item == 'a_pic'){        // 路線圖檔
                         let a_pic_path     = '../image/a_pic/'                                                                      // 指定pic路徑
                         let a_pic_val      = document_row[special_item];                                                            // 取得pic_value
@@ -746,6 +747,14 @@
                         if(input_item){
                             input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
                         }
+                    }else if(special_item == '_odd'){                              // 240611 職災申報
+                        let _odd = JSON.parse(document_row[special_item]);
+                        // let show_odd = (_odd['od'] != undefined) ? _odd['od'] : "";
+                        // show_odd += (_odd['due_day'] != null) ? " due_day："+_odd['due_day'] : "";
+                        let show_odd = (_odd['due_day'] != undefined && _odd['due_day'] != null) ? "due_day："+_odd['due_day']+" ／ 申報日：" : "";
+                           show_odd += (_odd['o_day']   != undefined && _odd['o_day']   != null) ? _odd['due_day'] : "null";
+                        $('#show_odd').append(show_odd);
+
                     }else{                              // 簽名
                         let base64_sign    = document_row[special_item];
                         let signatureImage = document.getElementById(special_item+'_signature-image');

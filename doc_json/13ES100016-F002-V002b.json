@@ -397,7 +397,7 @@
                         { "label" : "常日班" , "value" : "常日班" }
                     ],
                     "negative": "無",
-                    "required": false
+                    "required": true
                 },
                 {
                     "label": "事故時間",
@@ -408,7 +408,7 @@
                         { "label" : "夜間"   , "value" : "夜間"  }
                     ],
                     "negative": "無",
-                    "required": false
+                    "required": true
                 },
                 {
                     "label": "年齡層",
@@ -470,7 +470,7 @@
                                                     }}
                     ],
                     "negative": "否",
-                    "required": false
+                    "required": true
                 },
                 {
                     "label": "損/限工",
@@ -498,13 +498,13 @@
                             "class" : "other_item" }
                     ],
                     "negative": "無",
-                    "required": false
+                    "required": true
                 },
                 {
                     "label": "受傷資訊",
                     "type" : "textarea",
                     "name" : "s8_textarea_a",
-                    "required": false
+                    "required": true
                 }
             ]
         }

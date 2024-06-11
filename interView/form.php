@@ -204,20 +204,27 @@
                 <!-- container -->
                 <div class="col-12 px-1 py-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
                     <!-- 內頁 -->
-                    <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false" id="mainForm">
+                    <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false,this._odd.disabled=false" id="mainForm">
                         <div class="row rounded bg-light py-1" id="form_container">
                             <div class="col-12 p-3 ">
                                 <span class="from-label"><b>表單分類：</b></span><br>
                                 <div class="col-12 p-3 border rounded bg-white">
                                     <div class="row">
                                         <!-- line 0 -->
-                                        <div class="col-12 col-md-12 py-0">
+                                        <div class="col-6 col-md-6 py-0">
                                             <div class="form-floating">
                                                 <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" require >
                                                 <label for="anis_no" class="form-label">anis_no/ANIS表單編號：<sup class="text-danger"> * </sup></label>
                                                 <div class="invalid-feedback" id="anis_no_feedback">編號填入錯誤 ~ (大寫ANIS+數字流水號共21碼)</div>
                                             </div>
                                         </div>
+                                        <div class="col-6 col-md-6 py-0">
+                                            <div class="form-floating">
+                                                <span id="show_odd" class="form-control text-center" data-toggle="tooltip" data-placement="bottom" title="此欄由系統判斷，免填!"></span>
+                                                <label for="show_odd" class="form-label">_odd/職災申報：<sup class="text-danger"> -- </sup></label>
+                                            </div>
+                                        </div>
+
                                         <div class="col-6 col-md-6 pb-0">
                                             <div class="form-floating">
                                                 <select name="fab_id" id="fab_id" class="form-select" onchange="select_local(this.value)" required>
@@ -346,6 +353,7 @@
                                         <input type="hidden"  name="idty"            id="idty"            value="1">
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
+                                        <input type="hidden"  name="_odd"            id="_odd"            value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>
                                                 <button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>

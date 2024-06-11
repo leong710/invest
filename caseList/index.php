@@ -36,9 +36,6 @@
         $icon_s = '<i class="';
         $icon_e = ' fa-2x"></i>&nbsp&nbsp';
             
-    // echo "<pre>";
-    // print_r($query_arr);
-    // echo "</pre>";
             
 ?>
 
@@ -93,7 +90,7 @@
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link active" href="index.php">訪談清單管理</span></a></li>
-                        <li class="nav-item"><a class="nav-link"   href=""> UB </span></a></li>
+                        <li class="nav-item"><a class="nav-link"        href=""> UB </span></a></li>
                     </ul>
                 </div>
                 <!-- 內頁 -->
@@ -216,7 +213,20 @@
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
                                     <td><?php echo $caseList['idty'];?></td>
-                                    <td></td>
+                                    <td>
+                                        <?php 
+                                            $_odd = isset($caseList['_odd']) ? (array) json_decode($caseList['_odd']) : [];
+                                            echo "<span class='inb'>";
+                                            echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
+                                            echo !empty($_odd["o_day"])   ? $_odd["o_day"] : (!empty($_odd["due_day"]) ? "--" : "");
+                                            echo "</span>";
+                                            if(!empty($_odd["due_day"]) && empty($_odd["o_day"])){
+                                                echo "&nbsp<button type='button' class='btn btn-sm btn-xs btn-outline-success add_btn' data-toggle='tooltip' data-placement='bottom' title='編輯申報日' ";
+                                                echo " value='../interView/process_odd.php?uuid={$caseList["uuid"]}' ";
+                                                echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-pen-to-square'></i></button>";
+                                            } 
+                                        ?>
+                                    </td>
                                     <td><?php echo substr($caseList["created_at"],0,10)."</br>".$caseList['created_cname'];?></td>
                                     <!-- <td><php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td> -->
 
@@ -281,7 +291,7 @@
         $('#caseList').DataTable({
             "autoWidth": false,
             // 排序
-            // "order": [[ 4, "asc" ]],
+            "order": [[ 8, "desc" ]],
             // 顯示長度
             "pageLength": 25,
             // 中文化

@@ -12,8 +12,9 @@
 
         // 例外處理單元：s
             // 處理a_pic上傳檔案
-            $a_pic        = !empty($a_pic)   ? uploadFile($a_pic) : null; 
+            $a_pic        = !empty($a_pic)   ? uploadFile($a_pic) : null ; 
 
+            $_odd         = !empty($_odd)         ? $_odd         : null ;      // 通報判斷fun
             $confirm_sign = !empty($confirm_sign) ? $confirm_sign : null ; 
             $ruling_sign  = !empty($ruling_sign)  ? $ruling_sign  : null ; 
             $_focus       = !empty($_focus)       ? $_focus       : null ; 
@@ -23,17 +24,21 @@
             }
             // 使用迴圈刪除指定的元素
             $unset_keys = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d',
-                                'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
+                                '_odd', 'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
                                 'submit_document','update_document','save_document');
             // foreach ($unset_keys as $key) { unset($_content[$key]); }
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
             $_content = array_diff_key($_REQUEST, array_flip($unset_keys));  
+
+            // 20240611 確認申報日期
+            $_odd = confirm_odd($_content);
 
             // 把特定物件轉json
             // $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
             // foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
 
                     $data = [
+                        '_odd'          => $_odd,
                         '_focus'        => $_focus,
                         '_content'      => $_content,
                         'meeting_man_a' => $meeting_man_a,
@@ -43,6 +48,7 @@
 
                     foreach ($data as $key => $value) { $data[$key] = json_encode($value); }
                     
+                    $_odd          = $data['_odd'];
                     $_focus        = $data['_focus'];
                     $_content      = $data['_content'];
                     $meeting_man_a = $data['meeting_man_a'];
@@ -63,13 +69,13 @@
         // 呼叫toLog製作log檔
             $logs_enc = toLog($logs_request);
 
-        $sql = "INSERT INTO _document( _focus, _content, confirm_sign, ruling_sign, a_pic 
+        $sql = "INSERT INTO _document(_odd, _focus, _content, confirm_sign, ruling_sign, a_pic 
                             , idty, dcc_no, fab_id, local_id, case_title,   anis_no, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s, meeting_man_d
                             , created_emp_id, created_cname, updated_cname, logs, meeting_time,   created_at, updated_at, uuid)
-                VALUES( ?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
+                VALUES( ?,?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
         $stmt = $pdo->prepare($sql);
         try {
-            $stmt->execute([$_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
+            $stmt->execute([$_odd, $_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
                             , $idty, $dcc_no, $fab_id, $local_id, $case_title, $anis_no, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s, $meeting_man_d
                             , $created_emp_id, $created_cname, $created_cname, $logs_enc, $meeting_time]);
             $swal_json["action"]   = "success";
@@ -96,7 +102,7 @@
             $_document = $stmt->fetch(PDO::FETCH_ASSOC);        // no index
 
             // 把特定json轉物件
-            $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
+            $re_json_keys = array('_odd','_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
             foreach ($re_json_keys as $jkey) { $_document[$jkey] = json_decode($_document[$jkey]); }
             // 可以使用 array_map() 函数结合匿名函数，这样就不需要显式地使用 foreach 循环了
             // array_map(function($jkey) use (&$_document) { $_document[$jkey] = json_decode($_document[$jkey]); }, $re_json_keys);
@@ -222,8 +228,15 @@
             // $new_document = array_intersect_key($new_document, array_flip($row_keys));           // new只保留指定的
             $new_content = array_diff_key($new_document, array_flip($check_1));
             $new_content = array_diff_key($new_content,  array_flip($check_2)); 
+            unset($new_content["_odd"]);                                                            // _odd從記錄中移除 for $_content
+            // 20240611 確認申報日期
+            $new_document["_odd"] = confirm_odd($new_content);
 
             $check_3 = [
+                    "_odd"    => [
+                            "row" => isset($row_document["_odd"]) ? $row_document["_odd"] : null ,
+                            "new" => isset($new_document["_odd"]) ? $new_document["_odd"] : null
+                        ], 
                     "_focus"    => [
                             "row" => isset($row_document["_focus"]) ? $row_document["_focus"] : null ,
                             "new" => isset($new_document["_focus"]) ? $new_document["_focus"] : null
@@ -299,7 +312,7 @@
             // }
 
         // step6.編輯紀錄 => 1送出 6暫存
-            if($idty != "6" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
+            if($idty != "666" && count($edited_log) != 0){  // 表單狀態 6暫存&&沒log => 不進行編輯紀錄
                 // step6-1.製作Editions編輯紀錄前處理：塞進去製作元素
                     $editions = array(
                         "updated_cname"   => $created_cname." (".$created_emp_id.")" ,
@@ -638,4 +651,36 @@
         $formatted_datetime = $datetime_obj->format("Y-m-d H:i");
 
         return $formatted_datetime;
+    }
+    // 20240611 損工 = 隔月5日需要進行職災申報
+    function confirm_odd($_content){
+        // $_content = (array) json_decode($_content);                                  // 倒進來的是無編碼...所以不需要解碼
+        $s8_combo_8 = isset($_content["s8_combo_8"]) ? $_content["s8_combo_8"] : [];    // 取得損限工問項答案
+        $result = [];
+
+        if(in_array("損工", $s8_combo_8)){
+            $a_day = isset($_content["a_day"]) ? $_content["a_day"] : null;             // 事故發生日
+            if($a_day !== null){
+                // $datetime_obj = DateTime::createFromFormat("Y-m-d\TH:i", $a_day);    // 创建 DateTime 对象，并指定原始时间格式
+                // $a_day = $datetime_obj->format("Y-m-d");                             // 将时间格式化为目标格式 
+                $due_day = new DateTime($a_day);                                        // 將$a_day轉換為DateTime物件
+                $due_day->modify('+1 month');                                           // 添加一個月
+                $due_day->setDate($due_day->format('Y'), $due_day->format('m'), 5);     // 設置日期為5號
+                $due_day = $due_day->format('Y-m-d');                                   // 將日期格式化為字符串並返回
+
+            }else{
+                $due_day = null;
+            }
+
+            $result = [
+                // 'a_day'=> $a_day,            // 事故發生日
+                // 'od'      => "職災申報",        // 判斷訊息
+                'due_day' => $due_day,          // 申報截止日
+                'o_day'   => null               // 申報日期
+            ];
+            
+        }else{
+            $result["od"] = "";
+        }
+        return $result;
     }
