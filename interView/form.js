@@ -113,6 +113,7 @@
             data: request,
             success: function(res){
                 let res_r = res["result"];
+                console.log(res_r)
                 postList(res_r);                                    // 將結果轉給postList進行渲染
             },
             error (err){
@@ -142,10 +143,11 @@
         for (let i=0; i < res_r.length; i++) {
             // 把user訊息包成json字串以便夾帶
                 let user_json = {
-                        'emp_id'    : res_r[i].emp_id.trim(),
-                        'cname'     : res_r[i].cname.trim(),
-                        'cstext'    : res_r[i].cstext.trim(),
-                        'oftext'   : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
+                        'emp_id' : res_r[i].emp_id.trim(),
+                        'cname'  : res_r[i].cname.trim(),
+                        'cstext' : res_r[i].cstext.trim(),
+                        'omager' : res_r[i].omager.trim(),
+                        'oftext' : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
                     };
             // let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim() + ',' + res_r[i].dept_no.trim() + '\/' + res_r[i].oftext;
             div_result_tbody.innerHTML += 
@@ -168,17 +170,18 @@
             let personal_inf = JSON.parse(val);
             let emp_id = personal_inf['emp_id'];        // 指定emp_id 
             let cname  = personal_inf['cname'];         // 指定cname 
+            let omager = personal_inf['omager'];        // 指定omager 
 
-            if(meeting_man_target == 'emp_id_btn'){     // 來自事故者基本資訊
+            if(meeting_man_target == 'emp_id_btn'){     // *** 來自事故者基本資訊
                 Object.keys(personal_inf).forEach((_key)=>{
                     let _key_elem = document.querySelector('#'+_key)
                     if(_key_elem){
                         _key_elem.value = personal_inf[_key]
                     }
                 })
-                searchUser_modal.hide();      // 關閉searchUser_modal
+                searchUser_modal.hide();                // 關閉searchUser_modal
 
-            }else{                                      // 來自會議title
+            }else{                                      // *** 來自會議title
                 val = JSON.stringify({
                     "cname"  : cname,
                     "emp_id" : emp_id
@@ -464,11 +467,11 @@
                     $("#anis_no").removeClass("is-valid is-invalid")
                 }
             })
-            // 列印PDF時，渲染簽名欄...
+            // 列印PDF時，渲染簽名欄+遮蔽部分欄位...
             // document.getElementById('download_pdf').addEventListener('click', function() {
             $('#download_pdf').on('click', function() {
 
-                $('#logs_div, #editions_div, .head_btn').addClass('unblock');         // 遮蔽頂部按鈕
+                $('#logs_div, #editions_div, .head_btn, #show_odd_div' ).addClass('unblock');         // 遮蔽頂部按鈕
                 $('#confirm_sign').empty().removeClass('unblock');                    // 清除簽名欄內容+取消遮蔽簽名欄
                 // 訂製簽名欄訊息
                 let d1 ='<div class="col-12 border rounded bg-white mt-2">';
@@ -599,9 +602,61 @@
                 }) 
                 int_a += '</div>';
                 break;
+            case 'select':
+                int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
+                int_a += '<select name="'+item_a.name+'" id="'+item_a.name+'" class="form-select" onchange="console.log(this.value)" >'
+                      + '<option value="" hidden>-- [請選擇 災害類型] --</option>' 
+                Object(item_a.options).forEach((option)=>{
+                    let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
+                    // console.log(option.label ,typeof option.value);
+
+
+                    if (typeof option.value === 'object') {
+                        Object(option.value).forEach((key_value)=>{
+                            console.log(key_value);
+                        } )
+
+
+                        // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
+                        //     + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
+
+                    }else {
+                        int_a += '<option value="'+option.value+'">'+option.value+'</option>' 
+    
+                    }
+
+                    // // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
+                    // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
+                    //       + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
+                    //       + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
+                    //         + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
+                    //         + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                    //       + '" >' + '<label class="form-check-label '
+                    //         + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
+                    //         + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                    //       + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
+                    //       + '</label></div>';
+
+                    // if (typeof option.value === 'object' && option.value.type == 'text') {
+                    //     // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
+                    //     int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
+                    //         + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
+
+                    // }else if (typeof option.value === 'object' && option.value.type == 'number') {
+                    //     int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
+                    //         // + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled  min="0" max="999" maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)">';
+                    //         + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled ';
+                    //     if(option.value.limit != undefined){
+                    //         int_a += option.value.limit;
+                    //     }
+                    //     int_a += ' >';
+                    // }
+                }) 
+                int_a += '</select>'+'</div>';
+                break;
             case 'file':       // session_2 事故位置簡圖
-                int_a = '<div class="col-6 col-md-6 a_pic" id="preview_' + item_a.name + '" > -- preView -- </div>'
-                    + '<input type="hidden" name="' + item_a.name + '" id="' + item_a.name + '" ' + (item_a.required ? 'required' : '' ) + '>'
+                int_a = check_action ? '<div class="col-12 ' : '<div class="col-6 col-md-6 ';         // create = 半開；review = 全開
+                int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
                 if(!check_action){
                     int_a += '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
                         + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" >'
@@ -735,24 +790,22 @@
                 if(document_row[special_item] != null){
 
                     if(special_item == 'a_pic'){        // 路線圖檔
-                        let a_pic_path     = '../image/a_pic/'                                                                      // 指定pic路徑
-                        let a_pic_val      = document_row[special_item];                                                            // 取得pic_value
-                        let preview_modal  = '<a href="'  + a_pic_path + a_pic_val + '" target="_blank" >';                         // 生成預覽按鈕a
-                        let src_img        = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">';// 生成img
-                        let preview_item   = document.getElementById('preview_' + special_item); 
+                        let a_pic_path    = '../image/a_pic/'                                                                       // 指定pic路徑
+                        let a_pic_val     = document_row[special_item];                                                             // 取得pic_value
+                        let preview_modal = '<a href="'  + a_pic_path + a_pic_val + '" target="_blank" >';                          // 生成預覽按鈕a
+                        let src_img       = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">'; // 生成img
+                        let preview_item  = document.getElementById('preview_' + special_item); 
                         if(preview_item){
                             preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
                         }            
-                        let input_item     = document.getElementById(special_item);
+                        let input_item    = document.getElementById(special_item);
                         if(input_item){
                             input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
                         }
                     }else if(special_item == '_odd'){                              // 240611 職災申報
                         let _odd = JSON.parse(document_row[special_item]);
-                        // let show_odd = (_odd['od'] != undefined) ? _odd['od'] : "";
-                        // show_odd += (_odd['due_day'] != null) ? " due_day："+_odd['due_day'] : "";
-                        let show_odd = (_odd['due_day'] != undefined && _odd['due_day'] != null) ? "due_day："+_odd['due_day']+" ／ 申報日：" : "";
-                           show_odd += (_odd['o_day']   != undefined && _odd['o_day']   != null) ? _odd['due_day'] : "null";
+                        let show_odd  = (_odd['due_day'] != undefined && _odd['due_day'] != null) ? "due_day："+_odd['due_day']+"/申報日：" : "";
+                            show_odd += (_odd['od_day']  != undefined && _odd['od_day'] != null) ? _odd['od_day'] : "--";
                         $('#show_odd').append(show_odd);
 
                     }else{                              // 簽名

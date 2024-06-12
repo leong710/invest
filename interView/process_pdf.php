@@ -46,19 +46,23 @@
 
 <body>
     <div class="col-12">
-        <snap class="text-white"><?php echo !empty($action_fun) ? $action_fun : '[process]'; ?> ...</snap></br>
+        <snap class="text-white"><?php echo !empty($action_fun) ? $action_fun : '[process_pdf]'; ?> ...</snap></br>
         <div class="row justify-content-center bg-light rounded py-4 px-2 m-2">
             <!-- 上列 -->
-            <div class="col-12 pt-0 text-end">
+            <div class="col-12 col-md-6 py-0">
+                <h4>更新結案文件存檔：</h4>
+            </div>
+            <div class="col-12 col-md-6 py-0 text-end">
                 <snap id="submit_action">
                     <?php if($sys_role <= 2){ ?>
                         <button type="button" class="btn btn-primary" id="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                     <?php } ?>
                 </snap>
                 <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow(true)"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
+            </div>
+            <div class="col-12 pt-0 pb-1">
                 <hr>
             </div>
-
             <!-- 左側 -->
             <div class="col-6 col-md-6 py-0 px-2">
                 <div class="col-12 bg-white border rounded text-center">
@@ -117,6 +121,7 @@
                         <input type="file" name="confirm_sign_upload" id="confirm_sign_upload" class="form-control mb-0" accept=".pdf" >
                         <button type="button" class="btn btn-outline-success" onclick="uploadFile_pdf('confirm_sign')"  data-toggle="tooltip" data-placement="bottom" title="上傳PDF"><i class="fa fa-plus"></i></button> 
                     </div>
+                    <span class="t-right text-danger">* 限定上傳PDF檔</span>
                 </div>
             </div>
 

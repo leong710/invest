@@ -171,10 +171,10 @@
                         </span>
                         <?php if(isset($action) && $action == "review"){
                             echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp另存PDF</button> ";
-                            if(empty($document_row["confirm_sign"]) || $sys_role <= 2){
-                                echo "<button type='button' class='btn btn-warning' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
-                                echo "value='../interView/process_pdf.php?uuid={$document_row["uuid"]}' onclick='openUrl(this.value)' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button>";
-                            }
+                            // if(empty($document_row["confirm_sign"]) || $sys_role <= 2){
+                                // echo "<button type='button' class='btn btn-warning' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
+                                // echo "value='../interView/process_pdf.php?uuid={$document_row["uuid"]}' onclick='openUrl(this.value)' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button>";
+                            // }
                         }?>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>
@@ -219,7 +219,7 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6 py-0">
-                                            <div class="form-floating">
+                                            <div class="form-floating" id="show_odd_div">
                                                 <span id="show_odd" class="form-control text-center" data-toggle="tooltip" data-placement="bottom" title="此欄由系統判斷，免填!"></span>
                                                 <label for="show_odd" class="form-label">_odd/職災申報：<sup class="text-danger"> -- </sup></label>
                                             </div>
@@ -354,6 +354,7 @@
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <input type="hidden"  name="_odd"            id="_odd"            value="">
+                                        <input type="hidden"  name="omager"          id="omager"          value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>
                                                 <button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>

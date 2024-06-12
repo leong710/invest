@@ -1,5 +1,5 @@
 <?php
-    // 此檔案process_pdf_function.php只搭配API(update_confirm_sign.php)使用!!
+    // 此檔案process_api_function.php只搭配API(update_api.php)使用!!
     // 20240606_(主)上傳檔案pdf並更新confirm_sign
     function update_confirm_sign($request){
         $pdo = pdo();
@@ -103,3 +103,30 @@
         }
     }
 
+    // 20240612_(主)更新odd日期
+    function update_odd($request){
+        $pdo = pdo();
+        extract($request);
+
+        $swal_json = array(                                 // for swal_json
+            "fun"       => "update_odd",
+            "content"   => "更新職災申報日期 -- "
+        );
+
+        $_odd = json_encode($_odd);
+
+        // step.1-處理doc文件
+        $sql = "UPDATE _document SET _odd=? WHERE uuid=?";
+        $stmt = $pdo->prepare($sql);
+        try {
+            $stmt->execute([$_odd, $uuid]);
+            $swal_json["action"]   = "success";
+            $swal_json["content"] .= '儲存成功';
+        }catch(PDOException $e){
+            echo $e->getMessage();
+            $swal_json["action"]   = "error";
+            $swal_json["content"] .= '儲存失敗';
+        }
+
+        return $swal_json;
+    }

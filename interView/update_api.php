@@ -5,7 +5,7 @@
     // 加上安全性檢查，檢查請求的方法是否是 POST、驗證資料等
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         require_once("../pdo.php");
-        require_once("update_confirm_sign_function.php");
+        require_once("update_api_function.php");
 
     // step-1.確認基本數值
         $function = !empty($_REQUEST['function']) ? $_REQUEST['function'] : NULL;     // 操作功能
@@ -17,8 +17,8 @@
         }
 
     // step-2.組合查詢參數陣列
-    // update_confirm_sign
-        $su = ["case_year", "confirm_sign", "confirm_sign_new", "fab_title", "short_name", "uuid"];
+        $su = ["case_year", "confirm_sign", "confirm_sign_new", "fab_title", "short_name", "uuid"]; // update_confirm_sign
+        $su = ["_odd", "uuid"]; // update_confirm_sign
     // 接收來自前端的資料
         foreach($_REQUEST as $key => $key_value){
             // if(empty($key_value) && $key != "confirm_sign_new"){        // 但書for刪除=>
@@ -33,12 +33,21 @@
             $aResult['success'] = 'Run function '.$function.'!';    // 預先定義回傳內容。
 
             switch($function) {
-                // fun-1.update_confirm_sign 快速切換上架On/下架Off 
+                // fun-1.update_confirm_sign 快速更換上傳pdf文件 
                 case 'update_confirm_sign':
                     if(empty($su['uuid'])) {
                         $aResult['error'] = $function.'：uuid - 參數錯誤!';
                     } else {
                         $aResult['result'] = update_confirm_sign($su);
+                    }
+                    break;
+
+                // fun-2.update_odd 快速更換 職災申報日期_odd
+                case 'update_odd':
+                    if(empty($su['uuid'])) {
+                        $aResult['error'] = $function.'：uuid - 參數錯誤!';
+                    } else {
+                        $aResult['result'] = update_odd($su);
                     }
                     break;
 

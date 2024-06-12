@@ -48,21 +48,24 @@
         <snap class="text-white"><?php echo !empty($action_fun) ? $action_fun : '[process _odd]'; ?> ...</snap></br>
         <div class="row justify-content-center bg-light rounded py-4 px-2 m-2">
             <!-- 上列 -->
-            <div class="col-12 pt-0 text-end">
+            <div class="col-12 col-md-6 py-0">
+                <h4>更新職災申報日期：</h4>
+            </div>
+            <div class="col-12 col-md-6 py-0 text-end">
                 <snap id="submit_action">
                     <?php if($sys_role <= 2){ ?>
                         <button type="button" class="btn btn-primary" id="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                     <?php } ?>
                 </snap>
                 <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow(true)"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
+            </div>
+            <div class="col-12 pt-0 pb-1">
                 <hr>
             </div>
 
             <!-- 左側 -->
-            <div class="col-6 col-md-6 py-0 px-2">
+            <div class="col-6 col-md-6 px-2">
                 <div class="col-12 bg-white border rounded text-center">
-                    <!-- pdf icon -->
-                    <hr>
                     <!-- cow -->
                     <div class="col-12 t-left py-0" style="font-size: 12px;">
                         <?php 
@@ -79,19 +82,19 @@
                                 }
 
                             };
-                            echo "<snap name='row_json' id='row_json' class='t-left block' style='font-size: 10px;'>".$row_json."</snap>";
+                            echo "<snap name='row_json' id='row_json' class='t-left unblock' style='font-size: 12px;'>".$row_json."</snap>";
                         ?>
                     </div>
                 </div>
             </div>
 
             <!-- 右側 -->
-            <div class="col-6 col-md-6 py-0 px-2">
+            <div class="col-6 col-md-6 px-2">
                 <div class="col-12 bg-white border rounded text-center">
                            <!-- upload utility -->
                     <div class="form-floating">
-                        <input type="date" name="_odd['o_day']" id="_odd['o_day']" class="form-control mb-0" value="" require>
-                        <label for="_odd['o_day']" class="form-label">_odd/職災申報完成日期：<sup class="text-danger"> * </sup></label>
+                        <input type="date" name="_odd['od_day']" id="od_day" class="form-control mb-0" value="" require>
+                        <label for="od_day" class="form-label">_odd/職災申報完成日期：<sup class="text-danger"> * </sup></label>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 {
     "form_title" : "南廠區廠內事故訪談表",
-    "version"    : "V003",
+    "version"    : "V003a",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "session_1" : {
@@ -27,31 +27,6 @@
                     "name" : "anis_day",
                     "required": true,
                     "valid": true
-                },
-                {
-                    "label": "事故權責單位",
-                    "type" : "text",
-                    "name" : "a_belong_dept",
-                    "required": true
-
-                },
-                {
-                    "label": "環安單位",
-                    "type" : "text",
-                    "name" : "esh_dept",
-                    "required": true
-                },
-                {
-                    "label": "承攬商代表",
-                    "type" : "text",
-                    "name" : "vendor",
-                    "required": false
-                },
-                {
-                    "label": "其他",
-                    "type": "text",
-                    "name" : "other_dept",
-                    "required": false
                 }
             ]
         },
@@ -122,29 +97,9 @@
             "item" : [
                 {
                     "label": "受傷部位",
+                    "type" : "textarea",
+                    "name" : "s4_textarea_1",
                     "info" : "需填寫人員傷勢。",
-                    "type" : "checkbox",
-                    "name" : "s4_combo_1",
-                    "options": [
-                        { "label" : "1"      , "value" : {
-                                                        "label": "部位 1",
-                                                        "type" : "text",
-                                                        "name" : "s4_combo_1",
-                                                        "value": "Other"
-                                                    }},
-                        { "label" : "2"      , "value" : {
-                                                        "label": "部位 2",
-                                                        "type" : "text",
-                                                        "name" : "s4_combo_1",
-                                                        "value": "Other"
-                                                    }},
-                        { "label" : "3"      , "value" : {
-                                                        "label": "部位 3",
-                                                        "type" : "text",
-                                                        "name" : "s4_combo_1",
-                                                        "value": "Other"
-                                                    }}
-                    ],
                     "required": false
                 },
                 {

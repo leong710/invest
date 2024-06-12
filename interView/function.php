@@ -14,7 +14,7 @@
             // 處理a_pic上傳檔案
             $a_pic        = !empty($a_pic)   ? uploadFile($a_pic) : null ; 
 
-            $_odd         = !empty($_odd)         ? $_odd         : null ;      // 通報判斷fun
+            $_odd         = !empty($_odd)         ? $_odd         : null ;      // 這裡先帶入預設，後續呼叫通報判斷fun
             $confirm_sign = !empty($confirm_sign) ? $confirm_sign : null ; 
             $ruling_sign  = !empty($ruling_sign)  ? $ruling_sign  : null ; 
             $_focus       = !empty($_focus)       ? $_focus       : null ; 
@@ -24,7 +24,7 @@
             }
             // 使用迴圈刪除指定的元素
             $unset_keys = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'meeting_man_a','meeting_man_o','meeting_man_s','meeting_man_d',
-                                '_odd', 'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
+                                'omager', '_odd', 'confirm_sign','ruling_sign','a_pic','sign_comm',  'uuid','idty','action','step','dcc_no',  'created_emp_id','created_cname','updated_cname',
                                 'submit_document','update_document','save_document');
             // foreach ($unset_keys as $key) { unset($_content[$key]); }
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
@@ -38,12 +38,12 @@
             // foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
 
                     $data = [
-                        '_odd'          => $_odd,
-                        '_focus'        => $_focus,
-                        '_content'      => $_content,
-                        'meeting_man_a' => $meeting_man_a,
-                        'meeting_man_o' => $meeting_man_o,
-                        'meeting_man_s' => $meeting_man_s
+                        '_odd'          => $_odd,                       // 職災申報
+                        '_focus'        => $_focus,                     // 關注：備用
+                        '_content'      => $_content,                   // 問項內容
+                        'meeting_man_a' => $meeting_man_a,              // 事故人員
+                        'meeting_man_o' => $meeting_man_o,              // 其他與會
+                        'meeting_man_s' => $meeting_man_s               // 環安人員
                     ];
 
                     foreach ($data as $key => $value) { $data[$key] = json_encode($value); }
@@ -70,13 +70,13 @@
             $logs_enc = toLog($logs_request);
 
         $sql = "INSERT INTO _document(_odd, _focus, _content, confirm_sign, ruling_sign, a_pic 
-                            , idty, dcc_no, fab_id, local_id, case_title,   anis_no, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s, meeting_man_d
+                            , omager, idty, dcc_no, fab_id, local_id, case_title,   anis_no, a_dept, meeting_local, meeting_man_a, meeting_man_o, meeting_man_s, meeting_man_d
                             , created_emp_id, created_cname, updated_cname, logs, meeting_time,   created_at, updated_at, uuid)
-                VALUES( ?,?,?,?,?,?   ,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
+                VALUES( ?,?,?,?,?,?   ,?,?,?,?,?,?  ,?,?,?,?,?,?,?  ,?,?,?,?,?  ,now() ,now() ,uuid())";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute([$_odd, $_focus, $_content, $confirm_sign, $ruling_sign, $a_pic
-                            , $idty, $dcc_no, $fab_id, $local_id, $case_title, $anis_no, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s, $meeting_man_d
+                            , $omager, $idty, $dcc_no, $fab_id, $local_id, $case_title, $anis_no, $a_dept, $meeting_local, $meeting_man_a, $meeting_man_o, $meeting_man_s, $meeting_man_d
                             , $created_emp_id, $created_cname, $created_cname, $logs_enc, $meeting_time]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '儲存成功';
@@ -136,13 +136,13 @@
 
         // step3.使用迴圈刪除指定的元素for舊紀錄 因為不需要比對 == DB_item
             $unset_keys = array('id','uuid','dcc_no',  'idty','action','step',  'created_emp_id','created_cname','created_at',  'updated_at','updated_cname','sign_comm',  'logs','editions', 
-                                 'submit_document','update_document','save_document'); 
+                                 'in_sign','in_signName','flow', 'submit_document','update_document','save_document'); 
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
             $row_document = array_diff_key($row_document, array_flip($unset_keys));                 // 舊文件--去殼成 純舊文件
             $new_document = array_diff_key($request     , array_flip($unset_keys));                 // 新文件--去殼成 純新文件
 
         // step4.使用迴圈將指定的元素提前進行比對 == Basic_item
-            $check_1 = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'confirm_sign','ruling_sign','a_pic','meeting_man_d');
+            $check_1 = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'confirm_sign','ruling_sign','a_pic','meeting_man_d','omager');
             $check_2 = array('meeting_man_a','meeting_man_o','meeting_man_s');
 
             // step4-1.圈繞出來比對
@@ -228,8 +228,9 @@
             // $new_document = array_intersect_key($new_document, array_flip($row_keys));           // new只保留指定的
             $new_content = array_diff_key($new_document, array_flip($check_1));
             $new_content = array_diff_key($new_content,  array_flip($check_2)); 
+
             unset($new_content["_odd"]);                                                            // _odd從記錄中移除 for $_content
-            // 20240611 確認申報日期
+            // 20240611 確認申報日期 -- 呼叫通報判斷fun
             $new_document["_odd"] = confirm_odd($new_content);
 
             $check_3 = [
@@ -676,11 +677,11 @@
                 // 'a_day'=> $a_day,            // 事故發生日
                 // 'od'      => "職災申報",        // 判斷訊息
                 'due_day' => $due_day,          // 申報截止日
-                'o_day'   => null               // 申報日期
+                'od_day'  => null               // 申報日期
             ];
             
-        }else{
-            $result["od"] = "";
+        // }else{
+            // $result["od"] = "";
         }
         return $result;
     }

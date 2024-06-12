@@ -1,80 +1,4 @@
 
-    // PDF的 uploadFile --暫存區 函数        // 這裡只負責上到../doc_pdf/temp/內，轉存由下一步處理
-    function uploadFile_pdf(key) {
-        let formData = new FormData();
-        let fileInput = document.getElementById(key + '_upload');                                                       // 取得row input檔名
-        let uploadDir = '../doc_pdf/temp/';                                                                             // doc_pdf temp dir
-        formData.append('file', fileInput.files[0]);
-        formData.append('uploadDir', uploadDir);                                                                        // doc_pdf temp dir
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);                               // 接收回傳
-                let new_tobe_pdf = '<button type="button" class="btn text-success add_btn" id="doc_pdf_icon" data-toggle="tooltip" data-placement="bottom" ';
-                new_tobe_pdf += ' title="'+response.fileName+'" value="'+response.filePath+'" ';
-                new_tobe_pdf += " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></br>to be</button>"; 
-
-                document.getElementById(key + '_tobe').innerHTML = new_tobe_pdf ;        // 套上btn
-                document.getElementById(key).value = response.fileName;                  // pdf加上時間搓
-                $('#del_tobe').prop('disabled', false);
-
-            } else {
-                alert('Upload failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
-
-    // PDF的 uplinkFile --暫存區 函数
-    function unlinkFile_pdf(key, tag) {
-        let formData = new FormData();
-        if(tag =='tobe'){
-            var fileName = document.getElementById(key).value;                    // 取得confirm_sign_upload上的value=檔名
-            var filePath = '../doc_pdf/temp/';
-
-        }else if(tag =='asis'){
-            var row_json = document.getElementById('row_json').innerText;                   // 取得row_json
-            var row_obj = JSON.parse(row_json);                                             // row_json轉row_obj
-            row_obj['confirm_sign_new'] = '';                                       // 將confirm_sign_new導入row_obj
-            
-            update_confirm_sign(row_obj, Callback_unlinkFile_pdf);
-            return;
-
-        }else{
-            console.log('tag error: ', tag);
-            return false;
-        }
-        let unlinkFile = filePath+fileName;
-        
-        formData.append('fileName'  , fileName);
-        formData.append('unlinkFile', unlinkFile);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'unlink.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // let response = JSON.parse(xhr.responseText);                            // 接收回傳
-                document.getElementById(key+'_'+tag).innerHTML = '-- nothing --';        // 清除preview
-                if(tag =='tobe'){
-                    $('#'+key+' , #'+key+'_upload').val('');                                   // 清除選擇row檔案、confirm_sign欄位
-                    $('#del_'+tag).prop('disabled', true);
-                }
-            } else {
-                alert('unlink failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
-
-    function Callback_unlinkFile_pdf(result){
-        if(result['error'] == undefined){
-            document.getElementById('confirm_sign_asis').innerHTML = '-- nothing --';        // 清除preview
-            $('#del_asis').prop('disabled', true);
-        }
-        result["window"] = 'auto';
-        do_swal(result);
-    }
-
     function Callback_submit_btn(result){
         result["window"] = 'auto_close';
         do_swal(result);
@@ -118,13 +42,13 @@
             // swal( TITLE , CONTENT , ACTION , {buttons: false, timer:3000}).then(()=>{ closeWindow() });         // 3秒自動關閉畫面+false=不更新
     }
 
-    // doc confirm_sign的 update 函数       
-    function update_confirm_sign(row_obj, myCallback) {
+    // doc _odd的 update 函数       
+    function update_odd(row_obj, myCallback) {
 
-        row_obj["function"] = 'update_confirm_sign';         // 操作功能
+        row_obj["function"] = 'update_odd';         // 操作功能
 
         $.ajax({
-            url      : 'update_confirm_sign.php',
+            url      : 'update_api.php',
             method   : 'post',
             async    :  false,                               // ajax取得數據包後，可以return的重要參數
             dataType : 'json',
@@ -151,14 +75,15 @@
 
         let submit_btn = document.getElementById("submit");
         submit_btn.addEventListener('click', function(){
-            let row_json = document.getElementById('row_json').innerText;                   // 取得row_json
-            let row_obj = JSON.parse(row_json);                                             // row_json轉row_obj
-            let confirm_sign_new = document.getElementById('confirm_sign').value;           // 取得新confirm_sign上傳名稱
-            if((confirm_sign_new == "") && !confirm('temp未上傳文件!! 此動作會將原有的PDF移除，確定要這麼做?')){
+            let od_day_new = document.getElementById('od_day').value;           // 取得新od_day上傳名稱
+            if((od_day_new == "") && !confirm('未填職災申報完成日期!! 此動作會將原有日期(od_day)移除，確定要這麼做?')){
                 return;
+
             }else{
-                row_obj['confirm_sign_new'] = confirm_sign_new;                             // 將confirm_sign_new導入row_obj
-                update_confirm_sign(row_obj , Callback_submit_btn);                // myCallback
+                let row_json = document.getElementById('row_json').innerText;   // 取得row_json
+                let row_obj  = JSON.parse(row_json);                            // row_json轉row_obj
+                row_obj['_odd']['od_day'] = od_day_new;                         // 將od_day_new導入row_obj
+                update_odd(row_obj , Callback_submit_btn);                      // myCallback
             }
         })
     })

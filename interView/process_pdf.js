@@ -124,7 +124,7 @@
         row_obj["function"] = 'update_confirm_sign';         // 操作功能
 
         $.ajax({
-            url      : 'update_confirm_sign.php',
+            url      : 'update_api.php',
             method   : 'post',
             async    :  false,                               // ajax取得數據包後，可以return的重要參數
             dataType : 'json',

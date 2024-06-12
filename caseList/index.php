@@ -85,12 +85,12 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col_xl_11 col-11 rounded" style="background-color: rgba(255, 255, 255, .8);">
+            <div class="col_xl_11 col-12 rounded" style="background-color: rgba(255, 255, 255, .8);">
                 <!-- NAV分頁標籤與統計 -->
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link active" href="index.php">訪談清單管理</span></a></li>
-                        <li class="nav-item"><a class="nav-link"        href=""> UB </span></a></li>
+                        <li class="nav-item"><a class="nav-link disabled"        href=""> UB </span></a></li>
                     </ul>
                 </div>
                 <!-- 內頁 -->
@@ -212,15 +212,34 @@
                                     <td><?php echo $caseList['local_title'];?></td>
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
-                                    <td><?php echo $caseList['idty'];?></td>
+                                    <td><?php 
+                                        if(!empty($caseList['idty'])){
+                                            $c_idty = $caseList['idty'];
+                                            switch($caseList['idty']){
+                                                case '0':  $c_idty .= '.啟單';      break;
+                                                case '1':  $c_idty .= '.簽核中';    break;
+                                                case '2':  $c_idty .= '.退件';      break;
+                                                case '3':  $c_idty .= '.取消';      break;
+                                                case '4':  $c_idty .= '.編輯';      break;
+                                                case '6':  $c_idty .= '.暫存';      break;
+                                                case '10': $c_idty .= '.結案';      break;
+                                                case '11': $c_idty .= '.環安主管';  break;
+                                                case '12': $c_idty .= '.--';        break;
+                                                case '13': $c_idty .= '.承辦簽核';  break;
+                                                default:
+                                                    $c_idty .= 'N/A';
+                                            };
+                                        }
+                                        echo $c_idty;
+                                    ?></td>
                                     <td>
                                         <?php 
                                             $_odd = isset($caseList['_odd']) ? (array) json_decode($caseList['_odd']) : [];
                                             echo "<span class='inb'>";
                                             echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
-                                            echo !empty($_odd["o_day"])   ? $_odd["o_day"] : (!empty($_odd["due_day"]) ? "--" : "");
+                                            echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
                                             echo "</span>";
-                                            if(!empty($_odd["due_day"]) && empty($_odd["o_day"])){
+                                            if(!empty($_odd["due_day"]) && (empty($_odd["od_day"]) || $sys_role <=1 )){
                                                 echo "&nbsp<button type='button' class='btn btn-sm btn-xs btn-outline-success add_btn' data-toggle='tooltip' data-placement='bottom' title='編輯申報日' ";
                                                 echo " value='../interView/process_odd.php?uuid={$caseList["uuid"]}' ";
                                                 echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-pen-to-square'></i></button>";

@@ -1,7 +1,7 @@
 {
-    "form_title" : "南廠區交通事故訪談表",
-    "version"    : "V002",
-    "dcc_no"     : "13ES100016-F002",
+    "form_title" : "南廠區廠內事故訪談表",
+    "version"    : "V003",
+    "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "session_1" : {
             "label" : "事故者基本資料",
@@ -37,7 +37,8 @@
                     "label": "年資",
                     "type": "text",
                     "name" : "rload",
-                    "required": false
+                    "required": false,
+                    "valid": true
                 },
                 {
                     "label": "事故時間",
@@ -75,8 +76,7 @@
             "class" : "",
             "item"  : [
                 {
-                    "label": "上傳路線圖檔 (限傳 jpg、png、gif、bmp)",
-                    "info"  : "",
+                    "label": "圖片檔案",
                     "type" : "file",
                     "name" : "a_pic",
                     "required": true
@@ -147,7 +147,7 @@
                     "name" : "s4_combo_4",
                     "options" : [
                         { "label" : "有（請於備註說明）" , "value" : "有" },
-                        { "label" : "無"                , "value" : "無" }
+                        { "label" : "無" , "value" : "無" }
                     ],
                     "required": true
                 },
@@ -290,7 +290,7 @@
                         "2" : "以上各項均由本人依照事實填具，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。"
                     },
                     "type" : "signature",
-                    "name" : "confirm_sign",
+                    "name" : "s5_confirm",
                     "options" : [
                         { "label" : "YES" , "value" : "YES" },
                         { "label" : "NO" , "value" : "NO" }
@@ -336,10 +336,10 @@
                     "label": "判定為非公傷，當事人簽認",
                     "info" : "(如判斷為公傷則不需再簽認)",
                     "type" : "signature",
-                    "name" : "ruling_sign",
+                    "name" : "s6_ruling",
                     "options" : [
                         { "label" : "YES" , "value" : "YES" },
-                        { "label" : "NO"  , "value" : "NO" }
+                        { "label" : "NO" , "value" : "NO" }
                     ],
                     "required": true
                 }
