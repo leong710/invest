@@ -374,7 +374,7 @@
                 radios.forEach((rdo) => {
                     rdo.addEventListener('change', () => {
                         // 检查当前单选按钮是否是负向选项
-                        // if (negative_opts.includes(rdo)) {   // 原本是過濾點選事件是否為[負向選項]，取消原因是要讓非[負向選項]也可以進行滾算
+                        // if (negative_opts.includes(rdo)) {       // 原本是過濾點選事件是否為[負向選項]，取消原因是要讓非[負向選項]也可以進行滾算
                             // 计算 negative_arr 数组
                             negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
                         // }
@@ -489,10 +489,37 @@
                 window.print();
         
             });
-
+            // 240613 correspond 對應選項
             resolve(); // 文件載入成功，resolve
         });
     }
+    // 240613 correspond對應選項功能
+    function eventListener_correspond(target_class){
+        let corresponds = document.querySelectorAll(".correspond");
+        corresponds.forEach((element)=> {
+            element.hidden = true;
+        });
+
+        document.querySelectorAll("."+target_class).forEach((element) => {
+            element.addEventListener('change', function() {
+                corresponds.forEach((correspondElement) => {
+                    correspondElement.hidden = true;
+                });
+                let this_flag = this.getAttribute('flag');                  // 用.getAttribute('flag')取得自訂
+                document.querySelectorAll("." + this_flag).forEach((selectedElement) => {
+                    selectedElement.hidden = false; 
+                    let parentId = selectedElement.parentElement.id;        // 查詢 selectedElement 上一層的 ID
+                    let parentElement = document.getElementById(parentId);
+                    if (parentElement) {
+                        parentElement.value = "";                           // 将 value 设为默认选项的 value
+                    }
+                });
+
+            });
+        });
+    }
+
+
     // 20240517 -- 暫存表單
     function setFormBequired(){
         console.log('setFormBequired...');
@@ -512,7 +539,7 @@
         // 共用部分的操作1 label標籤
         function commonPart() {
             let labelSuffix = item_a.required ? '<sup class="text-danger"> *</sup>' : '';
-            return '<label for="' + item_a.name + '" >' + item_a.label + '：' + labelSuffix +'</label>';
+            return '<label for="' + item_a.name + '" class="form-label">' + item_a.label + '：' + labelSuffix +'</label>';
         }
         // 共用部分的操作2 驗證回饋
         function validPart() {
@@ -563,9 +590,10 @@
             case 'textarea':
                 int_a = dcff +
                     '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
-                    + (item_a.required ? 'required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
+                    + (item_a.required ? ' required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
 
                 // int_a = '<div class="p-2">' + int_a + '</div>';
+                console.log('textarea', int_a);
                 break;
             case 'radio':
             case 'checkbox':
@@ -576,10 +604,12 @@
                     // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
-                          + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
+                          + ' class="form-check-input ' + item_a.name  
+                            + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
                             + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
                             + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
-                          + '" >' + '<label class="form-check-label '
+                            + '" ' + ((option.flag  != undefined) ? 'flag="'+option.flag+'"' : '')
+                          + ' >' + '<label class="form-check-label '
                             + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
                             + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
                           + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
@@ -604,53 +634,19 @@
                 break;
             case 'select':
                 int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
-                int_a += '<select name="'+item_a.name+'" id="'+item_a.name+'" class="form-select" onchange="console.log(this.value)" >'
+                int_a += '<select name="'+item_a.name+'" id="'+item_a.name+'" class="form-select" >'
                       + '<option value="" hidden>-- [請選擇 災害類型] --</option>' 
+
                 Object(item_a.options).forEach((option)=>{
-                    let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
-                    // console.log(option.label ,typeof option.value);
-
-
+                    // let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
                     if (typeof option.value === 'object') {
                         Object(option.value).forEach((key_value)=>{
-                            console.log(key_value);
+                            int_a += '<option value="'+key_value['value']+'" class="'+option.label + ((item_a.correspond != undefined) ? ' correspond' : '')+'" >'
+                                + key_value['value'] + '</option>' 
                         } )
-
-
-                        // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
-                        //     + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
-
                     }else {
-                        int_a += '<option value="'+option.value+'">'+option.value+'</option>' 
-    
+                        int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.label+'：'+option.value+'</option>' 
                     }
-
-                    // // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
-                    // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
-                    //       + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
-                    //       + ' class="form-check-input ' + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
-                    //         + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
-                    //         + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
-                    //       + '" >' + '<label class="form-check-label '
-                    //         + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
-                    //         + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
-                    //       + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
-                    //       + '</label></div>';
-
-                    // if (typeof option.value === 'object' && option.value.type == 'text') {
-                    //     // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
-                    //     int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
-                    //         + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
-
-                    // }else if (typeof option.value === 'object' && option.value.type == 'number') {
-                    //     int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
-                    //         // + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled  min="0" max="999" maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)">';
-                    //         + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled ';
-                    //     if(option.value.limit != undefined){
-                    //         int_a += option.value.limit;
-                    //     }
-                    //     int_a += ' >';
-                    // }
                 }) 
                 int_a += '</select>'+'</div>';
                 break;
@@ -693,7 +689,12 @@
             int_a = '<div class="col-12 p-2">' + int_a + '</div>';
         }
         // 渲染form
-        $('#' + session_key +' .accordion-body').append(int_a);      
+        $('#' + session_key +' .accordion-body').append(int_a);     
+        
+        if(item_a.correspond !== undefined){
+            eventListener_correspond(item_a.correspond);
+        };
+
     }
     // 20240501 -- // 動態表單主fun -- JSON轉表單
     function bring_form(form_json){
@@ -750,7 +751,7 @@
         // 1.會議info
         let meeting_info1_arr = ['anis_no','fab_id', 'local_id', 'case_title', 'a_dept', 'meeting_time', 'meeting_local', 'uuid' ,'meeting_man_d'];
         meeting_info1_arr.forEach((meeting_info1)=>{
-            if(document_row[meeting_info1]){
+            if((document_row[meeting_info1] !== undefined) && (document_row[meeting_info1] != '0000-00-00 00:00:00')){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 
                 if( meeting_info1 == "fab_id"){
                     select_local(document_row[meeting_info1]);          // 使用fab_id.value呼叫select_local生成select option
@@ -830,21 +831,35 @@
                     
                 }else{                                                  // combo選項，需要特例檢查，以便開啟其他輸入
                     if(option_value !== null){                          // 預防空值null
-                        option_value.forEach((item_value, index)=>{
-                            // console.log(content_key, item_value);
-                            // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                            // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                                // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
-                            // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
-                                // $('#' + content_key + '_' + item_value).prop('checked', true);
-                            // }
-                            $('#' + content_key + '_' + item_value).prop('checked', true);
-                            if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
-                                $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
-                            }else{
-                                $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
+                        if(typeof option_value === 'object'){
+                            option_value.forEach((item_value, index)=>{
+                                // console.log(content_key, item_value);
+                                // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                    // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
+                                // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
+                                    // $('#' + content_key + '_' + item_value).prop('checked', true);
+                                // }
+                                $('#' + content_key + '_' + item_value).prop('checked', true);
+                                if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
+                                    $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
+                                }else{
+                                    $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
+                                }
+                            })
+
+                        }else{
+                            // 240613 correspond對應選項功能
+                            let check_option = document.querySelector("#"+content_key+" option[value='"+option_value+"']");     // 抓取該項value的option
+                            option_classList_value = check_option.classList.value;                                              // 取得它的classList
+                            if(option_classList_value.includes('correspond')){                                                  // 假如classList含有correspond
+                                let unblack_option = document.querySelectorAll("#"+content_key+" option[class='"+option_classList_value+"']") //抓出所有含classList的option
+                                unblack_option.forEach((correspondElement) => {                                                 // 繞出來
+                                    correspondElement.hidden = false;                                                           // 取消隱藏
+                                });
                             }
-                        })
+                            check_option.selected = true;
+                        }
                     }
                 }
             })

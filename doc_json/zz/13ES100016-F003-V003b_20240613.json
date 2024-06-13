@@ -1,0 +1,353 @@
+{
+    "form_title" : "南廠區廠內事故訪談表",
+    "version"    : "V003b",
+    "dcc_no"     : "13ES100016-F003",
+    "form_item"  : {
+        "session_1" : {
+            "label" : "事故基本資料",
+            "info"  : "",
+            "class" : "col-6 col-md-6 p-2 ",
+            "item"  : [
+                {
+                    "label": "事故時間",
+                    "type": "datetime",
+                    "name" : "a_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "事故位置",
+                    "type": "text",
+                    "name" : "a_location",
+                    "required": true
+                },
+                {
+                    "label": "調查開始時間(ANIS系統立案日期)",
+                    "type" : "date",
+                    "name" : "anis_day",
+                    "required": true,
+                    "valid": true
+                },
+                {
+                    "label": "事故類別",
+                    "type" : "radio",
+                    "name" : "s1_combo_1",
+                    "options" : [
+                        { "label" : "設備"         , "value" : "設備" },
+                        { "label" : "人傷"         , "value" : "人傷" },
+                        { "label" : "其他"         , "value" : {
+                                                        "label": "其他",
+                                                        "type" : "text",
+                                                        "name" : "s1_combo_1",
+                                                        "value": "Other"
+                                                    },
+                            "class" : "other_item" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_2" : {
+            "label" : "事故內容",
+            "info"  : "",
+            "class" : "",
+            "item"  : [
+                {
+                    "label": "事故描述",
+                    "type" : "textarea",
+                    "name" : "a_description",
+                    "required": true
+                }
+            ]
+        },
+
+        "session_3" : {
+            "label" : "事故摘要",
+            "info"  : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "事故分類",
+                    "type" : "radio",
+                    "name" : "s3_combo_1",
+                    "options" : [
+                        { "label" : "人員受傷"              , "value" : "人員受傷" },
+                        { "label" : "財產損失(含承攬商支付)" , "value" : "財產損失(含承攬商支付)" },
+                        { "label" : "生產中斷"              , "value" : "生產中斷" },
+                        { "label" : "緊急應變小組"          , "value" : "緊急應變小組" },
+                        { "label" : "爆炸、火災"            , "value" : "爆炸、火災" },
+                        { "label" : "冒煙"                 , "value" : "冒煙" },
+                        { "label" : "輻射異常事件"          , "value" : "輻射異常事件" },
+                        { "label" : "化學品洩漏"            , "value" : "化學品洩漏" },
+                        { "label" : "外部影響"              , "value" : "外部影響" },
+                        { "label" : "環保事件"              , "value" : "環保事件" },
+                        { "label" : "職業相關疾病"          , "value" : "職業相關疾病" },
+                        { "label" : "其他"                 , "value" : {
+                                                                "label": "其他",
+                                                                "type" : "text",
+                                                                "name" : "s3_combo_1",
+                                                                "value": "Other"
+                                                            },
+                            "class" : "other_item" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "災害類型",
+                    "type" : "select",
+                    "name" : "s3_combo_2",
+                    "options" : [
+                        { "label" : "人員受傷"                  , "value" : [
+                            { "label" : "1.墜落、滾落"          , "value" : "1.墜落、滾落" },
+                            { "label" : "2.跌倒、滑倒"          , "value" : "2.跌倒、滑倒" },
+                            { "label" : "3.衝撞"                , "value" : "3.衝撞" },
+                            { "label" : "4.物體飛落、擊"         , "value" : "4.物體飛落、擊" },
+                            { "label" : "5.物體倒塌、崩塌"       , "value" : "5.物體倒塌、崩塌" },
+                            { "label" : "6.被夾、被捲、被撞"     , "value" : "6.被夾、被捲、被撞" },
+                            { "label" : "7.被切、割、擦傷"       , "value" : "7.被切、割、擦傷" },
+                            { "label" : "8.穿刺傷"              , "value" : "8.穿刺傷" },
+                            { "label" : "9.被壓"                , "value" : "9.被壓" },
+                            { "label" : "10.溺斃"               , "value" : "10.溺斃" },
+                            { "label" : "11.與高溫、低溫之接觸"  , "value" : "11.與高溫、低溫之接觸" },
+                            { "label" : "12.感電"               , "value" : "12.感電" },
+                            { "label" : "13.物理性異物入眼"      , "value" : "13.物理性異物入眼" },
+                            { "label" : "14.化學性異物入眼"      , "value" : "14.化學性異物入眼" },
+                            { "label" : "15.與化學品或廢液接觸"  , "value" : "15.與化學品或廢液接觸" }
+                        ]},
+                        { "label" : "財產損失(含承攬商支付)" , "value" : [
+                            { "label" : "直接經濟損失(含承攬商支付)"        , "value" : "直接經濟損失(含承攬商支付)" }
+                        ]},
+                        { "label" : "生產中斷"              , "value" : [
+                            { "label" : "無塵室全員疏散或製造廠產線停止生產" , "value" : "無塵室全員疏散或製造廠產線停止生產" }
+
+                        ]},
+                        { "label" : "緊急應變小組"          , "value" : [
+                            { "label" : "1.未啟動緊急應變小組處理事故"       , "value" : "1.未啟動緊急應變小組處理事故" },
+                            { "label" : "2.啟動緊急應變小組處理事故"         , "value" : "2.啟動緊急應變小組處理事故" }
+
+                        ]},
+                        { "label" : "爆炸、火災"            , "value" : [
+                            { "label" : "1.廠區火災"                        , "value" : "1.廠區火災" },
+                            { "label" : "2.宿舍火災"                        , "value" : "2.宿舍火災" },
+                            { "label" : "3.正負壓力過大爆炸"                , "value" : "3.正負壓力過大爆炸" },
+                            { "label" : "4.化學反應造成壓力過大爆炸"        , "value" : "4.化學反應造成壓力過大爆炸" }
+
+                        ]},
+                        { "label" : "冒煙"                 , "value" : [
+                            { "label" : "1.火警(設備原件毀損導致冒煙)"      , "value" : "1.火警(設備原件毀損導致冒煙)" },
+                            { "label" : "2.由火種危害因子導致之冒煙事件"    , "value" : "2.由火種危害因子導致之冒煙事件" },
+                            { "label" : "3.其他冒煙事件"                    , "value" : "3.其他冒煙事件" }
+
+                        ]},
+                        { "label" : "輻射異常事件"          , "value" : [
+                            { "label" : "1.人員曝露異常劑量"                    , "value" : "1.人員曝露異常劑量" },
+                            { "label" : "2.作業環境檢測輻射異常劑量率"           , "value" : "2.作業環境檢測輻射異常劑量率" },
+                            { "label" : "3.放射性物質/放射源遺失或遭竊或劑量計遺失、損毀或污染致無劑量計紀錄者" , "value" : "3.放射性物質/放射源遺失或遭竊或劑量計遺失、損毀或污染致無劑量計紀錄者" },
+                            { "label" : "4.其他"                                , "value" : "4.其他" }
+
+                        ]},
+                        { "label" : "化學品洩漏"            , "value" : [
+                            { "label" : "1.漏水"                        , "value" : "1.漏水" },
+                            { "label" : "2.液態化學品洩漏"               , "value" : "2.液態化學品洩漏" },
+                            { "label" : "3.廢液洩漏"                    , "value" : "3.廢液洩漏" },
+                            { "label" : "4.氣態化學品洩漏"               , "value" : "4.氣態化學品洩漏" }
+
+                        ]},
+                        { "label" : "外部影響"              , "value" : [
+                            { "label" : "1.政府主管機關開立罰單"                     , "value" : "1.政府主管機關開立罰單" },
+                            { "label" : "2.民眾或環保團體等直接至廠區抗爭、抗議或圍廠" , "value" : "2.民眾或環保團體等直接至廠區抗爭、抗議或圍廠" }
+
+                        ]},
+                        { "label" : "環保事件"              , "value" : [
+                            { "label" : "1.空污排放"                                       , "value" : "1.空污排放" },
+                            { "label" : "2.廢水排放"                                       , "value" : "2.廢水排放" },
+                            { "label" : "3.廢棄物洩漏"                                     , "value" : "3.廢棄物洩漏" },
+                            { "label" : "4.空污防制系統/設備未依環保許可操作或未符合法規要求" , "value" : "4.空污防制系統/設備未依環保許可操作或未符合法規要求" },
+                            { "label" : "5.廢水防制系統/設備未依環保許可操作或未符合法規要求" , "value" : "5.廢水防制系統/設備未依環保許可操作或未符合法規要求" },
+                            { "label" : "6.廢棄物貯存未依環保許可操作或未符合法規要求"        , "value" : "6.廢棄物貯存未依環保許可操作或未符合法規要求" },
+                            { "label" : "7.『毒性』化學物質異常洩漏造達法令通報標準"          , "value" : "7.『毒性』化學物質異常洩漏造達法令通報標準" },
+                            { "label" : "8.無法歸類者"                                      , "value" : "8.無法歸類者" }
+
+                        ]},
+                        { "label" : "職業相關疾病"          , "value" : [
+                            { "label" : "1.人因性危害"          , "value" : "1.人因性危害" },
+                            { "label" : "2.化學性危害"          , "value" : "2.化學性危害" },
+                            { "label" : "3.生物性危害"          , "value" : "3.生物性危害" },
+                            { "label" : "4.物理性危害"          , "value" : "4.物理性危害" },
+                            { "label" : "5.社會心理性危害"      , "value" : "5.社會心理性危害" },
+                            { "label" : "6.拉傷"                , "value" : "6.拉傷" },
+                            { "label" : "7.扭傷"                , "value" : "7.扭傷" },
+                            { "label" : "8.法定傳染病"          , "value" : "8.法定傳染病" },
+                            { "label" : "9.無法歸類者"          , "value" : "9.無法歸類者" }
+
+                        ]},
+                        { "label" : "其他"                 , "value" : [
+                            { "label" : "1.設備異常"                                         , "value" : "1.設備異常" },
+                            { "label" : "2.廠內交通事故"                                     , "value" : "2.廠內交通事故" },
+                            { "label" : "3.生活性工傷"                                       , "value" : "3.生活性工傷" },
+                            { "label" : "4.火警系統受環境干擾"                                , "value" : "4.火警系統受環境干擾" },
+                            { "label" : "5.偵測器故障/老化/劣化造成之火警誤警報"                , "value" : "5.偵測器故障/老化/劣化造成之火警誤警報" },
+                            { "label" : "6.毒氣系統受環境干擾(如使用溶劑造成 Gas detector 警報)" , "value" : "6.毒氣系統受環境干擾(如使用溶劑造成 Gas detector 警報)" },
+                            { "label" : "7.偵測器故障/老化/劣化造成之毒氣誤警報"                , "value" : "7.偵測器故障/老化/劣化造成之毒氣誤警報" },
+                            { "label" : "8.漏液系統受干擾(如被重物壓到)"                        , "value" : "8.漏液系統受干擾(如被重物壓到)" },
+                            { "label" : "9.漏液偵測故障造成之漏液誤警報"                        , "value" : "9.漏液偵測故障造成之漏液誤警報" }
+                        ]}
+                    ],
+                    "correspond":"s3_combo_1",
+                    "required": true
+                }
+            ]
+        },
+
+        "session_4" : {
+            "label" : "職業災害人員基本資料",
+            "info"  : "※ 無人員受傷，無需填寫；如需申請公傷假，請檢附醫生診斷證明書影本。",
+            "class" : "col-6 col-md-6 p-2 ",
+            "item"  : [
+                {
+                    "label": "工號",
+                    "type" : "text",
+                    "name" : "emp_id",
+                    "required": false
+                },
+                {
+                    "label": "姓名",
+                    "type" : "text",
+                    "name" : "cname",
+                    "required": false
+                },
+                {
+                    "label": "單位",
+                    "type": "text",
+                    "name" : "oftext",
+                    "required": false
+                },
+                {
+                    "label": "職稱",
+                    "type" : "text",
+                    "name" : "cstext",
+                    "required": false
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
+                },
+                {
+                    "label": "受傷部位",
+                    "type" : "textarea",
+                    "name" : "s4_textarea_1",
+                    "info" : "需填寫人員傷勢。",
+                    "required": false
+                },
+                {
+                    "label": "失能種類",
+                    "type" : "radio",
+                    "name" : "s4_combo_2",
+                    "options" : [
+                        { "label" : "死亡"         , "value" : "死亡" },
+                        { "label" : "永久全失能"   , "value" : "永久全失能" },
+                        { "label" : "永久部分失能" , "value" : "永久部分失能" },
+                        { "label" : "暫時全失能"   , "value" : "暫時全失能" },
+                        { "label" : "其他"         , "value" : {
+                                                        "label": "工時損失",
+                                                        "type" : "text",
+                                                        "name" : "s4_combo_2",
+                                                        "value": "Other"
+                                                    },
+                            "class" : "other_item" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "是否住院",
+                    "type" : "radio",
+                    "name" : "s4_combo_3",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_5" : {
+            "label" : "事故分析",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "事故直接原因",
+                    "type" : "textarea",
+                    "name" : "direct_cause",
+                    "required": true
+                },
+                {
+                    "label": "事故間接原因",
+                    "type" : "checkbox",
+                    "name" : "s5_combo_1",
+                    "options" : [
+                        { "label" : "不安全行為" ,  "value" : {
+                                                        "label": "不安全行為",
+                                                        "type" : "text",
+                                                        "name" : "s5_combo_1",
+                                                        "info"  : "(unsafe behavior)",
+                                                        "value": ""
+                                                    },
+                            "class" : "other_item" },
+                        { "label" : "不安全環境" , "value" : {
+                                                        "label": "不安全環境",
+                                                        "type" : "text",
+                                                        "name" : "s5_combo_1",
+                                                        "info"  : "(unsafe environment)",
+                                                        "value": ""
+                                                    },
+                            "class" : "other_item" },
+                        { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "事故基本原因",
+                    "type" : "checkbox",
+                    "name" : "s5_combo_2",
+                    "options" : [
+                        { "label" : "作業程序不完整或不適當"            , "value" : "作業程序不完整或不適當" },
+                        { "label" : "工作紀律不良"                     , "value" : "工作紀律不良" },
+                        { "label" : "人員作業不慎"                     , "value" : "人員作業不慎" },
+                        { "label" : "教育訓練不足"                     , "value" : "教育訓練不足" },
+                        { "label" : "人因工程"                         , "value" : "人因工程" },
+                        { "label" : "施工品質不良"                     , "value" : "施工品質不良" },
+                        { "label" : "零件品質不良"                     , "value" : "零件品質不良" },
+                        { "label" : "未落實自動檢查或維護保養計畫"      , "value" : "未落實自動檢查或維護保養計畫" },
+                        { "label" : "設計瑕疵或防護措施不足"            , "value" : "設計瑕疵或防護措施不足" },
+                        { "label" : "作業危害鑑別及風險評估不確實或不足" , "value" : "作業危害鑑別及風險評估不確實或不足" }
+                    ],
+                    "required": false
+                },
+                {
+                    "label": "基本原因說明",
+                    "type" : "textarea",
+                    "name" : "basic_reasons",
+                    "required": true
+                },
+                {
+                    "label": "防範對策(矯正預防措施)說明",
+                    "type" : "textarea",
+                    "name" : "preventive_measures",
+                    "required": true
+                }
+            ]
+        }
+    }
+}
