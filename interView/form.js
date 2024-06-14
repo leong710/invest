@@ -545,6 +545,12 @@
         });
 
     }
+    // 240614...鎖定option特定項目
+    function lock_opt(target_name, target_value){
+        console.log("lock_opt:", target_name, target_value);
+        // 
+    }
+
     // 20240517 -- 暫存表單
     function setFormBequired(){
         console.log('setFormBequired...');
@@ -721,6 +727,9 @@
         };
         if(item_a.chooseBoth !== undefined){                // 240614 判斷是否需要以上皆是
             eventListener_chooseBoth(item_a.name, item_a.chooseBoth);
+        };
+        if(item_a.lock_opt !== undefined){                // 240614 判斷是否需要lock option
+            lock_opt(item_a.name, item_a.lock_opt);
         };
 
     }
