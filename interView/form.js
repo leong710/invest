@@ -113,7 +113,6 @@
             data: request,
             success: function(res){
                 let res_r = res["result"];
-                console.log(res_r)
                 postList(res_r);                                    // 將結果轉給postList進行渲染
             },
             error (err){
@@ -133,7 +132,7 @@
         // 定義表格頭段
         let div_result_table = document.querySelector('.result table');
         let Rinner = "<thead><tr>"+
-                        "<th>員工編號</th>"+"<th>員工姓名</th>"+"<th>職稱</th>"+"<th>user_ID</th>"+"<th>部門代號</th>"+"<th>部門名稱</th>"+"<th>select</th>"+
+                        "<th>工號 / 姓名</th>"+"<th>國籍 / 性別</th>"+"<th>user_ID / 職稱</th>"+"<th>部門名稱 (部門代號)</th>"+"<th>select</th>"+
                     "</tr></thead>" + "<tbody id='tbody'>"+"</tbody>";
         // 鋪設表格頭段thead
         div_result_table.innerHTML += Rinner;
@@ -143,22 +142,23 @@
         for (let i=0; i < res_r.length; i++) {
             // 把user訊息包成json字串以便夾帶
                 let user_json = {
-                        'emp_id' : res_r[i].emp_id.trim(),
-                        'cname'  : res_r[i].cname.trim(),
-                        'cstext' : res_r[i].cstext.trim(),
-                        'omager' : res_r[i].omager.trim(),
-                        'oftext' : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
+                        'emp_id'   : res_r[i].emp_id.trim(),
+                        'cname'    : res_r[i].cname.trim(),
+                        'cstext'   : res_r[i].cstext.trim(),
+                        'omager'   : res_r[i].omager.trim(),
+                        'gesch'    : res_r[i].gesch.trim(),
+                        'natio'    : res_r[i].natio.trim(),
+                        'natiotxt' : res_r[i].natiotxt.trim(),
+                        'oftext'   : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
                     };
             // let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim() + ',' + res_r[i].dept_no.trim() + '\/' + res_r[i].oftext;
             div_result_tbody.innerHTML += 
                 '<tr>' +
-                    '<td>' + res_r[i].emp_id.trim() +'</td>' +
-                    '<td>' + res_r[i].cname.trim() + '</td>' +
-                    '<td>' + res_r[i].cstext.trim() + '</td>' +
-                    '<td>' + res_r[i].user.trim() + '</td>' +
-                    '<td>' + res_r[i].dept_no.trim() + '</td>' +
-                    '<td>' + res_r[i].oftext.trim() + '</td>' +
-                    '<td>' + '<button type="button" class="btn btn-default btn-xs" id="'+res_r[i].emp_id+'" value=\''+ JSON.stringify(user_json) +'\' onclick="tagsInput_me(this.value)">'+
+                    '<td>' + res_r[i].emp_id.trim() +'</br>' + res_r[i].cname.trim() + '</td>' +
+                    '<td>' + res_r[i].natio.trim() + '&nbsp' + res_r[i].natiotxt.trim() + '</br>' + ( res_r[i].gesch === "1" ? "男性(M)":"女性(F)" )+'</td>' +
+                    '<td>' + (res_r[i].user.trim() !== "" ? res_r[i].user.trim():"--") + '</br>' + res_r[i].cstext.trim() + '</td>' +
+                    '<td>' + res_r[i].oftext + '</br>( ' + res_r[i].dept_no.trim() + ' )</td>' +
+                    '<td>' + '<button type="button" class="btn btn-outline-primary btn-xs add_btn" id="'+res_r[i].emp_id+'" value=\''+ JSON.stringify(user_json) +'\' onclick="tagsInput_me(this.value)">'+
                     '<i class="fa-regular fa-circle"></i></button>' + '</td>' +
                 '</tr>';
         }
@@ -168,11 +168,7 @@
     function tagsInput_me(val) {
         if (val !== '') {
             let personal_inf = JSON.parse(val);
-            let emp_id = personal_inf['emp_id'];        // 指定emp_id 
-            let cname  = personal_inf['cname'];         // 指定cname 
-            let omager = personal_inf['omager'];        // 指定omager 
-
-            if(meeting_man_target == 'emp_id_btn'){     // *** 來自事故者基本資訊
+            if(meeting_man_target == 'emp_id_btn'){     // *** 來自[事故者基本資訊] ***
                 Object.keys(personal_inf).forEach((_key)=>{
                     let _key_elem = document.querySelector('#'+_key)
                     if(_key_elem){
@@ -181,7 +177,9 @@
                 })
                 searchUser_modal.hide();                // 關閉searchUser_modal
 
-            }else{                                      // *** 來自會議title
+            }else{                                      // *** 來自[與會人員] ***
+                let emp_id = personal_inf['emp_id'];        // 指定emp_id 
+                let cname  = personal_inf['cname'];         // 指定cname 
                 val = JSON.stringify({
                     "cname"  : cname,
                     "emp_id" : emp_id
@@ -382,7 +380,6 @@
                         get_negatives.forEach((get_n) => {
                             let isChecked = negative_arr.length > 0;
                             get_n.checked = isChecked;
-                            // $('#'+get_n.id+'_o').toggleClass('unblock', !isChecked);
                             $('#'+get_n.id+'_o').toggleClass('unblock', !isChecked).prop("disabled", !isChecked);
                         });
                     });
@@ -518,8 +515,36 @@
             });
         });
     }
+    // 240614 chooseBoth以上皆是功能
+    function eventListener_chooseBoth(target_name, target_value){
+        let get_chooseBoth = Array.from(document.querySelectorAll("input[id^='"+target_name+"'][value='"+target_value+"']"));   // 取得 target_name 下 target_value 的node
+        let chooseBoth_all = Array.from(document.querySelectorAll("input[id^='"+target_name+"']"));                             // 取得target_name下所有項，並将NodeList转换为数组
+            chooseBoth_all = chooseBoth_all.filter(input => !input.id.includes('_o'));                                          // 过滤掉ID包含'_o'的輸入元素
+        let chooseBoths    = chooseBoth_all.filter(item => !get_chooseBoth.includes(item));                                     // 將所有清單中移除 get_chooseBoth對象，避免干擾
+        // 監聽-選項
+        chooseBoths.forEach((cbx) => {
+            cbx.addEventListener('change', () => {
+                let check_both = true;
+                chooseBoths.forEach((cbx_c) => {
+                    check_both = check_both && cbx_c.checked;
+                });
+                // 当所有chooseBoths都被选中时，将get_chooseBoth设置为选中
+                get_chooseBoth.forEach((g_cbx) => {
+                    g_cbx.checked = check_both;
+                });
+            });
+        });
+        // 監聽-以上皆是
+        get_chooseBoth.forEach((g_cbx) => {
+            g_cbx.addEventListener('change', () => {
+                chooseBoths.forEach((cbx_c) => {
+                    cbx_c.checked = g_cbx.checked ? true : false ;
+                    $('#'+cbx_c.id+'_o').toggleClass('unblock', !g_cbx.checked).prop("disabled", !g_cbx.checked);               // 把_o的input進行切換(顯示/隱藏)
+                });
+            });
+        });
 
-
+    }
     // 20240517 -- 暫存表單
     function setFormBequired(){
         console.log('setFormBequired...');
@@ -593,7 +618,6 @@
                     + (item_a.required ? ' required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
 
                 // int_a = '<div class="p-2">' + int_a + '</div>';
-                console.log('textarea', int_a);
                 break;
             case 'radio':
             case 'checkbox':
@@ -691,8 +715,12 @@
         // 渲染form
         $('#' + session_key +' .accordion-body').append(int_a);     
         
-        if(item_a.correspond !== undefined){
+
+        if(item_a.correspond !== undefined){                // 240613 判斷是否需要啟動對應選項
             eventListener_correspond(item_a.correspond);
+        };
+        if(item_a.chooseBoth !== undefined){                // 240614 判斷是否需要以上皆是
+            eventListener_chooseBoth(item_a.name, item_a.chooseBoth);
         };
 
     }
@@ -1045,7 +1073,8 @@
 
     $(document).ready(function(){
 
-        checkPopup();
+        // 確認是主頁面或popup
+        checkPopup();   
 
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         loadData();

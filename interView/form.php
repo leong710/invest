@@ -354,7 +354,7 @@
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <input type="hidden"  name="_odd"            id="_odd"            value="">
-                                        <input type="hidden"  name="omager"          id="omager"          value="">
+                                        <input type="text"  name="omager"          id="omager"          value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>
                                                 <button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
@@ -461,7 +461,7 @@
                                         <input type="hidden" class="form-control" name="scomp_no[]" id="scomp_no" placeholder="已加入的">
                                     </div>
                                     <!-- 第二排的功能 : 搜尋功能 -->
-                                    <div class="col-12 col-md-6 px-4">
+                                    <div class="col-12 col-md-8 px-4">
                                         <div class="input-group search">
                                             <span class="input-group-text">查詢</span>
                                             <input type="text" class="form-control text-center mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >

@@ -43,7 +43,8 @@
                                                     },
                             "class" : "other_item" }
                     ],
-                    "required": true
+                    "lock_opt" : "人傷",
+                    "required" : true
                 }
             ]
         },
@@ -85,7 +86,8 @@
                         { "flag" : "AK" , "label" : "職業相關疾病"             , "value" : "職業相關疾病" },
                         { "flag" : "AL" , "label" : "其他"                     , "value" : "其他" }
                     ],
-                    "required": true
+                    "lock_opt" : "其他",
+                    "required" : true
                 },
                 {
                     "label": "災害類型",
@@ -189,7 +191,8 @@
                         ]}
                     ],
                     "correspond":"s3_combo_1",
-                    "required": true
+                    "lock_opt"  : "02.廠內交通事故",
+                    "required"  : true
                 }
             ]
         },
@@ -309,7 +312,8 @@
                             "class" : "other_item" },
                         { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }
                     ],
-                    "required": true
+                    "chooseBoth" : "以上皆是",
+                    "required"   : true
                 },
                 {
                     "label": "事故基本原因",

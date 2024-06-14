@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox Interdependency</title>
+</head>
+<body>
+    <form>
+        <input type="checkbox" id="checkboxA" name="checkboxA"> A<br>
+        <input type="checkbox" id="checkboxB" name="checkboxB"> B<br>
+        <input type="checkbox" id="checkboxC" name="checkboxC"> C<br>
+    </form>
+
+    <script>
+        document.getElementById('checkboxA').addEventListener('change', handleCheckboxChange);
+        document.getElementById('checkboxB').addEventListener('change', handleCheckboxChange);
+        document.getElementById('checkboxC').addEventListener('change', handleCheckboxCChange);
+
+        function handleCheckboxChange() {
+            const checkboxA = document.getElementById('checkboxA').checked;
+            const checkboxB = document.getElementById('checkboxB').checked;
+            const checkboxC = document.getElementById('checkboxC');
+
+            if (checkboxA && checkboxB) {
+                checkboxC.checked = true;
+            } else {
+                checkboxC.checked = false;
+            }
+        }
+
+        function handleCheckboxCChange() {
+            const checkboxC = document.getElementById('checkboxC').checked;
+            const checkboxA = document.getElementById('checkboxA');
+            const checkboxB = document.getElementById('checkboxB');
+
+            if (checkboxC) {
+                checkboxA.checked = true;
+                checkboxB.checked = true;
+            } else {
+                checkboxA.checked = false;
+                checkboxB.checked = false;
+            }
+        }
+    </script>
+</body>
+</html>

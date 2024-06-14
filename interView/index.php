@@ -138,7 +138,8 @@
 
     function make_btn(value_1){
         if(value_1.dcc_no){
-            var int_b = "<button type='button' class='btn btn-outline-primary ' value='form.php?dcc_no="+ value_1.dcc_no +"' onclick='openUrl(this.value)' ><div class='p-3'>" + icon_s + value_1._icon + icon_e + "</br><hr>" + value_1.dcc_no + "</br>" + value_1.title + "</div></button>";
+            let int_b = "<button type='button' class='btn btn-outline-primary add_btn' value='form.php?dcc_no="+ value_1.dcc_no +"' onclick='openUrl(this.value)' ><div class='p-3'>" 
+                + icon_s + value_1._icon + icon_e + "</br><hr>" + value_1.dcc_no + "</br>" + value_1.title + "</br><h4><b> - " + value_1.short_name +" - </b><h4></div></button>";
             return int_b;
         }else{
             return '<snap class="btn btn-outline-secondary">' + value_1.title + '</br>-- 無效json表單 --</snap>';

@@ -30,3 +30,11 @@
             3. 優化並整合：
                 a. update模組：update_confirm_sign.php + update_odd.php => update_api.php (含外掛function)
                 b. JS fun：load_form(dcc_no) + load_document(uuid) => load_fun(fun, parm, myCallback) 增加callback function功能~
+
+        2024/06/14 增加與優化
+            1.產出生活工傷與廠內交傷表單--對應功能correspond對應選項功能function
+            2.建構chooseBoth以上皆是功能
+            3.廠外交傷、生活工傷、廠內交傷表單--已反饋給user進行問項整合中
+            4.hrdb table[staff]新增欄位：性別、國別、國籍 => 待後續應用；search modal新增以上欄位
+            5.hrdb table[dept]新增北廠環安清單(8N050500及轄下單位)，=> 供員工膯入判斷(jnESH & tnESH)及後續應用 
+            6.user提問：表單上由hrdb所載入的人員資料，是否會因為該員離職後而消失? 實作驗證：不會，因為人員資料已填入表單並儲存，但要注意的是，編輯時若不甚刪除，則無法再由hrdb套入的問題!
