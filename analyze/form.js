@@ -24,12 +24,12 @@
                 } 
             } 
         };
-        // 監聽myModal被關閉時就執行--清除表格
-        let searchUser_elm = document.getElementById('searchUser');
-        searchUser_elm.addEventListener('hidden.bs.modal', function () {
-            resetMain();                    // do something...清除欄位
-            $('#modal_title').empty();      // 清除標題
-        })
+        // // 監聽myModal被關閉時就執行--清除表格
+        // let searchUser_elm = document.getElementById('searchUser');
+        // searchUser_elm.addEventListener('hidden.bs.modal', function () {
+        //     resetMain();                    // do something...清除欄位
+        //     $('#modal_title').empty();      // 清除標題
+        // })
     })
 
     // 吐司顯示字條 // init toast
@@ -972,8 +972,7 @@
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);    // 接收回傳
                     let result_obj = response['result_obj'];        // 擷取主要物件
-                    console.log(fun, result_obj);
-                    resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
+                    resolve(myCallback(fun, result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
                                                                     // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
                 } else {
                     alert('fun load_'+fun+' failed. Please try again.');
@@ -1036,13 +1035,15 @@
     async function loadData() {
         try {
                 // await load_fun('locals','', init_locals);   // step_0 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
-                await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
-                await signature_canva();                    // step_1-1 signature_canva();           // 
-                await eventListener();                      // step_1-2 eventListener();             // 
-            if(action == "edit" || action == "review" ){
-                await load_fun('document', uuid, edit_show);// step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
-            }
-                await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
+                // await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                await load_fun('form', dcc_no, gain_bigData); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                // await signature_canva();                    // step_1-1 signature_canva();           // 
+                // await eventListener();                      // step_1-2 eventListener();             // 
+            // if(action == "edit" || action == "review" ){
+                // await load_fun('document', uuid, edit_show);// step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
+                await load_fun('document', uuid, gain_bigData);// step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
+            // }
+                // await setFormDisabled(check_action);        // step_3 setFormDisabled(cherk_action); // 依cherk_action = true/false 啟閉表單特定元素
 
         } catch (error) {
             console.error(error);
@@ -1063,6 +1064,65 @@
                     closeWindow();                                  // true=更新 / false=不更新
                 };
             });
+        }
+    }
+
+    function gain_bigData(fun, gain_obj){
+        switch(fun){
+            case 'form':
+                console.log('gain_obj:' , fun , gain_obj);
+
+                // Object(gain_obj).forEach((gobj)=>{
+                    // console.log(gobj)
+                // })
+                
+                // Object(gain_obj).forEach((gobj)=>{
+                    // if (typeof option.value === 'object') {
+                    //     Object(option.value).forEach((key_value)=>{
+                    //         int_a += '<option value="'+key_value['value']+'" class="'+option.label + ((item_a.correspond != undefined) ? ' correspond' : '')+'" >'
+                    //             + key_value['value'] + '</option>' 
+                    //     } )
+                    // }else {
+                    //     int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.label+'：'+option.value+'</option>' 
+                    // }
+                // }) 
+
+                for (const [key, value] of Object.entries(gain_obj)) {
+
+                    if (typeof value === 'object') {
+                        for (const [o_key, o_value] of Object.entries(value)){
+
+                            if (typeof o_value === 'object') {
+                                console.log(o_key , 'obj2:', o_value.label );
+                                // console.log(o_key , 'obj2:', o_value.item );
+
+                                o_value.item.forEach((o_value_item)=>{
+                                    if (typeof o_value_item === 'object') {
+                                        // for (const [o3_key, o3_value] of Object.entries(o_value_item)){
+                                        //     console.log('obj3a:', o3_key , o3_value );
+                                        // }
+                                        console.log('obj3a:', o_value_item.name , o_value_item.label );
+
+                                    }else {
+                                        console.log('obj3b:', o_value_item );
+                                    }
+                                }) 
+
+                            }else {
+                                console.log('obj:', o_key, o_value);
+                            }
+        
+
+                        } 
+
+                    }else {
+                        console.log(key, value)
+                    }
+
+
+                }
+                break;
+            default :
         }
     }
 

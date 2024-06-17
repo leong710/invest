@@ -312,6 +312,7 @@
                             "class" : "other_item" },
                         { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }
                     ],
+                    "chooseBoth" : "以上皆是",
                     "required": true
                 },
                 {
