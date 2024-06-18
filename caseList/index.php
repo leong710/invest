@@ -90,7 +90,7 @@
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link active" href="index.php">訪談清單管理</span></a></li>
-                        <li class="nav-item"><a class="nav-link "        href="../analyze/"> UB </span></a></li>
+                        <li class="nav-item"><a class="nav-link disabled"        href="../analyze/">- 統計 -</span></a></li>
                     </ul>
                 </div>
                 <!-- 內頁 -->

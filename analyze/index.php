@@ -2,7 +2,23 @@
     require_once("../pdo.php");
     require_once("../sso.php");
     require_once("../user_info.php");
+    require_once("../caseList/function.php");
 
+    // default fab_scope
+    $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";               // All :allMy
+    // tidy query condition：
+        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
+        $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
+        $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
+        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "All";        // 問卷類別
+    // tidy sign_code scope 
+        $sfab_id_str     = get_coverFab_lists("str");   // get signCode的管理轄區
+        $sfab_id_arr     = explode(',', $sfab_id_str);  // 將管理轄區字串轉陣列
+
+    // for select item
+        $fab_lists       = show_fab_lists();            // get 廠區清單
+        $year_lists      = show_document_GB_year();     // get 立案year清單
+        $shortName_lists = show_document_shortName();   // get 簡稱清單
 ?>
 <?php include("../template/header.php"); ?>
 <?php include("../template/nav.php"); ?>
@@ -98,9 +114,103 @@
             border-top: 1px solid #000;
             margin-top: 10px;
         }
+        table tbody tr td{
+            text-align: left;
+            /* padding: 1.5em; */
+        }
     </style>
 </head>
+<body>
+    <div class="col-12">
+        <div class="row justify-content-center">
+            <div class="col_xl_11 col-12 rounded" style="background-color: rgba(255, 255, 255, .8);">
+                <!-- 內頁 -->
+                <div class="col-12 bg-white rounded my-2" id="main">
+                    <!-- by各Local儲存點： -->
+                    <div class="row">
+                        <div class="col-md-2 pb-0 ">
+                            <h5>訪談內容統計(試作)： </h5>
+                        </div>
 
+                        <!-- sort/groupBy function -->
+                        <div class="col-md-8 pb-0 ">
+                            <div class="input-group" id="query_item">
+                                <span class="input-group-text">篩選</span>
+
+                                <select name="_year" id="_year" class="form-select" >
+                                    <option value="" hidden selected >-- 請選擇 問卷年度 --</option>
+                                    <?php 
+                                        echo '<option for="_year" value="All" '.($_year == "All" ? " selected":"" ).($sys_role >= "0" ? " disabled":"" ).' >-- All 所有年度 --</option>';
+                                        foreach($year_lists as $list_year){
+                                            echo "<option for='_year' value='{$list_year["_year"]}' ";
+                                            echo ($list_year["_year"] == $_year ? "selected" : "" )." >".$list_year["_year"]."y</option>";
+                                        } ?>
+                                </select>
+                                <select name="_month" id="_month" class="form-select">
+                                    <?php 
+                                        echo "<option for='_month' value='All' ".(($_month == "All") ? " selected":"" )." >-- 全月份 / All --</option>";
+                                        foreach (range(1, 12) as $month_lists) {
+                                            $month_str = str_pad($month_lists, 2, '0', STR_PAD_LEFT);
+                                            echo "<option for='_month' value='{$month_str}' ".(($month_str == $_month ) ? " selected":"" )." >{$month_str}m</option>";
+                                        } ?>
+                                </select>
+                                <select name="_short_name" id="_short_name" class="form-select" >
+                                    <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
+                                    <?php 
+                                        foreach($shortName_lists as $shortName){
+                                            echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
+                                            echo ($shortName["short_name"] == $_short_name ? " selected" : "" )." >".$shortName["short_name"]."</option>";
+                                        } ?>
+                                </select>
+
+                                <select name="_fab_id" id="_fab_id" class="form-select" >
+                                    <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
+                                    <?php 
+                                        echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").($sys_role >= "0" ? " disabled":"" ).' >-- All 所有棟別 --</option>';
+                                        echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? " selected":"");
+                                        echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
+                                        foreach($fab_lists as $fab){
+                                            echo "<option for='_fab_id' value='{$fab["id"]}' ";
+                                            echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
+                                            echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                            echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
+                                        } ?>
+                                </select>
+
+                                <button type="button" class="btn btn-outline-secondary search_btn" id="search_btn">&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
+
+                            </div>
+                        </div>
+
+                        <!-- 表頭按鈕 -->
+                        <div class="col-md-2 pb-0 text-end inb">
+                            <div class="inb">
+                                <!-- 20231128 下載Excel -->
+                                <form id="myForm" method="post" action="../_Format/download_excel.php">
+                                    <input type="hidden" name="htmlTable" id="htmlTable" value="">
+                                    <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($_fab["id"]) ? $_fab["fab_title"]." (".$_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
+                                        <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Bootstrap Alarm -->
+                        <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
+                    </div>
+                    <table id="caseList" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 <script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>          <!-- goTop滾動畫面script.js 4/4-->
 <script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>     <!-- 簽名板外掛 -->
@@ -109,17 +219,9 @@
 
 <script>
     // init
-
-    var dcc_no        = '13ES100016-F002-V002b';
-    var uuid          = 'fe1d5761-29f5-11ef-b605-2cfda183ef4f';
-    var meeting_man_a = [];                         // 事故當事者(或其委任代理人)
-    var meeting_man_o = [];                         // 其他與會人員
-    var meeting_man_s = [];                         // 環安人員
-    var meeting_man_target;                         // 指向目標
-    var negative_arr  = [];                         // 監聽負向選項
-
+    var doc_keys = [];
     var big_data = [];
-    
+        
 </script>
 
-<script src="form.js?v=<?=time()?>"></script>
+<script src="index.js?v=<?=time()?>"></script>

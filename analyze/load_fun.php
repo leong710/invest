@@ -59,6 +59,78 @@
                 }
                 break;
 
+            case 'analyze':
+                if(isset($_REQUEST['parm'])){
+                    require_once("../pdo.php");
+                    $pdo = pdo();
+                    extract($_REQUEST['parm']);
+                    $stmt_arr = array();    // 初始查詢陣列
+                    $sql = "SELECT _d.id, _d.uuid, _d.idty, _d.anis_no, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local, _odd
+                                , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year , _d.confirm_sign
+                                , _l.local_title, _l.local_remark , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
+                            FROM _document _d
+                            LEFT JOIN _local _l     ON _d.local_id = _l.id 
+                            LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
+                            LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no ";
+                    // tidy query condition：
+                    if($_year != 'All'){
+                        $sql .= " WHERE (year(_d.created_at) = ? )";              // ? = $year
+                        array_push($stmt_arr, $_year);
+                    }
+                    if($_month != 'All'){
+                        $sql .= ($_year != "All" ? " AND ":" WHERE ") ;
+                        $sql .= " (month(_d.created_at) = ? )";                  // ? = $month
+                        array_push($stmt_arr, $_month);
+                    }
+                    if($fab_id != "All"){                                           // 處理 fab_id != All 進行二階   
+                        $sql .= ($_year != "All" || $_month != "All" ? " AND ":" WHERE ") ;
+                        if($fab_id == "allMy"){                                     // 處理 fab_id = allMy 我的轄區
+                            $sql .= " _d.fab_id IN ({$sfab_id}) ";
+                        }else{                                                      // 處理 fab_id != allMy 就是單點fab_id
+                            $sql .= " _d.fab_id = ? ";
+                            array_push($stmt_arr, $fab_id);
+                        }
+                    }                                                               // 處理 fab_id = All 就不用套用，反之進行二階
+                    if($short_name != "All"){                                        // 處理過濾 short_name != All  
+                        $sql .= ($_year != "All" || $_month != "All" || $fab_id != "All" ? " AND ":" WHERE ") ;
+                        $sql .= " _fc.short_name = ? ";                             // 查詢條件 short_name
+                        array_push($stmt_arr, $short_name);
+                    }
+                    // 後段-堆疊查詢語法：加入排序
+                    $sql .= " ORDER BY _d.created_at DESC";
+
+                    $stmt = $pdo->prepare($sql);
+                    try {
+                        if(($_year != 'All') || ($_month != 'All') || (($fab_id != "All") && ($fab_id != "allMy")) || ($short_name != "All")){
+                            $stmt->execute($stmt_arr);                          //處理 byUser & byYear
+                        }else{
+                            $stmt->execute();                                   //處理 byAll
+                        }
+                        $_document = $stmt->fetchAll(PDO::FETCH_ASSOC);        // no index
+
+                        // // 把特定json轉物件
+                        //     $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
+                        //     foreach ($re_json_keys as $jkey) {
+                        //         // $_document[$jkey] = json_decode($_document[$jkey]);
+                        //         $_document[$jkey] = isset($_document[$jkey]) ? json_decode($_document[$jkey]) : '';
+                        //     }
+
+                        // 製作返回文件
+                        $result = [
+                            'result_obj' => $_document,
+                            'fun'        => $fun,
+                            'success'    => 'Load '.$fun.' success.'
+                        ];
+                    }catch(PDOException $e){
+                        echo $e->getMessage();
+                        $result['error'] = 'Load '.$fun.' failed...(e)';
+                    }
+
+                }else{
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                }
+                break;
+
             case 'locals':
                 require_once("../pdo.php");
                 $pdo = pdo();

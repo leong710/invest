@@ -892,16 +892,29 @@
                         if(typeof option_value === 'object'){
                             option_value.forEach((item_value, index)=>{
                                 // console.log(content_key, item_value);
-                                // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                                // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
-                                    // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
-                                // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
-                                    // $('#' + content_key + '_' + item_value).prop('checked', true);
-                                // }
-                                $('#' + content_key + '_' + item_value).prop('checked', true);
-                                if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
-                                    $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
-                                }else{
+                                    // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                    // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                        // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
+                                    // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
+                                        // $('#' + content_key + '_' + item_value).prop('checked', true);
+                                    // }
+                                    
+                                    //     $('#' + content_key + '_' + item_value).prop('checked', true);
+                                    // if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
+                                    //     $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
+                                    // }else{
+                                    //     $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
+                                    // }
+                                
+                                let targetItemSelector = `${content_key}_${item_value}`;
+                                let targetItem = document.querySelector(`[id^="${targetItemSelector}"]`);
+                                if(targetItem){
+                                    targetItem.checked = true;
+
+                                    if ($('#'+ targetItemSelector ).hasClass("other_item")){                // 其他選項
+                                        $('#'+ targetItemSelector + '_o').removeClass('unblock').removeAttr("disabled");
+                                    }
+                                }else if($('#' + content_key + '_' + option_value[index-1]).hasClass("other_item")){
                                     $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
                                 }
                             })
@@ -972,7 +985,6 @@
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);    // 接收回傳
                     let result_obj = response['result_obj'];        // 擷取主要物件
-                    console.log(fun, result_obj);
                     resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
                                                                     // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
                 } else {
