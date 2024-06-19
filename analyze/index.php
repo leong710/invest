@@ -177,6 +177,13 @@
                                         } ?>
                                 </select>
 
+                                <select name="_sfab_id" id="_sfab_id" class="form-select unblock" >
+                                    <?php 
+                                        echo '<option for="_sfab_id" value="'.($sfab_id_str ? $sfab_id_str : "").'" selected ';
+                                        echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
+                                    ?>
+                                </select>
+                                
                                 <button type="button" class="btn btn-outline-secondary search_btn" id="search_btn">&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
 
                             </div>

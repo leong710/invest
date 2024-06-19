@@ -27,49 +27,6 @@
                     "required": false
                 },
                 {
-                    "label": "籍別",
-                    "type" : "radio",
-                    "name" : "s1_combo_1",
-                    "options" : [
-                        { "label" : "本籍" , "value" : "本籍" },
-                        { "label" : "外籍" , "value" : "外籍" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "性別",
-                    "type" : "radio",
-                    "name" : "s1_combo_2",
-                    "options" : [
-                        { "label" : "男性" , "value" : "男性" },
-                        { "label" : "女性" , "value" : "女性" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "年齡層",
-                    "type" : "radio",
-                    "name" : "s1_combo_3",
-                    "options" : [
-                        { "label" : "未滿18"    , "value" : "18d"    },
-                        { "label" : "18~未滿20" , "value" : "18u-20d" },
-                        { "label" : "20~未滿25" , "value" : "20u-25d" },
-                        { "label" : "25~未滿30" , "value" : "25u-30d" },
-                        { "label" : "30~未滿40" , "value" : "30u-40d" },
-                        { "label" : "40~未滿45" , "value" : "40u-45d" },
-                        { "label" : "45~未滿50" , "value" : "45u-50d" },
-                        { "label" : "50~未滿55" , "value" : "50u-55d" },
-                        { "label" : "55~未滿60" , "value" : "55u-60d" },
-                        { "label" : "60~未滿65" , "value" : "60u-65d" },
-                        { "label" : "65~未滿70" , "value" : "65u-70d" },
-                        { "label" : "70~未滿75" , "value" : "70u-75d" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
                     "label": "事故時間",
                     "type": "datetime",
                     "name" : "a_day",
@@ -389,11 +346,47 @@
             ]
         },
 
+        "session_7" : {
+            "label" : "備註說明",
+            "info": "",
+            "class" : " p-2 ",
+            "item" : [
+                {
+                    "label": "備註說明",
+                    "type" : "textarea",
+                    "name" : "remark",
+                    "required": false
+                }
+            ]
+        },
+
         "session_8" : {
             "label": "進階問項",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
             "item" : [
+                {
+                    "label": "籍別",
+                    "type" : "radio",
+                    "name" : "s8_combo_1",
+                    "options" : [
+                        { "label" : "本籍" , "value" : "本籍" },
+                        { "label" : "外籍" , "value" : "外籍" }
+                    ],
+                    "negative": "否",
+                    "required": true
+                },
+                {
+                    "label": "性別",
+                    "type" : "radio",
+                    "name" : "s8_combo_2",
+                    "options" : [
+                        { "label" : "男性" , "value" : "男性" },
+                        { "label" : "女性" , "value" : "女性" }
+                    ],
+                    "negative": "否",
+                    "required": true
+                },
                 {
                     "label": "事發班別",
                     "type" : "radio",
@@ -415,6 +408,27 @@
                         { "label" : "夜間"   , "value" : "夜間"  }
                     ],
                     "negative": "無",
+                    "required": true
+                },
+                {
+                    "label": "年齡層",
+                    "type" : "radio",
+                    "name" : "s8_combo_3",
+                    "options" : [
+                        { "label" : "未滿18"    , "value" : "18d"    },
+                        { "label" : "18~未滿20" , "value" : "18u-20d" },
+                        { "label" : "20~未滿25" , "value" : "20u-25d" },
+                        { "label" : "25~未滿30" , "value" : "25u-30d" },
+                        { "label" : "30~未滿40" , "value" : "30u-40d" },
+                        { "label" : "40~未滿45" , "value" : "40u-45d" },
+                        { "label" : "45~未滿50" , "value" : "45u-50d" },
+                        { "label" : "50~未滿55" , "value" : "50u-55d" },
+                        { "label" : "55~未滿60" , "value" : "55u-60d" },
+                        { "label" : "60~未滿65" , "value" : "60u-65d" },
+                        { "label" : "65~未滿70" , "value" : "65u-70d" },
+                        { "label" : "70~未滿75" , "value" : "70u-75d" }
+                    ],
+                    "negative": "否",
                     "required": true
                 },
                 {
@@ -490,7 +504,6 @@
                     "label": "受傷資訊",
                     "type" : "textarea",
                     "name" : "s8_textarea_a",
-                    "info" : "『請依照醫師診斷證明填寫』",
                     "required": true
                 }
             ]

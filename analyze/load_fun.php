@@ -1,10 +1,11 @@
 <?php
     if(isset($_REQUEST['fun'])) {
+        require_once("../pdo.php");
+        extract($_REQUEST);
         $result = [];
         switch ($_REQUEST['fun']){
             case 'form':
-                if(isset($_REQUEST['parm'])) {
-                    extract($_REQUEST);
+                if(isset($parm)) {
                     $dcc_no = $parm;
                     $form_doc     = "../doc_json/".$dcc_no.".json";
                     if(file_exists($form_doc)){
@@ -28,10 +29,8 @@
                 break;
 
             case 'document':
-                if(isset($_REQUEST['parm'])){
-                    require_once("../pdo.php");
+                if(isset($parm)){
                     $pdo = pdo();
-                    extract($_REQUEST);
                     $sql = "SELECT * FROM _document WHERE uuid = ? ";
                     $stmt = $pdo->prepare($sql);
                     try {
@@ -59,15 +58,19 @@
                 }
                 break;
 
-            case 'analyze':
-                if(isset($_REQUEST['parm'])){
-                    require_once("../pdo.php");
+            case 'caseList':
+                if(isset($_short_name)){
                     $pdo = pdo();
-                    extract($_REQUEST['parm']);
                     $stmt_arr = array();    // 初始查詢陣列
-                    $sql = "SELECT _d.id, _d.uuid, _d.idty, _d.anis_no, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local, _odd
-                                , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year , _d.confirm_sign
-                                , _l.local_title, _l.local_remark , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
+
+                    $_year       = !empty($_year)       ? $_year       : "";
+                    $_month      = !empty($_month)      ? $_month      : "";
+                    $short_name  = !empty($_short_name) ? $_short_name : "";
+                    $fab_id      = !empty($_fab_id)     ? $_fab_id     : "";
+                    $sfab_id     = !empty($_sfab_id)    ? $_sfab_id    : "";
+                    $get_dccNo   = !empty($_get_dccNo)  ? $_get_dccNo  : false;
+
+                    $sql = "SELECT _d.id, _d.uuid, _d.dcc_no, year(_d.created_at) AS case_year 
                             FROM _document _d
                             LEFT JOIN _local _l     ON _d.local_id = _l.id 
                             LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
@@ -106,7 +109,9 @@
                         }else{
                             $stmt->execute();                                   //處理 byAll
                         }
-                        $_document = $stmt->fetchAll(PDO::FETCH_ASSOC);        // no index
+
+                        // $caseList = ($get_dccNo) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);        // get_dccNo  取一筆for dcc_no / 取全部
+                        $caseList = ($get_dccNo) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);        // get_dccNo  取一筆for dcc_no / 取全部
 
                         // // 把特定json轉物件
                         //     $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
@@ -117,7 +122,7 @@
 
                         // 製作返回文件
                         $result = [
-                            'result_obj' => $_document,
+                            'result_obj' => $caseList,
                             'fun'        => $fun,
                             'success'    => 'Load '.$fun.' success.'
                         ];
@@ -132,9 +137,7 @@
                 break;
 
             case 'locals':
-                require_once("../pdo.php");
                 $pdo = pdo();
-                extract($_REQUEST);
                 $sql = "SELECT _l.*
                         FROM _local _l
                         -- LEFT JOIN _fab _f ON _f.id = _l.fab_id
@@ -168,4 +171,16 @@
         http_response_code(500);
         echo json_encode(['error' => 'fun is lost.']);
     }
+
+
+
+    $sql =" SELECT _d.id, _d.uuid, _d.idty, _d.anis_no, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local, _odd
+                , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year , _d.confirm_sign
+                , _l.local_title, _l.local_remark , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
+            FROM _document _d
+            LEFT JOIN _local _l     ON _d.local_id = _l.id 
+            LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
+            LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no  
+            WHERE (year(_d.created_at) = ? ) AND  (month(_d.created_at) = ? ) AND  _d.fab_id = ?  AND  _fc.short_name = ?  
+            ORDER BY _d.created_at DESC";
 ?>
