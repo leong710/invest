@@ -274,6 +274,7 @@
     function unlinkFile(key) {
         let formData = new FormData();
         let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
+        console.log(key, unlinkFile);
         formData.append('unlinkFile', unlinkFile);
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'unlink.php', true);
@@ -375,6 +376,7 @@
                         // if (negative_opts.includes(rdo)) {       // 原本是過濾點選事件是否為[負向選項]，取消原因是要讓非[負向選項]也可以進行滾算
                             // 计算 negative_arr 数组
                             negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
+                            console.log('negative_arr:', negative_arr);
                         // }
                         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
                         get_negatives.forEach((get_n) => {
@@ -400,43 +402,42 @@
             
             // 監聽到職日欄位(id=hired)，自動計算年資並output(id=rload)
             // 監聽事故時間欄位(id=a_day)，自動確認是否結束大於開始
-            $('#hired, #a_day ,#anis_day').change(function() {
-                let currentDate = new Date();                               // 取得今天日期
-                let hired       = new Date($("#hired").val());              // 取得到職日
-                let a_day       = new Date($("#a_day").val());              // 取得事故日期
-                let anis_day    = new Date($("#anis_day").val());           // 取得事故日期
-                // 到職日不得大於現在時間....
-                if(this.id == 'hired'){
-                    // if(currentDate >= hired){
-                    if(a_day >= hired){
-                        // 計算年月日
-                        // let difference  = currentDate - hired;        // 計算日期差距（毫秒單位）  ==> 開會當天-到職日 = 年資
-                        let difference  = a_day - hired;        // 計算日期差距（毫秒單位）  ==> 事故日-到職日 = 年資
-                        let years       = Math.floor(difference / (365.25 * 24 * 60 * 60 * 1000));
-                        let months      = Math.floor((difference % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
-                        let days        = Math.floor((difference % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
-                        // 輸出结果
-                        $("#rload").val("估算約：" + years + " 年 " + months + " 個月 " + days + " 天");
-                    }else{
-                        $("#rload").val('');
+            $('#hired, #a_day').change(function() {
+                let currentDate = new Date();                                        // 取得今天日期
+                let hired = $("#hired").val() ? new Date($("#hired").val()) : null;  // 取得到職日
+                let a_day = $("#a_day").val() ? new Date($("#a_day").val()) : null;  // 取得事故日期
+        
+                if (hired) {
+                    if (hired > currentDate) {
+                        $("#hired").removeClass("is-valid").addClass("is-invalid");
+                    } else {
+                        $("#hired").removeClass("is-invalid").addClass("is-valid");
                     }
-    
-                    $("#hired").removeClass("is-valid is-invalid").addClass(hired < currentDate ? "is-valid" : "is-invalid");
                 }
-                // anis立案日不得大於現在時間....
-                if(this.id == 'a_day'){
-                    $("#a_day").removeClass("is-valid is-invalid").addClass(a_day < currentDate ? "is-valid" : "is-invalid");
+        
+                if (a_day) {
+                    if (a_day > currentDate) {
+                        $("#a_day").removeClass("is-valid").addClass("is-invalid");
+                    } else {
+                        $("#a_day").removeClass("is-invalid").addClass("is-valid");
+                    }
                 }
-                // anis立案日不得大於現在時間....
-                if(this.id == 'anis_day'){
-                    $("#anis_day").removeClass("is-valid is-invalid").addClass(a_day <= anis_day && anis_day < currentDate ? "is-valid" : "is-invalid");
-                }
-                // 事故時間需大於到職日，並小於現在時間....
-                if(!isNaN(hired)){          // 適用交通
-                    $("#a_day").removeClass("is-valid is-invalid").addClass(hired <= a_day && a_day < currentDate ? "is-valid" : "is-invalid");
-                }
-                if(!isNaN(anis_day)){       // 適用廠內
-                    $("#a_day").removeClass("is-valid is-invalid").addClass(a_day <= anis_day && a_day < currentDate ? "is-valid" : "is-invalid");
+        
+                if (hired && a_day) {
+                    if (a_day >= hired && a_day <= currentDate) {
+                        // 計算年月日
+                        let difference = a_day - hired;
+                        let years  = Math.floor(difference / (365.25 * 24 * 60 * 60 * 1000));
+                        let months = Math.floor((difference % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+                        let days   = Math.floor((difference % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+                        // 輸出結果
+                        $("#rload").val("估算約：" + years + " 年 " + months + " 個月 " + days + " 天");
+                        $("#rload").removeClass("is-invalid").addClass("is-valid");
+                    } else {
+                        $("#rload").val('(填完session_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
+                    }
+                } else {
+                    $("#rload").val('(填完session_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
                 }
             });
             // 監聽與驗證anis_no是否合規
@@ -658,12 +659,12 @@
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
                           + ' class="form-check-input ' + item_a.name  
                             + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
-                            + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
-                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                            + ((item_a.negative != undefined && item_a.negative == object_type) ? ' negative ' : '') 
+                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
                             + '" ' + ((option.flag  != undefined) ? 'flag="'+option.flag+'"' : '')
                           + ' >' + '<label class="form-check-label '
-                            + ((item_a.negative != undefined && item_a.negative == object_type) ? 'negative ' : '') 
-                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? 'get_negative ' : '') 
+                            + ((item_a.negative != undefined && item_a.negative == object_type) ? ' negative ' : '') 
+                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
                           + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
                           + '</label></div>';
 
@@ -702,14 +703,14 @@
                 int_a += '</select>'+'</div>';
                 break;
             case 'file':       // session_2 事故位置簡圖
-                int_a = check_action ? '<div class="col-12 ' : '<div class="col-6 col-md-6 ';         // create = 半開；review = 全開
+                int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6 py-1 px-2';         // create = 半開；review = 全開
                 int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
                 if(!check_action){
-                    int_a += '<div class="col-6 col-md-6 py-0 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
+                    int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
                         + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" >'
                         + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
                         + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
-                        + '</div></div>' + '</div>'
+                        + '</div></div>' + '</div></div>'
                 }
                 break;  
             case 'signature':   // 簽名模組
@@ -807,7 +808,7 @@
     // edit 副函數：鋪設渲染_表頭
     function reShow_info(document_row){
         // 1.會議info
-        let meeting_info1_arr = ['anis_no','fab_id', 'local_id', 'case_title', 'a_dept', 'meeting_time', 'meeting_local', 'uuid' ,'meeting_man_d'];
+        let meeting_info1_arr = ['anis_no','fab_id', 'local_id', 'case_title', 'a_dept', 'meeting_time', 'meeting_local', 'uuid', 'meeting_man_d', 'omager'];
         meeting_info1_arr.forEach((meeting_info1)=>{
             if((document_row[meeting_info1] !== undefined) && (document_row[meeting_info1] != '0000-00-00 00:00:00')){
                 document.querySelector('#'+meeting_info1).value = document_row[meeting_info1]; 

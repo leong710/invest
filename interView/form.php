@@ -146,7 +146,7 @@
     <div class="col-12">
         <div class="row justify-content-center">
             <!-- session-group -->
-            <div class="col-12 col-md-2 col-lg-1 px-1 py-0">
+            <div class="col-12 col-md-2 col-lg-2 px-1 py-0">
                 <div id="session-group" class="list-group">
                     <?php if(in_array($action,["create", "edit"])){ ?>
                         <button class="list-group-item list-group-item-action text-center" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
@@ -154,7 +154,7 @@
                     <a class="list-group-item list-group-item-action" href="#form_top">Home</a>
                 </div>
             </div>
-            <div class="col-12 col-md-10 col-lg-11 border rounded" style="background-color: #D4D4D4;" id="form_top">
+            <div class="col-12 col-md-10 col-lg-10 border rounded" style="background-color: #D4D4D4;" id="form_top">
                 <!-- 表頭1 -->
                 <div class="row px-1">
                     <div class="col-6 col-md-6 py-0" id="home_title">
@@ -354,7 +354,7 @@
                                         <input type="hidden"  name="uuid"            id="uuid"            value="">
                                         <input type="hidden"  name="dcc_no"          id="dcc_no"          value="">
                                         <input type="hidden"  name="_odd"            id="_odd"            value="">
-                                        <input type="text"  name="omager"          id="omager"          value="">
+                                        <input type="hidden"  name="omager"          id="omager"          value="">
                                         <snap id="submit_action">
                                             <?php if($sys_role <= 3){ ?>
                                                 <button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>

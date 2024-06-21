@@ -4,7 +4,110 @@
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "session_1" : {
-            "label" : "事故基本資料",
+            "label" : "人員基本資料",
+            "info"  : "",
+            "class" : "col-6 col-md-6 p-2 ",
+            "item"  : [
+                {
+                    "label": "工號",
+                    "type" : "text",
+                    "name" : "emp_id",
+                    "required": true
+                },
+                {
+                    "label": "姓名",
+                    "type" : "text",
+                    "name" : "cname",
+                    "required": true
+                },
+                {
+                    "label": "單位",
+                    "type": "text",
+                    "name" : "oftext",
+                    "required": false
+                },
+                {
+                    "label": "職稱",
+                    "type" : "text",
+                    "name" : "cstext",
+                    "required": false
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
+                },
+                {
+                    "label": "籍別",
+                    "type" : "radio",
+                    "name" : "s1_combo_NATIO",
+                    "options" : [
+                        { "label" : "本籍" , "value" : "本籍" },
+                        { "label" : "外籍" , "value" : "外籍" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "性別",
+                    "type" : "radio",
+                    "name" : "s1_combo_GESCH",
+                    "options" : [
+                        { "label" : "男性" , "value" : "男性" },
+                        { "label" : "女性" , "value" : "女性" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "族群",
+                    "type" : "radio",
+                    "name" : "s1_combo_emp_type",
+                    "options" : [
+                        { "label" : "主管"      , "value" : "主管" },
+                        { "label" : "工程師"    , "value" : "工程師" },
+                        { "label" : "PM"        , "value" : "PM"},
+                        { "label" : "技術員"    , "value" : "技術員" },
+                        { "label" : "其他"      , "value" : {
+                                                    "label": "其他",
+                                                    "type" : "text",
+                                                    "name" : "emp_type",
+                                                    "value": "Other"
+                                                    }}
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "年齡層",
+                    "type" : "radio",
+                    "name" : "s1_combo_years_level",
+                    "options" : [
+                        { "label" : "未滿18"    , "value" : "18d"    },
+                        { "label" : "18~未滿20" , "value" : "18u-20d" },
+                        { "label" : "20~未滿25" , "value" : "20u-25d" },
+                        { "label" : "25~未滿30" , "value" : "25u-30d" },
+                        { "label" : "30~未滿40" , "value" : "30u-40d" },
+                        { "label" : "40~未滿45" , "value" : "40u-45d" },
+                        { "label" : "45~未滿50" , "value" : "45u-50d" },
+                        { "label" : "50~未滿55" , "value" : "50u-55d" },
+                        { "label" : "55~未滿60" , "value" : "55u-60d" },
+                        { "label" : "60~未滿65" , "value" : "60u-65d" },
+                        { "label" : "65~未滿70" , "value" : "65u-70d" },
+                        { "label" : "70~未滿75" , "value" : "70u-75d" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_2" : {
+            "label" : "事故摘要",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
             "item"  : [
@@ -16,62 +119,95 @@
                     "valid": true
                 },
                 {
-                    "label": "事故位置",
+                    "label": "事故地點位置",
                     "type": "text",
                     "name" : "a_location",
                     "required": true
                 },
                 {
-                    "label": "調查開始時間(ANIS系統立案日期)",
-                    "type" : "date",
-                    "name" : "anis_day",
-                    "required": true,
-                    "valid": true
+                    "label": "事發班別",
+                    "type" : "radio",
+                    "name" : "s2_combo_01",
+                    "options" : [
+                        { "label" : "日班"   , "value" : "日班"  },
+                        { "label" : "夜班"   , "value" : "夜班"  },
+                        { "label" : "常日班" , "value" : "常日班" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "發生時段",
+                    "type" : "radio",
+                    "name" : "s2_combo_02",
+                    "options" : [
+                        { "label" : "日間"   , "value" : "日間"  },
+                        { "label" : "夜間"   , "value" : "夜間"  }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "媒介物",
+                    "type" : "radio",
+                    "name" : "s2_combo_03",
+                    "options" : [
+                        { "label" : "貨車"   , "value" : "貨車" },
+                        { "label" : "公車"   , "value" : "公車" },
+                        { "label" : "轎車"   , "value" : "轎車" },
+                        { "label" : "機車"   , "value" : "機車" },
+                        { "label" : "腳踏車" , "value" : "腳踏車" },
+                        { "label" : "行人"   , "value" : "行人" },
+                        { "label" : "自摔"   , "value" : "自摔" },
+                        { "label" : "其他"   , "value" : {
+                                                    "label": "其他",
+                                                    "type" : "text",
+                                                    "name" : "s8_combo_7",
+                                                    "value": "Other"
+                                                    }}
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "是否參與工安實體教育訓練課程",
+                    "type" : "radio",
+                    "name" : "s2_combo_04",
+                    "options" : [
+                        { "label" : "是"   , "value" : "是"  },
+                        { "label" : "否"   , "value" : "否"  }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "是否有調閱 CCTV",
+                    "type" : "radio",
+                    "name" : "s2_combo_05",
+                    "options" : [
+                        { "label" : "是"   , "value" : "是"  },
+                        { "label" : "否"   , "value" : "否"  }
+                    ],
+                    "required": true
                 },
                 {
                     "label": "事故類別",
                     "type" : "radio",
-                    "name" : "s1_combo_1",
+                    "name" : "s2_combo_06",
                     "options" : [
                         { "label" : "設備"         , "value" : "設備" },
                         { "label" : "人傷"         , "value" : "人傷" },
                         { "label" : "其他"         , "value" : {
                                                         "label": "其他",
                                                         "type" : "text",
-                                                        "name" : "s1_combo_1",
+                                                        "name" : "s2_combo_06",
                                                         "value": "Other"
                                                     },
                             "class" : "other_item" }
                     ],
                     "lock_opt" : "人傷",
                     "required" : true
-                }
-            ]
-        },
-
-        "session_2" : {
-            "label" : "事故內容",
-            "info"  : "",
-            "class" : " p-2 ",
-            "item"  : [
-                {
-                    "label": "事故描述",
-                    "type" : "textarea",
-                    "name" : "a_description",
-                    "required": false
-                }
-            ]
-        },
-
-        "session_3" : {
-            "label" : "事故摘要",
-            "info"  : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
+                },
                 {
                     "label": "事故分類",
                     "type" : "radio",
-                    "name" : "s3_combo_1",
+                    "name" : "s2_combo_07",
                     "options" : [
                         { "flag" : "AA" , "label" : "人員受傷"                 , "value" : "人員受傷" },
                         { "flag" : "AB" , "label" : "財產損失(含承攬商支付)"   , "value" : "財產損失(含承攬商支付)" },
@@ -92,7 +228,7 @@
                 {
                     "label": "災害類型",
                     "type" : "select",
-                    "name" : "s3_combo_2",
+                    "name" : "s2_combo_08",
                     "options" : [
                         { "label" : "AA" , "value" : [
                             { "label" : "AA_01" , "value" : "01.墜落、滾落" },
@@ -190,66 +326,57 @@
                             { "label" : "AL_09" , "value" : "09.漏液偵測故障造成之漏液誤警報" }
                         ]}
                     ],
-                    "correspond":"s3_combo_1",
+                    "correspond":"s2_combo_07",
                     "lock_opt"  : "02.廠內交通事故",
                     "required"  : true
                 }
             ]
         },
 
-        "session_4" : {
-            "label" : "職業災害人員基本資料",
-            "info"  : "※ 無人員受傷，無需填寫；如需申請公傷假，請檢附醫生診斷證明書影本。",
-            "class" : "col-6 col-md-6 p-2 ",
+        "session_3" : {
+            "label" : "事故敘述",
+            "info"  : "",
+            "class" : " p-2 ",
             "item"  : [
                 {
-                    "label": "工號",
-                    "type" : "text",
-                    "name" : "emp_id",
-                    "required": false
-                },
-                {
-                    "label": "姓名",
-                    "type" : "text",
-                    "name" : "cname",
-                    "required": false
-                },
-                {
-                    "label": "單位",
-                    "type": "text",
-                    "name" : "oftext",
-                    "required": false
-                },
-                {
-                    "label": "職稱",
-                    "type" : "text",
-                    "name" : "cstext",
-                    "required": false
-                },
-                {
-                    "label": "到職日",
-                    "type" : "date",
-                    "name" : "hired",
-                    "required": false,
-                    "valid": true
-                },
-                {
-                    "label": "年資",
-                    "type": "text",
-                    "name" : "rload",
-                    "required": false
-                },
-                {
-                    "label": "受傷部位",
+                    "label": "事故原因及經過說明",
+                    "info" : "",
                     "type" : "textarea",
-                    "name" : "s4_textarea_1",
-                    "info" : "需填寫人員傷勢。",
+                    "name" : "a_description",
+                    "class": " p-2 ",
+                    "required": true
+                },
+                {
+                    "label": "上傳圖檔 <sup class='text-primary'> (限傳 jpg、png、gif、bmp)</sup>",
+                    "info" : "事故位置簡圖，描繪路線並標出 1.就業場所 2.日常居住處所 3.上下班應經途徑 4.事故地點",
+                    "type" : "file",
+                    "name" : "a_pic",
+                    "class": "",
                     "required": false
+                }
+            ]
+        },
+
+        "session_4" : {
+            "label": "傷害程度",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "是否住院",
+                    "info": "",
+                    "type" : "radio",
+                    "name" : "s4_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
                 },
                 {
                     "label": "失能種類",
                     "type" : "radio",
-                    "name" : "s4_combo_2",
+                    "name" : "s4_combo_02",
                     "options" : [
                         { "label" : "死亡"         , "value" : "死亡" },
                         { "label" : "永久全失能"   , "value" : "永久全失能" },
@@ -258,7 +385,7 @@
                         { "label" : "其他"         , "value" : {
                                                         "label": "工時損失",
                                                         "type" : "text",
-                                                        "name" : "s4_combo_2",
+                                                        "name" : "s4_combo_02",
                                                         "value": "Other"
                                                     },
                             "class" : "other_item" }
@@ -266,9 +393,91 @@
                     "required": true
                 },
                 {
-                    "label": "是否住院",
+                    "label": "損/限工",
                     "type" : "radio",
-                    "name" : "s4_combo_3",
+                    "name" : "s4_combo_03",
+                    "info" : "損工天數：以天計算； 限工時數：以小時計算。",
+                    "options" : [
+                        { "label" : "損工"   , "value" : {
+                                                    "label": "損工天數_以天計算",
+                                                    "type" : "number",
+                                                    "name" : "s4_combo_03",
+                                                    "value": "Other",
+                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
+                                                    "only" : true
+                                                },
+                            "class" : "other_item" },
+                        { "label" : "限工"   , "value" : {
+                                                    "label": "限工時數_以小時計算",
+                                                    "type" : "number",
+                                                    "name" : "s4_combo_03",
+                                                    "value": "Other",
+                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
+                                                    "only" : true
+                                                },
+                            "class" : "other_item" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "受傷資訊",
+                    "info" : "『請依照醫師診斷證明填寫』",
+                    "type" : "textarea",
+                    "name" : "s4_text_a",
+                    "required": true
+                }
+            ]
+        },
+
+        "session_5A" : {
+            "label" : "綜合問項 - 個人行為",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.是否使用手機",
+                    "type" : "radio",
+                    "name" : "s5a_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.視線死角(或視線不清)",
+                    "type" : "radio",
+                    "name" : "s5a_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.動作過大、魯莽",
+                    "type" : "radio",
+                    "name" : "s5a_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.急煞",
+                    "type" : "radio",
+                    "name" : "s5a_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "5.未保持安全車距",
+                    "type" : "radio",
+                    "name" : "s5a_combo_05",
                     "options" : [
                         { "label" : "是" , "value" : "是" },
                         { "label" : "否" , "value" : "否" }
@@ -278,26 +487,436 @@
             ]
         },
 
-        "session_5" : {
-            "label" : "事故分析",
+        "session_5B" : {
+            "label" : "綜合問項 - 身心狀況",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.精神不集中、分心",
+                    "type" : "radio",
+                    "name" : "s5b_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.疲倦、疲倦",
+                    "type" : "radio",
+                    "name" : "s5b_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.頭暈、暈眩",
+                    "type" : "radio",
+                    "name" : "s5b_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.身體不適 (如抽筋、手麻、腳麻、低血糖、生病期間…等)",
+                    "type" : "radio",
+                    "name" : "s5b_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_6A" : {
+            "label" : "綜合問項 - 天候因素條件",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.環境昏暗，無法有效辨識環境狀況",
+                    "type" : "radio",
+                    "name" : "s6a_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.太陽眩光，影響視覺",
+                    "type" : "radio",
+                    "name" : "s6a_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.下雨天使道路濕滑積水",
+                    "type" : "radio",
+                    "name" : "s6a_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.強風",
+                    "type" : "radio",
+                    "name" : "s6a_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "其他",
+                    "type" : "text",
+                    "name" : "s6a_text_other",
+                    "required": false
+                }
+            ]
+        },
+
+        "session_6B" : {
+            "label" : "綜合問項 - 照明狀況",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.環境照明昏暗",
+                    "type" : "radio",
+                    "name" : "s6b_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.光線亮度驟變",
+                    "type" : "radio",
+                    "name" : "s6b_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.逆光 (如夕陽、早晨等)",
+                    "type" : "radio",
+                    "name" : "s6b_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.人工照明設施損壞致昏暗",
+                    "type" : "radio",
+                    "name" : "s6b_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_6C" : {
+            "label" : "綜合問項 - 地面狀況",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.道路動線調整(修繕中)",
+                    "type" : "radio",
+                    "name" : "s6c_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.地面濕滑 (有水、有油漬)",
+                    "type" : "radio",
+                    "name" : "s6c_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.地面高低差",
+                    "type" : "radio",
+                    "name" : "s6c_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.地面有異物(砂石、石頭、果殼或其他異物)",
+                    "type" : "radio",
+                    "name" : "s6c_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "5.地面積水",
+                    "type" : "radio",
+                    "name" : "s6c_combo_05",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "6.行駛地面材質差異 (水溝蓋、標線等)",
+                    "type" : "radio",
+                    "name" : "s6c_combo_06",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "7.地面破損",
+                    "type" : "radio",
+                    "name" : "s6c_combo_07",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "8.地上有減速墊",
+                    "type" : "radio",
+                    "name" : "s6c_combo_08",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "9.動線不明確",
+                    "type" : "radio",
+                    "name" : "s6c_combo_09",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                }
+            ]
+        },
+
+        "session_7A" : {
+            "label" : "綜合問項 - 交通規則遵守情況",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.未依道路標示行駛",
+                    "type" : "radio",
+                    "name" : "s7a_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.未禮讓行人",
+                    "type" : "radio",
+                    "name" : "s7a_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.超速 (超過廠內速限)",
+                    "type" : "radio",
+                    "name" : "s7a_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.對方車輛未依規定停放",
+                    "type" : "radio",
+                    "name" : "s7a_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "5.對方車輛突然變換車道",
+                    "type" : "radio",
+                    "name" : "s7a_combo_05",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "6.人員造成(人員衝出)",
+                    "type" : "radio",
+                    "name" : "s7a_combo_06",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "其他",
+                    "type" : "text",
+                    "name" : "s7a_text_other",
+                    "required": true
+                }
+            ]
+        },
+
+        "session_7B" : {
+            "label" : "綜合問項 - 車輛保養狀況",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.輪胎胎紋不足",
+                    "type" : "radio",
+                    "name" : "s7b_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.剎車不靈",
+                    "type" : "radio",
+                    "name" : "s7b_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "3.車輛失控",
+                    "type" : "radio",
+                    "name" : "s7b_combo_03",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "4.車輛照明不足",
+                    "type" : "radio",
+                    "name" : "s7b_combo_04",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "其他",
+                    "type" : "text",
+                    "name" : "s7b_text_other",
+                    "required": false
+                }
+            ]
+        },
+
+        "session_7C" : {
+            "label" : "綜合問項 - 其他",
+            "info" : "",
+            "class": "col-6 col-md-6 p-2 ",
+            "item" : [
+                {
+                    "label": "1.動物造成 (鳥、狗、貓衝出或被狗追)",
+                    "type" : "radio",
+                    "name" : "s7c_combo_01",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "2.蚊蟲造成 (如蚊蟲進到眼睛等)",
+                    "type" : "radio",
+                    "name" : "s7c_combo_02",
+                    "options" : [
+                        { "label" : "是" , "value" : "是" },
+                        { "label" : "否" , "value" : "否" }
+                    ],
+                    "required": true
+                },
+                {
+                    "label": "其他",
+                    "type" : "text",
+                    "name" : "s7c_text_other",
+                    "required": false
+                }
+            ]
+        },
+
+        "session_8" : {
+            "label": "事故分析",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
             "item" : [
                 {
                     "label": "事故直接原因",
                     "type" : "textarea",
-                    "name" : "direct_cause",
+                    "name" : "s8_direct_cause",
                     "required": true
                 },
                 {
                     "label": "事故間接原因",
                     "type" : "checkbox",
-                    "name" : "s5_combo_1",
+                    "name" : "s8_combo_02",
                     "options" : [
                         { "label" : "不安全行為" ,  "value" : {
                                                         "label": "不安全行為",
                                                         "type" : "text",
-                                                        "name" : "s5_combo_1",
+                                                        "name" : "s8_combo_02",
                                                         "info"  : "(unsafe behavior)",
                                                         "value": ""
                                                     },
@@ -305,7 +924,7 @@
                         { "label" : "不安全環境" , "value" : {
                                                         "label": "不安全環境",
                                                         "type" : "text",
-                                                        "name" : "s5_combo_1",
+                                                        "name" : "s8_combo_02",
                                                         "info"  : "(unsafe environment)",
                                                         "value": ""
                                                     },
@@ -318,7 +937,7 @@
                 {
                     "label": "事故基本原因",
                     "type" : "checkbox",
-                    "name" : "s5_combo_2",
+                    "name" : "s8_basic_reasons",
                     "options" : [
                         { "label" : "作業程序不完整或不適當"            , "value" : "作業程序不完整或不適當" },
                         { "label" : "工作紀律不良"                     , "value" : "工作紀律不良" },
@@ -336,614 +955,31 @@
                 {
                     "label": "基本原因說明",
                     "type" : "textarea",
-                    "name" : "basic_reasons",
+                    "name" : "s8_basic_reasons_remark",
                     "required": true
                 },
                 {
                     "label": "防範對策(矯正預防措施)說明",
                     "type" : "textarea",
-                    "name" : "preventive_measures",
+                    "name" : "s8_preventive_measures",
                     "required": true
-                }
-            ]
-        },
-
-        "session_6A" : {
-            "label" : "綜合問項 - 個人行為",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
+                },
                 {
-                    "label": "1.路況不熟",
-                    "type" : "radio",
-                    "name" : "s6a_combo_1",
+                    "label": "公傷假判定(由環安人員填寫)",
+                    "info" : "如環安判定為否時，需備註相關原因。",
+                    "type": "radio",
+                    "name" : "s8_combo_01",
                     "options" : [
                         { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
+                        { "label" : "否" , "value" : {
+                                                "label": "否：原因",
+                                                "type" : "text",
+                                                "name" : "s8_combo_01",
+                                                "value": "否：原因",
+                                                "only" : true
+                                                }}
                     ],
-                    "required": true
-                },
-                {
-                    "label": "2.開車/騎車使用行動裝置",
-                    "type" : "radio",
-                    "name" : "s6a_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.視線死角(或視線不清)",
-                    "type" : "radio",
-                    "name" : "s6a_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.急煞",
-                    "type" : "radio",
-                    "name" : "s6a_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "5.未保持安全車距",
-                    "type" : "radio",
-                    "name" : "s6a_combo_5",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                }
-            ]
-        },
-        "session_6B" : {
-            "label" : "綜合問項 - 身心狀況",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.精神不集中、分心",
-                    "type" : "radio",
-                    "name" : "s6b_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.疲倦、疲倦",
-                    "type" : "radio",
-                    "name" : "s6b_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.頭暈、暈眩",
-                    "type" : "radio",
-                    "name" : "s6b_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.身體不適 (如抽筋、手麻、低血糖、生病期間…等)",
-                    "type" : "radio",
-                    "name" : "s6b_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                }
-            ]
-        },
-        "session_6C" : {
-            "label" : "綜合問項 - 天候因素條件",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.環境昏暗，無法有效辨識環境狀況",
-                    "type" : "radio",
-                    "name" : "s6c_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.太陽眩光，影響視覺",
-                    "type" : "radio",
-                    "name" : "s6c_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.下雨天使道路濕滑積水",
-                    "type" : "radio",
-                    "name" : "s6c_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.強風",
-                    "type" : "radio",
-                    "name" : "s6c_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                }
-            ]
-        },
-        "session_6D" : {
-            "label" : "綜合問項 - 照明狀況",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.環境照明昏暗",
-                    "type" : "radio",
-                    "name" : "s6d_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.光線亮度驟變",
-                    "type" : "radio",
-                    "name" : "s6d_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.逆光 (如夕陽、早晨等)",
-                    "type" : "radio",
-                    "name" : "s6d_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                }
-            ]
-        },
-        
-        "session_7A" : {
-            "label" : "綜合問項 - 地面狀況",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.地面濕滑 (有水、有油漬)",
-                    "type" : "radio",
-                    "name" : "s7a_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.地面有異物(砂石、石頭、果殼或其他異物)",
-                    "type" : "radio",
-                    "name" : "s7a_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.地面積水",
-                    "type" : "radio",
-                    "name" : "s7a_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.地面高低差",
-                    "type" : "radio",
-                    "name" : "s7a_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "5.行駛地面材質差異 (水溝蓋、標線等)",
-                    "type" : "radio",
-                    "name" : "s7a_combo_5",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "6.地面破損",
-                    "type" : "radio",
-                    "name" : "s7a_combo_6",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "7.地上有減速墊",
-                    "type" : "radio",
-                    "name" : "s7a_combo_7",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "8.道路動線調整(修繕中)",
-                    "type" : "radio",
-                    "name" : "s7a_combo_8",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "9.動線不明確",
-                    "type" : "radio",
-                    "name" : "s7a_combo_9",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                }
-            ]
-        },
-        "session_7B" : {
-            "label" : "綜合問項 - 交通規則遵守情況",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.未依道路標示行駛",
-                    "type" : "radio",
-                    "name" : "s7b_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.未禮讓行人",
-                    "type" : "radio",
-                    "name" : "s7b_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.超速 (超過廠內速限)",
-                    "type" : "radio",
-                    "name" : "s7b_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.對方車輛未依規定停放",
-                    "type" : "radio",
-                    "name" : "s7b_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "5.對方車輛突然變換車道",
-                    "type" : "radio",
-                    "name" : "s7b_combo_5",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "6.人員造成(人員衝出)",
-                    "type" : "radio",
-                    "name" : "s7b_combo_6",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "7.其他",
-                    "type" : "text",
-                    "name" : "s7b_text_7",
-                    "required": true
-                }
-            ]
-        },
-        "session_7C" : {
-            "label" : "綜合問項 - 車輛保養狀況",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.輪胎胎紋不足",
-                    "type" : "radio",
-                    "name" : "s7c_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.剎車不靈",
-                    "type" : "radio",
-                    "name" : "s7c_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.車輛失控",
-                    "type" : "radio",
-                    "name" : "s7c_combo_3",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "4.車輛照明不足",
-                    "type" : "radio",
-                    "name" : "s7c_combo_4",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "5.其他",
-                    "type" : "text",
-                    "name" : "s7c_text_7",
-                    "required": false
-                }
-            ]
-        },
-        "session_7D" : {
-            "label" : "綜合問項 - 其他",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "1.動物造成 (鳥、狗、貓衝出或被狗追)",
-                    "type" : "radio",
-                    "name" : "s7d_combo_1",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "2.蚊蟲造成 (如蚊蟲進到眼睛等)",
-                    "type" : "radio",
-                    "name" : "s7d_combo_2",
-                    "options" : [
-                        { "label" : "是" , "value" : "是" },
-                        { "label" : "否" , "value" : "否" }
-                    ],
-                    "required": true
-                },
-                {
-                    "label": "3.其他",
-                    "type" : "text",
-                    "name" : "s7d_text_3",
-                    "required": false
-                }
-            ]
-        },
-
-        "session_8" : {
-            "label": "進階問項",
-            "info" : "",
-            "class": "col-6 col-md-6 p-2 ",
-            "item" : [
-                {
-                    "label": "籍別",
-                    "type" : "radio",
-                    "name" : "s8_combo_1",
-                    "options" : [
-                        { "label" : "本籍" , "value" : "本籍" },
-                        { "label" : "外籍" , "value" : "外籍" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "性別",
-                    "type" : "radio",
-                    "name" : "s8_combo_2",
-                    "options" : [
-                        { "label" : "男性" , "value" : "男性" },
-                        { "label" : "女性" , "value" : "女性" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "事發班別",
-                    "type" : "radio",
-                    "name" : "s8_combo_4",
-                    "options" : [
-                        { "label" : "日班"   , "value" : "日班"  },
-                        { "label" : "夜班"   , "value" : "夜班"  },
-                        { "label" : "常日班" , "value" : "常日班" }
-                    ],
-                    "negative": "無",
-                    "required": true
-                },
-                {
-                    "label": "事故時間",
-                    "type" : "radio",
-                    "name" : "s8_combo_5",
-                    "options" : [
-                        { "label" : "日間"   , "value" : "日間"  },
-                        { "label" : "夜間"   , "value" : "夜間"  }
-                    ],
-                    "negative": "無",
-                    "required": true
-                },
-                {
-                    "label": "年齡層",
-                    "type" : "radio",
-                    "name" : "s8_combo_3",
-                    "options" : [
-                        { "label" : "未滿18"    , "value" : "18d"    },
-                        { "label" : "18~未滿20" , "value" : "18u-20d" },
-                        { "label" : "20~未滿25" , "value" : "20u-25d" },
-                        { "label" : "25~未滿30" , "value" : "25u-30d" },
-                        { "label" : "30~未滿40" , "value" : "30u-40d" },
-                        { "label" : "40~未滿45" , "value" : "40u-45d" },
-                        { "label" : "45~未滿50" , "value" : "45u-50d" },
-                        { "label" : "50~未滿55" , "value" : "50u-55d" },
-                        { "label" : "55~未滿60" , "value" : "55u-60d" },
-                        { "label" : "60~未滿65" , "value" : "60u-65d" },
-                        { "label" : "65~未滿70" , "value" : "65u-70d" },
-                        { "label" : "70~未滿75" , "value" : "70u-75d" }
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "族群",
-                    "type" : "radio",
-                    "name" : "s8_combo_9",
-                    "options" : [
-                        { "label" : "主管"      , "value" : "主管" },
-                        { "label" : "工程師"    , "value" : "工程師" },
-                        { "label" : "PM"        , "value" : "PM"},
-                        { "label" : "技術員"    , "value" : "技術員" },
-                        { "label" : "其他"      , "value" : {
-                                                    "label": "其他",
-                                                    "type" : "text",
-                                                    "name" : "s8_combo_9",
-                                                    "value": "Other"
-                                                    }}
-                    ],
-                    "negative": "否",
-                    "required": true
-                },
-                {
-                    "label": "媒介物",
-                    "type" : "text",
-                    "name" : "s8_combo_7",
-                    "required": true
-                },
-                {
-                    "label": "是否參與工安實體教育訓練課程",
-                    "type" : "radio",
-                    "name" : "s8_combo_10",
-                    "options" : [
-                        { "label" : "是"   , "value" : "是"  },
-                        { "label" : "否"   , "value" : "否"  }
-                    ],
-                    "negative": "無",
-                    "required": true
-                },
-                {
-                    "label": "是否有調閱 CCTV",
-                    "type" : "radio",
-                    "name" : "s8_combo_11",
-                    "options" : [
-                        { "label" : "是"   , "value" : "是"  },
-                        { "label" : "否"   , "value" : "否"  }
-                    ],
-                    "negative": "無",
-                    "required": true
-                },
-                {
-                    "label": "損/限工",
-                    "type" : "radio",
-                    "name" : "s8_combo_8",
-                    "info" : "損工天數：以天計算； 限工時數：以小時計算。",
-                    "options" : [
-                        { "label" : "損工"   , "value" : {
-                                                    "label": "損工天數_以天計算",
-                                                    "type" : "number",
-                                                    "name" : "s8_combo_8",
-                                                    "value": "Other",
-                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
-                                                    "only" : true
-                                                },
-                            "class" : "other_item" },
-                        { "label" : "限工"   , "value" : {
-                                                    "label": "限工時數_以小時計算",
-                                                    "type" : "number",
-                                                    "name" : "s8_combo_8",
-                                                    "value": "Other",
-                                                    "limit": " min='0' oninput='if(value<0)value=0' ",
-                                                    "only" : true
-                                                },
-                            "class" : "other_item" }
-                    ],
-                    "negative": "無",
-                    "required": true
-                },
-                {
-                    "label": "受傷資訊",
-                    "type" : "textarea",
-                    "name" : "s8_textarea_a",
+                    "get_negative": "否",
                     "required": true
                 }
             ]

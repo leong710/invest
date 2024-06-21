@@ -656,10 +656,10 @@
     // 20240611 損工 = 隔月5日需要進行職災申報
     function confirm_odd($_content){
         // $_content = (array) json_decode($_content);                                  // 倒進來的是無編碼...所以不需要解碼
-        $s8_combo_8 = isset($_content["s8_combo_8"]) ? $_content["s8_combo_8"] : [];    // 取得損限工問項答案
+        $s4_combo_03 = isset($_content["s4_combo_03"]) ? $_content["s4_combo_03"] : []; // 取得損限工問項答案
         $result = [];
 
-        if(in_array("損工", $s8_combo_8)){
+        if(in_array("損工", $s4_combo_03)){
             $a_day = isset($_content["a_day"]) ? $_content["a_day"] : null;             // 事故發生日
             if($a_day !== null){
                 // $datetime_obj = DateTime::createFromFormat("Y-m-d\TH:i", $a_day);    // 创建 DateTime 对象，并指定原始时间格式
@@ -675,7 +675,7 @@
 
             $result = [
                 // 'a_day'=> $a_day,            // 事故發生日
-                // 'od'      => "職災申報",        // 判斷訊息
+                // 'od'   => "職災申報",         // 判斷訊息
                 'due_day' => $due_day,          // 申報截止日
                 'od_day'  => null               // 申報日期
             ];
