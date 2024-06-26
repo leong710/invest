@@ -53,7 +53,7 @@
     <div class="col-12">
         <div class="row justify-content-center">
             <div class="col-12 bg-white rounded my-2" id="main">
-        
+                <h3>這個是專門給表單做樞紐分析用的協助工具</h3>
                 <table id="caseList" class="table table-striped table-hover">
                     <thead>
                         <tr>
@@ -64,8 +64,6 @@
     
                     </tbody>
                 </table>
-
-        
             </div>
         </div>
     </div>

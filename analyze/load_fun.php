@@ -158,6 +158,75 @@
                     $result['error'] = 'Load '.$fun.' failed...(e)';
                 }
                 break;
+            case 'count':
+                if(isset($_short_name)){
+                    $pdo = pdo();
+                    $stmt_arr = array();    // 初始查詢陣列
+
+                    $_year       = !empty($_year)       ? $_year       : "";
+                    $_month      = !empty($_month)      ? $_month      : "";
+                    $short_name  = !empty($_short_name) ? $_short_name : "";
+                    $fab_id      = !empty($_fab_id)     ? $_fab_id     : "";
+                    $sfab_id     = !empty($_sfab_id)    ? $_sfab_id    : "";
+
+                    $sql = "SELECT _f.fab_title, _l.local_title, _fc.short_name , COUNT(*) as case_count , CONCAT(year(_d.created_at)) AS case_year
+                            FROM `_document` _d
+                            LEFT JOIN _fab _f ON _d.fab_id = _f.id
+                            LEFT JOIN _local _l ON _d.local_id = _l.id
+                            LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no ";
+                    // tidy query condition：
+                    if($_year != 'All'){
+                        $sql .= " WHERE (year(_d.created_at) = ? )";              // ? = $year
+                        array_push($stmt_arr, $_year);
+                    }
+                    if($_month != 'All'){
+                        $sql .= ($_year != "All" ? " AND ":" WHERE ") ;
+                        $sql .= " (month(_d.created_at) = ? )";                  // ? = $month
+                        array_push($stmt_arr, $_month);
+                    }
+                    if($fab_id != "All"){                                           // 處理 fab_id != All 進行二階   
+                        $sql .= ($_year != "All" || $_month != "All" ? " AND ":" WHERE ") ;
+                        if($fab_id == "allMy"){                                     // 處理 fab_id = allMy 我的轄區
+                            $sql .= " _d.fab_id IN ({$sfab_id}) ";
+                        }else{                                                      // 處理 fab_id != allMy 就是單點fab_id
+                            $sql .= " _d.fab_id = ? ";
+                            array_push($stmt_arr, $fab_id);
+                        }
+                    }                                                               // 處理 fab_id = All 就不用套用，反之進行二階
+                    if($short_name != "All"){                                        // 處理過濾 short_name != All  
+                        $sql .= ($_year != "All" || $_month != "All" || $fab_id != "All" ? " AND ":" WHERE ") ;
+                        $sql .= " _fc.short_name = ? ";                             // 查詢條件 short_name
+                        array_push($stmt_arr, $short_name);
+                    }
+                    // 後段-堆疊查詢語法：加入排序
+                    $sql .= " GROUP BY _d.fab_id, _d.local_id, _fc.short_name 
+                             ORDER BY _d.fab_id, _d.local_id, case_count DESC ";     //ORDER BY _d.fab_id, _d.local_id, _d.a_dept, case_count DESC
+
+                    $stmt = $pdo->prepare($sql);
+                    try {
+                        if(($_year != 'All') || ($_month != 'All') || (($fab_id != "All") && ($fab_id != "allMy")) || ($short_name != "All")){
+                            $stmt->execute($stmt_arr);                          //處理 byUser & byYear
+                        }else{
+                            $stmt->execute();                                   //處理 byAll
+                        }
+
+                        $caseList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // 製作返回文件
+                        $result = [
+                            'result_obj' => $caseList,
+                            'fun'        => $fun,
+                            'success'    => 'Load '.$fun.' success.'
+                        ];
+                    }catch(PDOException $e){
+                        echo $e->getMessage();
+                        $result['error'] = 'Load '.$fun.' failed...(e)';
+                    }
+
+                }else{
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                }
+                break;
         };
 
         if(isset($result["error"])){
@@ -172,15 +241,4 @@
         echo json_encode(['error' => 'fun is lost.']);
     }
 
-
-
-    $sql =" SELECT _d.id, _d.uuid, _d.idty, _d.anis_no, _d.local_id, _d.case_title, _d.a_dept, _d.meeting_time, _d.meeting_local, _odd
-                , _d.created_emp_id, _d.created_cname, _d.created_at, _d.updated_cname, _d.updated_at, year(_d.created_at) AS case_year , _d.confirm_sign
-                , _l.local_title, _l.local_remark , _f.fab_title, _f.fab_remark, _f.sign_code AS fab_signCode, _f.pm_emp_id, _fc.short_name, _fc._icon
-            FROM _document _d
-            LEFT JOIN _local _l     ON _d.local_id = _l.id 
-            LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
-            LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no  
-            WHERE (year(_d.created_at) = ? ) AND  (month(_d.created_at) = ? ) AND  _d.fab_id = ?  AND  _fc.short_name = ?  
-            ORDER BY _d.created_at DESC";
 ?>

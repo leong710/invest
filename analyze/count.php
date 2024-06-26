@@ -127,8 +127,8 @@
                 <!-- NAV分頁標籤與統計 -->
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
-                        <li class="nav-item"><a class="nav-link "           href="count.php">案件統計</span></a></li>
-                        <li class="nav-item"><a class="nav-link active"     href="index.php">訪談內容統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link active"   href="count.php">案件統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link "         href="index.php">訪談內容統計</span></a></li>
                     </ul>
                 </div>
                 
@@ -161,6 +161,7 @@
                                 <select name="_short_name" id="_short_name" class="form-select" >
                                     <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
                                     <?php 
+                                        echo "<option for='_short_name' value='All' ".(($_short_name == "All") ? " selected":"" )." >-- 全問卷類型 / All --</option>";
                                         foreach($shortName_lists as $shortName){
                                             echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
                                             echo ($shortName["short_name"] == $_short_name ? " selected" : "" )." >".$shortName["short_name"]."</option>";
@@ -170,7 +171,7 @@
                                 <select name="_fab_id" id="_fab_id" class="form-select" >
                                     <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
                                     <?php 
-                                        echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").($sys_role >= "0" ? " disabled":"" ).' >-- All 所有棟別 --</option>';
+                                        echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").' >-- All 所有棟別 --</option>';
                                         echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? " selected":"");
                                         echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
                                         foreach($fab_lists as $fab){
@@ -188,7 +189,7 @@
                                     ?>
                                 </select>
                                 
-                                <button type="button" class="btn btn-outline-secondary search_btn" value="caseList" id="search_btn">&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
+                                <button type="button" class="btn btn-outline-secondary search_btn" value="count" id="search_btn">&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
 
                             </div>
                         </div>
@@ -204,7 +205,8 @@
                                 </form>
                             </div>
                         </div>
-
+                        <!-- Bootstrap Alarm -->
+                        <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
                     </div>
                     <table id="caseList" class="table table-striped table-hover">
                         <thead>
@@ -219,12 +221,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Bootstrap Alarm -->
-    <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
-    <div id="gotop">
-        <i class="fas fa-angle-up fa-2x"></i>
     </div>
 </body>
 <script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->

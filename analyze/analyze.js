@@ -35,10 +35,11 @@
         toast.show();
     }
 
-
+    // 監聽BTN
     async function eventListener(){
         return new Promise((resolve) => { 
             document.getElementById('search_btn').addEventListener('click', function() {
+                const btn_value = this.value;
                 const queryItem = document.getElementById('query_item');
                 const selects = queryItem.getElementsByTagName('select');
                 const queryItem_obj = {};
@@ -50,17 +51,17 @@
                         queryItem_obj[select.name] = select.value;
                     }
                 }
-                loadData(queryItem_obj);
+                loadData(btn_value, queryItem_obj);
             });
             resolve(); // 文件載入成功，resolve
         });
     }
-
+    // 主功能1.抓資料
     async function load_fun(fun, parm, myCallback) {                // parm = 參數
-        // console.log('fun: load_fun...', fun, parm);
+        // console.log('fun: load_fun...', fun, parm, myCallback);
         return new Promise((resolve, reject) => {
             let formData = new FormData();
-            let fun_temp = (parm['_get_dccNo'] === true ) ? 'caseList' : fun;
+            let fun_temp = (parm['_get_dccNo'] !== undefined && parm['_get_dccNo'] === true ) ? 'caseList' : fun;
             formData.append('fun', fun_temp);
             // 主要for doc多參數
                 if (typeof parm === 'object') {
@@ -86,13 +87,13 @@
             xhr.send(formData);
         });
     }
-
+    // 主功能2.渲染/鋪設
     async function gain_bigData(fun, gain_obj){
         switch(fun){
-            case 'form':
+            case 'form':        // 鋪設DCC表單
                 // console.log('fun: gain_bigData...form:' , fun , gain_obj);
                 $('#main table tbody').empty();
-                $('#main table thead tr').empty().append('<th>'+'label / name'+'</th>')
+                $('#main table thead tr').empty().append('<th>'+'label / name'+'</th>');
                 for (const [key, value] of Object.entries(gain_obj)) {
                     if (typeof value === 'object') {
                         for (const [o_key, o_value] of Object.entries(value)){
@@ -117,7 +118,7 @@
                 }
                 break;
 
-            case 'document':
+            case 'document':    // 鋪設doc內容
                 // console.log('fun: gain_bigData...document:' , fun , gain_obj);
                 // 表頭標題
                         $('#main table thead tr').append('<th>'+gain_obj.anis_no+'</th>');
@@ -155,19 +156,38 @@
                     }
                 })
                 break;
-                
+            case 'count':
+                $('#main table tbody').empty();
+                $('#main table thead tr').empty().append('<th>'+'fab'+' / '+'local'+'</th><th>'+'short_name'+'</th><th>'+'count'+'</th>');
+
+                Object(gain_obj).forEach((obj)=>{
+                        console.log(obj);
+                        let innerText = '<td>'+obj['fab_title']+' / '+obj['local_title']+'</td><td>'+obj['short_name']+'</td><td>'+obj['case_count']+'</td>';
+                        $('#main table tbody').append('<tr>'+ innerText +'</tr>');
+                    // // 建立統計資料
+                    // if(doc_key.match("_combo_")){
+
+                    //     if (!doc_keys[doc_key]['value']) {
+                    //         doc_keys[doc_key]['value'] = {};
+                    //     }
+                    //     doc_keys[doc_key]['value'][value] = (doc_keys[doc_key]['value'][value] || 0) + 1;
+                    // }
+                })
+
+                break;
             default :
                 throw new Error(`Unknown function: ${fun}`);
         }
     }
-    // step1:
+
+    // step1:   load+鋪設DCC表單
     async function get_dccNo(fun, gain_obj){
         if(doc_keys.length == 0 && gain_obj['dcc_no'] !== undefined) {
             let dcc_no = gain_obj['dcc_no'];
             await load_fun('form', dcc_no, gain_bigData);             // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
         }
     }
-    // step2:
+    // step2:   load+鋪設doc文件
     async function caseList(fun, gain_obj){
         const promises = gain_obj.map(async (_doc) => {
             let uuid = _doc['uuid'];
@@ -175,7 +195,7 @@
         });
         await Promise.all(promises);  // 確保所有文檔加載完成
     }
-    // step3:
+    // step3:   鋪設最後統計
     async function analyze(gain_obj){
         // console.log('fun: analyze...', gain_obj);
         $('#main table thead tr').append('<th>'+'- 統計 -'+'</th>');
@@ -206,16 +226,24 @@
     }
 
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
-    async function loadData(query_obj) {
+    async function loadData(fun_value, query_obj) {
         try {
-                
-            query_obj['_get_dccNo'] = true;
-            await load_fun('get_dccNo', query_obj, get_dccNo);
-            
-            delete query_obj['_get_dccNo'];
-            await load_fun('caseList', query_obj, caseList);
-            
-            await analyze(doc_keys);
+
+            switch(fun_value){
+                case 'count':
+                    query_obj['_get_dccNo'] = false;
+                    await load_fun(fun_value, query_obj, gain_bigData);
+
+                    break;
+                default:
+                    query_obj['_get_dccNo'] = true;
+                    await load_fun('get_dccNo', query_obj, get_dccNo);
+                    
+                    delete query_obj['_get_dccNo'];
+                    await load_fun('caseList', query_obj, caseList);
+                    
+                    await analyze(doc_keys);
+            }
 
         } catch (error) {
             console.error(error);
