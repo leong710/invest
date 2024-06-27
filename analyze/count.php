@@ -115,7 +115,7 @@
             margin-top: 10px;
         }
         table tbody tr td{
-            text-align: left;
+            /* text-align: left; */
             /* padding: 1.5em; */
         }
     </style>
@@ -123,7 +123,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col_xl_11 col-12 rounded pb-3" style="background-color: rgba(255, 255, 255, .8);">
+            <div class="col_xl_8 col-8 rounded pb-3" style="background-color: rgba(255, 255, 255, .8);">
                 <!-- NAV分頁標籤與統計 -->
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">

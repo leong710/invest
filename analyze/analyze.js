@@ -161,7 +161,7 @@
                 $('#main table thead tr').empty().append('<th>'+'fab'+' / '+'local'+'</th><th>'+'short_name'+'</th><th>'+'count'+'</th>');
 
                 Object(gain_obj).forEach((obj)=>{
-                        console.log(obj);
+                        // console.log(obj);
                         let innerText = '<td>'+obj['fab_title']+' / '+obj['local_title']+'</td><td>'+obj['short_name']+'</td><td>'+obj['case_count']+'</td>';
                         $('#main table tbody').append('<tr>'+ innerText +'</tr>');
                     // // 建立統計資料

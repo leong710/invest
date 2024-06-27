@@ -56,7 +56,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-8 border rounded px-3 py-5 bg-light" >
+            <div class="col-10 border rounded px-3 py-5 bg-light" >
                 <div class="row" id="btn_list">
                     <!-- append button here -->
                 </div>
@@ -134,7 +134,7 @@
     var formcases = <?=json_encode($formcases)?>;   // 取得表單清單
     var formcases_length = formcases.length;
     var icon_s = '<i class="';
-    var icon_e = ' fa-10x"></i>';
+    var icon_e = ' fa-8x"></i>';
 
     function make_btn(value_1){
         if(value_1.dcc_no){
@@ -147,14 +147,19 @@
     }
 
     $(function () {
-        if(formcases){                                                                          // confirm form_item is't empty
+        if(formcases){   
+            // console.log(formcases_length, formcases_length % 3);                                                                       // confirm form_item is't empty
             for (const [key_1, value_1] of Object.entries(formcases)) {
-                if(formcases_length % 3 == 0){
-                    int_btn = '<div class="col-6 col-md-4 text-center p-2 ">' + make_btn(value_1) + '</div>';
-                }else if(formcases_length % 2 == 0){
-                    int_btn = '<div class="col-6 col-md-6 text-center p-2 ">' + make_btn(value_1) + '</div>';
-                }else{
+                let int_btn;
+                if (formcases_length === 1) {
                     int_btn = '<div class="col-12 text-center p-2">' + make_btn(value_1) + '</div>';
+                } else if (formcases_length === 2) {
+                    int_btn = '<div class="col-6 text-center p-2">' + make_btn(value_1) + '</div>';
+                } else if (formcases_length === 3) {
+                    int_btn = '<div class="col-4 text-center p-2">' + make_btn(value_1) + '</div>';
+                } else {
+                    // 如果formcases_length大於4，則每個元素佔用1/4的寬度
+                    int_btn = '<div class="col-4 text-center p-2">' + make_btn(value_1) + '</div>';
                 }
                 // 渲染form
                 $('#btn_list').append(int_btn);    

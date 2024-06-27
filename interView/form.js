@@ -376,7 +376,6 @@
                         // if (negative_opts.includes(rdo)) {       // 原本是過濾點選事件是否為[負向選項]，取消原因是要讓非[負向選項]也可以進行滾算
                             // 计算 negative_arr 数组
                             negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
-                            console.log('negative_arr:', negative_arr);
                         // }
                         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
                         get_negatives.forEach((get_n) => {
@@ -514,6 +513,24 @@
                 });
 
             });
+        });
+
+    }
+    // 240627 更新correspond對應選項功能
+    function reflesh_correspond(target_class){
+        // 获取target_class的所有radio按钮
+        const radios = document.querySelectorAll('input[name="'+target_class+'[]"]');
+        
+        // 遍历radio按钮，找到选中的那一个
+        let this_flag = null;
+        radios.forEach(radio => {
+            if (radio.checked) {
+                this_flag = radio.getAttribute('flag'); // 用.getAttribute('flag')取得自訂
+            }
+        });
+        document.querySelectorAll("." + this_flag).forEach((selectedElement) => {
+            // selectedElement.removeAttribute('hidden'); 
+            selectedElement.hidden = false;
         });
     }
     // 240614 chooseBoth以上皆是功能
@@ -659,9 +676,9 @@
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
                           + ' class="form-check-input ' + item_a.name  
                             + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
-                            + ((item_a.negative != undefined && item_a.negative == object_type) ? ' negative ' : '') 
-                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
-                            + '" ' + ((option.flag  != undefined) ? 'flag="'+option.flag+'"' : '')
+                            + ((item_a.negative !== undefined && item_a.negative == object_type) ? ' negative ' : '') 
+                            + ((item_a.get_negative !== undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
+                            + '" ' + ((option.flag  !== undefined) ? 'flag="'+option.flag+'"' : '')
                           + ' >' + '<label class="form-check-label '
                             + ((item_a.negative != undefined && item_a.negative == object_type) ? ' negative ' : '') 
                             + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
@@ -750,8 +767,12 @@
         if(item_a.chooseBoth !== undefined){                // 240614 判斷是否需要以上皆是
             eventListener_chooseBoth(item_a.name, item_a.chooseBoth);
         };
-        if(item_a.lock_opt !== undefined){                // 240614 判斷是否需要lock option
-            lock_opt(item_a.name, item_a.lock_opt);
+        if(item_a.lock_opt !== undefined){                  // 240614 判斷是否需要lock option
+            if(item_a.lock_opt == ""){
+                reflesh_correspond(item_a.correspond);      // 240627 更新correspond對應選項功能
+            }else{
+                lock_opt(item_a.name, item_a.lock_opt );
+            }
         };
 
     }
@@ -1088,4 +1109,3 @@
         loadData();
 
     })
-

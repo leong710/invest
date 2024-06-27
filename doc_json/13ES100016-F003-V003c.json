@@ -208,7 +208,6 @@
                     "type" : "radio",
                     "name" : "s2_combo_07",
                     "options" : [
-                        { "flag" : "AA" , "label" : "人員受傷"                 , "value" : "人員受傷" },
                         { "flag" : "AB" , "label" : "財產損失(含承攬商支付)"   , "value" : "財產損失(含承攬商支付)" },
                         { "flag" : "AC" , "label" : "生產中斷"                 , "value" : "生產中斷" },
                         { "flag" : "AD" , "label" : "緊急應變小組"             , "value" : "緊急應變小組" },
@@ -219,7 +218,8 @@
                         { "flag" : "AI" , "label" : "外部影響"                 , "value" : "外部影響" },
                         { "flag" : "AJ" , "label" : "環保事件"                 , "value" : "環保事件" },
                         { "flag" : "AK" , "label" : "職業相關疾病"             , "value" : "職業相關疾病" },
-                        { "flag" : "AL" , "label" : "其他"                     , "value" : "其他" }
+                        { "flag" : "AL" , "label" : "其他"                     , "value" : "其他" },
+                        { "flag" : "AA" , "label" : "人員受傷"                 , "value" : "人員受傷" }
                     ],
                     "lock_opt" : "其他",
                     "required" : true
@@ -251,44 +251,37 @@
                         ]},
                         { "label" : "AC" , "value" : [
                             { "label" : "AC_01" , "value" : "01.無塵室全員疏散或製造廠產線停止生產" }
-
                         ]},
                         { "label" : "AD" , "value" : [
                             { "label" : "AD_01" , "value" : "01.未啟動緊急應變小組處理事故" },
                             { "label" : "AD_02" , "value" : "02.啟動緊急應變小組處理事故" }
-
                         ]},
                         { "label" : "AE" , "value" : [
                             { "label" : "AE_01" , "value" : "01.廠區火災" },
                             { "label" : "AE_02" , "value" : "02.宿舍火災" },
                             { "label" : "AE_03" , "value" : "03.正負壓力過大爆炸" },
                             { "label" : "AE_04" , "value" : "04.化學反應造成壓力過大爆炸" }
-
                         ]},
                         { "label" : "AF" , "value" : [
                             { "label" : "AF_01" , "value" : "01.火警(設備原件毀損導致冒煙)" },
                             { "label" : "AF_02" , "value" : "02.由火種危害因子導致之冒煙事件" },
                             { "label" : "AF_03" , "value" : "03.其他冒煙事件" }
-
                         ]},
                         { "label" : "AG" , "value" : [
                             { "label" : "AG_01" , "value" : "01.人員曝露異常劑量" },
                             { "label" : "AG_02" , "value" : "02.作業環境檢測輻射異常劑量率" },
                             { "label" : "AG_03" , "value" : "03.放射性物質/放射源遺失或遭竊或劑量計遺失、損毀或污染致無劑量計紀錄者" },
                             { "label" : "AG_04" , "value" : "04.其他" }
-
                         ]},
                         { "label" : "AH" , "value" : [
                             { "label" : "AH_01" , "value" : "01.漏水" },
                             { "label" : "AH_02" , "value" : "02.液態化學品洩漏" },
                             { "label" : "AH_03" , "value" : "03.廢液洩漏" },
                             { "label" : "AH_04" , "value" : "04.氣態化學品洩漏" }
-
                         ]},
                         { "label" : "AI" , "value" : [
                             { "label" : "AI_01" , "value" : "01.政府主管機關開立罰單" },
                             { "label" : "AI_02" , "value" : "02.民眾或環保團體等直接至廠區抗爭、抗議或圍廠" }
-
                         ]},
                         { "label" : "AJ" , "value" : [
                             { "label" : "AJ_01" , "value" : "01.空污排放" },
@@ -299,7 +292,6 @@
                             { "label" : "AJ_06" , "value" : "06.廢棄物貯存未依環保許可操作或未符合法規要求" },
                             { "label" : "AJ_07" , "value" : "07.『毒性』化學物質異常洩漏造達法令通報標準" },
                             { "label" : "AJ_08" , "value" : "08.無法歸類者" }
-
                         ]},
                         { "label" : "AK" , "value" : [
                             { "label" : "AK_01" , "value" : "01.人因性危害" },
@@ -311,22 +303,21 @@
                             { "label" : "AK_07" , "value" : "07.扭傷" },
                             { "label" : "AK_08" , "value" : "08.法定傳染病" },
                             { "label" : "AK_09" , "value" : "09.無法歸類者" }
-
                         ]},
                         { "label" : "AL" , "value" : [
                             { "label" : "AL_01" , "value" : "01.設備異常" },
-                            { "label" : "AL_02" , "value" : "02.廠內交通事故" },
-                            { "label" : "AL_03" , "value" : "03.生活性工傷" },
-                            { "label" : "AL_04" , "value" : "04.火警系統受環境干擾" },
-                            { "label" : "AL_05" , "value" : "05.偵測器故障/老化/劣化造成之火警誤警報" },
-                            { "label" : "AL_06" , "value" : "06.毒氣系統受環境干擾(如使用溶劑造成 Gas detector 警報)" },
-                            { "label" : "AL_07" , "value" : "07.偵測器故障/老化/劣化造成之毒氣誤警報" },
-                            { "label" : "AL_08" , "value" : "08.漏液系統受干擾(如被重物壓到)" },
-                            { "label" : "AL_09" , "value" : "09.漏液偵測故障造成之漏液誤警報" }
+                            { "label" : "AL_02" , "value" : "02.火警系統受環境干擾" },
+                            { "label" : "AL_03" , "value" : "03.偵測器故障/老化/劣化造成之火警誤警報" },
+                            { "label" : "AL_04" , "value" : "04.毒氣系統受環境干擾(如使用溶劑造成 Gas detector 警報)" },
+                            { "label" : "AL_05" , "value" : "05.偵測器故障/老化/劣化造成之毒氣誤警報" },
+                            { "label" : "AL_06" , "value" : "06.漏液系統受干擾(如被重物壓到)" },
+                            { "label" : "AL_07" , "value" : "07.漏液偵測故障造成之漏液誤警報" },
+                            { "label" : "AL_08" , "value" : "08.廠內交通事故" },
+                            { "label" : "AL_09" , "value" : "09.生活性工傷" }
                         ]}
                     ],
                     "correspond":"s2_combo_07",
-                    "lock_opt"  : "03.生活性工傷",
+                    "lock_opt"  : "09.生活性工傷",
                     "required"  : true
                 }
             ]
@@ -347,7 +338,7 @@
                 },
                 {
                     "label": "上傳圖檔 <sup class='text-primary'> (限傳 jpg、png、gif、bmp)</sup>",
-                    "info" : "事故位置簡圖，描繪路線並標出 1.就業場所 2.日常居住處所 3.上下班應經途徑 4.事故地點",
+                    "info" : "事故簡圖",
                     "type" : "file",
                     "name" : "a_pic",
                     "class": "",
@@ -838,7 +829,7 @@
                     "required": true
                 },
                 {
-                    "label": "公傷假判定(由環安人員填寫)",
+                    "label": "公傷判定(由環安人員填寫)",
                     "info" : "如環安判定為否時，需備註相關原因。",
                     "type": "radio",
                     "name" : "s8_combo_01",
