@@ -698,6 +698,22 @@
                             int_a += option.value.limit;
                         }
                         int_a += ' >';
+                        
+                    }else if (typeof option.value === 'object' && option.value.type == 'select') {
+                        int_a += '<div class="p-1">';
+                        int_a += '<select name="' + option.value.name + '[]" id="' + item_a.name + '_' + option.label + '_o" class="form-select unblock" disabled >'
+                                + '<option value="" hidden>-- [請選擇 ' + item_a.label + '] --</option>' 
+                        Object(option.value.options).forEach((option)=>{
+                            if (typeof option.value === 'object') {
+                                Object(option.value).forEach((key_value)=>{
+                                    int_a += '<option value="'+key_value['value']+'" class="'+option.label + ((item_a.correspond != undefined) ? ' correspond' : '')+'" >'
+                                        + key_value['value'] + '</option>' 
+                                } )
+                            }else {
+                                int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.value+'</option>' 
+                            }
+                        }) 
+                        int_a += '</select>'+'</div>';
                     }
                 }) 
                 int_a += '</div>';
@@ -705,7 +721,7 @@
             case 'select':
                 int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
                 int_a += '<select name="'+item_a.name+'" id="'+item_a.name+'" class="form-select" >'
-                      + '<option value="" hidden>-- [請選擇 災害類型] --</option>' 
+                      + '<option value="" hidden>-- [請選擇 ' + item_a.label + '] --</option>' 
 
                 Object(item_a.options).forEach((option)=>{
                     if (typeof option.value === 'object') {

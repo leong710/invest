@@ -128,6 +128,7 @@
                         if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)) {
                             value = value.replace('T', ' ');
                         }
+                        console.log(doc_key, value);
                         
                         let innerText = '';
                         if (typeof value === 'object') {
@@ -136,7 +137,7 @@
                             // } 
                             innerText = Object.values(value).join('</br>');
                         }else{
-                            innerText = (value !== undefined) ? value : '- NA -'; 
+                            innerText = (value !== undefined && value !== null) ? value : '- NA -'; 
                         }
                         $('#main table tbody tr[id="'+ doc_key +'"]').append('<td>'+ innerText +'</td>');
                     // 建立統計資料
