@@ -59,7 +59,22 @@
         }
     }
 
-    
+    function show_site_lists(){
+        $pdo = pdo();
+        $sql = "SELECT _site.id, _site.site_title, _site.site_remark, _site.flag
+                FROM _site
+                -- WHERE _fab.flag = 'On' AND _site.flag = 'On'
+                ORDER BY _site.id ASC ";
+        $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
+        try {
+            $stmt->execute();
+            $site = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $site;
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }
+
     function show_fab_lists(){
         $pdo = pdo();
         $sql = "SELECT _fab.*, _site.site_title, _site.site_remark, _site.flag AS site_flag

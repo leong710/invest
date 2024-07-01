@@ -129,6 +129,7 @@
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link "           href="count.php">案件統計</span></a></li>
                         <li class="nav-item"><a class="nav-link active"     href="index.php">訪談內容統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link "           href="test.php">test案件統計</span></a></li>
                     </ul>
                 </div>
                 
@@ -137,7 +138,7 @@
                     <!-- Hear：H -->
                     <div class="row">
                         <!-- H：sort/groupBy function -->
-                        <div class="col-md-10 pb-0">
+                        <div class="col-md-10 pb-2">
                             <div class="input-group" id="query_item">
                                 <span class="input-group-text">篩選</span>
 
@@ -194,7 +195,7 @@
                         </div>
 
                         <!-- H：Button -->
-                        <div class="col-md-2 pb-0 text-end inb">
+                        <div class="col-md-2 pb-2 text-end inb">
                             <div class="inb">
                                 <!-- H：downLoad Excel -->
                                 <form id="myForm" method="post" action="../_Format/download_excel.php">

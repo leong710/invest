@@ -4,6 +4,30 @@
         extract($_REQUEST);
         $result = [];
         switch ($_REQUEST['fun']){
+            case 'combo':
+                if(isset($parm)) {
+                    $doc_no     = $parm;
+                    $combo      = $doc_no.".json";
+                    if(file_exists($combo)){
+                        // 从 JSON 文件加载内容
+                        $combo_json = file_get_contents($combo);
+                        // 解析 JSON 数据并将其存储在 $form_a_json 变量中
+                        $combo_json = (array) json_decode($combo_json, true);     // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+                        // 製作返回文件
+                        $result = [
+                                'result_obj' => $combo_json,
+                                'fun'        => $fun,
+                                'success'    => 'Load '.$fun.' success.'
+                            ];
+                    }else{
+                        $result['error'] = 'Load '.$fun.' failed...(file not exist)';
+                    }
+                    
+                } else {
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                }
+                break;
+
             case 'form':
                 if(isset($parm)) {
                     $dcc_no = $parm;

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with Selects</title>
+    <style>
+        .inb {
+            display: inline-block;
+            margin-right: 10px; /* 添加一点间距 */
+        }
+        .inf {
+            display: inline-flex;
+            text-align: left; /* 确保内容左对齐 */
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tbody>
+            <tr>
+                <td>廠區/廠別/棟別</td>
+                <td class="inf">
+                    <select name="_fab_id" id="_fab_id" class="form-select inb">
+                        <option value="" hidden selected>-- 請選擇 Fab --</option>
+                    </select>
+                    <select name="_sfab_id" id="_sfab_id" class="form-select inb">
+                        <option value="" hidden selected>-- 請選擇 sFab --</option>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -128,14 +128,15 @@
                         if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)) {
                             value = value.replace('T', ' ');
                         }
-                        console.log(doc_key, value);
+                        // console.log(doc_key, value);
                         
                         let innerText = '';
                         if (typeof value === 'object') {
                             // for (const [o_key, o_value] of Object.entries(value)){
                             //     innerText += (innerText == '') ? o_value : '</br>'+ o_value;
                             // } 
-                            innerText = Object.values(value).join('</br>');
+                            // innerText = Object.values(value).join('</br>');
+                            innerText = (value !== undefined && value !== null) ? Object.values(value).join('</br>') : '- NA -</br>'; 
                         }else{
                             innerText = (value !== undefined && value !== null) ? value : '- NA -'; 
                         }

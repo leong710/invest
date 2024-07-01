@@ -137,7 +137,7 @@
                     <!-- Hear：H -->
                     <div class="row">
                         <!-- H：sort/groupBy function -->
-                        <div class="col-md-10 pb-0">
+                        <div class="col-md-10 pb-2">
                             <div class="input-group" id="query_item">
                                 <span class="input-group-text">篩選</span>
 
@@ -195,7 +195,7 @@
                         </div>
 
                         <!-- H：Button -->
-                        <div class="col-md-2 pb-0 text-end inb">
+                        <div class="col-md-2 pb-2 text-end inb">
                             <div class="inb">
                                 <!-- H：downLoad Excel -->
                                 <form id="myForm" method="post" action="../_Format/download_excel.php">
@@ -205,8 +205,7 @@
                                 </form>
                             </div>
                         </div>
-                        <!-- Bootstrap Alarm -->
-                        <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
+
                     </div>
                     <table id="caseList" class="table table-striped table-hover">
                         <thead>
@@ -221,6 +220,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- Bootstrap Alarm -->
+    <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
+    <div id="gotop">
+        <i class="fas fa-angle-up fa-2x"></i>
     </div>
 </body>
 <script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
