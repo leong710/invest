@@ -7,7 +7,7 @@
             case 'combo':
                 if(isset($parm)) {
                     $doc_no     = $parm;
-                    $combo      = $doc_no.".json";
+                    $combo      = "../doc_json/".$doc_no.".json";
                     if(file_exists($combo)){
                         // 从 JSON 文件加载内容
                         $combo_json = file_get_contents($combo);

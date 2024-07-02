@@ -7,12 +7,9 @@
     // default fab_scope
     $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";    // All :allMy
     // tidy query condition：
-        $_site_id    = (isset($_REQUEST["_site_id"]))    ? $_REQUEST["_site_id"]    : "";           // 問卷site
-        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
-        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "";           // 問卷類別
-    // tidy sign_code scope 
-        $sfab_id_str     = get_coverFab_lists("str");   // get signCode的管理轄區
-        $sfab_id_arr     = explode(',', $sfab_id_str);  // 將管理轄區字串轉陣列
+        $_site_id    = (isset($_REQUEST["_site_id"]))    ? $_REQUEST["_site_id"]    : "";   // 問卷site
+        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : "";   // 問卷fab
+        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "";   // 問卷類別
 
     // for select item
         $site_lists      = show_site_lists();           // get site清單
@@ -133,7 +130,7 @@
                                                 echo "<option for='_site_id' value='{$site["id"]}' ". ($site["id"] == $_site_id ? " selected" : "" );
                                                 echo ($site["flag"] == "Off" ? " disabled" : "" ) ;
                                                 echo " >";
-                                                echo $site["id"]."：".$site["site_title"]."( ".$site["site_remark"]." )"; 
+                                                echo $site["site_title"]."( ".$site["site_remark"]." )"; 
                                                 echo ($site["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
                                             } ?>
                                     </select>
@@ -142,14 +139,10 @@
                                         <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
                                         <?php 
                                             echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").' >-- All 所有棟別 --</option>';
-                                            if($sfab_id_str){
-                                                echo '<option for="_fab_id" value="'.($sfab_id_str ? $sfab_id_str : "").'" selected ';
-                                                echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
-                                            }
                                             foreach($fab_lists as $fab){
                                                 echo "<option for='_fab_id' value='{$fab["id"]}' ";
                                                 echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
-                                                echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                                echo $fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
                                                 echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
                                             } ?>
                                     </select>
@@ -159,15 +152,14 @@
                             <tr>
                                 <td>anis_no / 申請單號：</td>
                                 <td class="inf">
-                                    <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --">
-                                    <div class="invalid-feedback" id="anis_no_feedback">編號填入錯誤 ~ (大寫ANIS+數字流水號共21碼)</div>
+                                    <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --"
+                                            maxlength="21" oninput="if(value.length>21)value=value.slice(0,21)" >
                                 </td>
                             </tr>
                             <tr>
                                 <td>created_emp_id / 申請人員：</td>
                                 <td class="inf">
                                     <input type="text" name="created_emp_id" id="created_emp_id" class="form-control" placeholder="-- 申請人員工號 --">
-
                                 </td>
                             </tr>
                             <tr>
@@ -186,18 +178,25 @@
                             </tr>
                             <tr>
                                 <td>idty / 結案狀態：</td>
-                                <td class="inf">
-                                    <select name="idty" id="idty" class="form-select">
-                                        <option value="" hidden selected >-- 請選擇 結案狀態 --</option>
-                                        <option value="10" >結案</option>
-                                        <option value="6" >暫存</option>
-                                    </select>
+                                <td class="inf px-3">
+                                    <div class="form-check px-3">
+                                        <input type="radio" name="idty" id="idty_10" value="10" class="form-check-input" checked>
+                                        <label for="idty_10" class="form-check-label">結案</label>
+                                    </div>
+                                    <div class="form-check px-3">
+                                        <input type="radio" name="idty" id="idty_6" value="6" class="form-check-input">
+                                        <label for="idty_6" class="form-check-label">暫存</label>
+                                    </div>
+                                    <div class="form-check px-3">
+                                        <input type="radio" name="idty" id="idty_All" value="All" class="form-check-input" >
+                                        <label for="idty_All" class="form-check-label">All</label>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>s2_combo_07 / 事故分類：</td>
                                 <td class="inf">
-                                    <select name="s2_combo_07" id="s2_combo_07" class="form-select" >
+                                    <select name="s2_combo_07" id="s2_combo_07" class="form-select" disabl>
                                         <option value="" hidden selected >-- 請選擇 事故類型 --</option>
                                     </select>
                                 </td>
@@ -205,7 +204,7 @@
                             <tr>
                                 <td>s2_combo_08 / 災害類型：</td>
                                 <td class="inf">
-                                    <select name="s2_combo_08" id="s2_combo_08" class="form-select" >
+                                    <select name="s2_combo_08" id="s2_combo_08" class="form-select" disabl>
                                         <option value="" hidden selected >-- 請選擇 災害類型 --</option>
                                     </select>
                                 </td>
@@ -270,6 +269,7 @@
     var doc_keys = [];
     var big_data = [];
 
+    // 240702 監聽送出按鈕
     async function eventListener(){
         return new Promise((resolve) => { 
             document.getElementById('search_btn').addEventListener('click', function() {
@@ -278,8 +278,16 @@
                 const elements = queryItem.querySelectorAll('select, input');
                 const queryItem_obj = {};
 
-                elements.forEach(({ name, value }) => {
-                    queryItem_obj[name] = name && value ? value : null;
+                elements.forEach(({ name, value, type, checked }) => {
+                    if (name) {
+                        if (type === 'radio') {
+                            if (checked) {
+                                queryItem_obj[name] = value;
+                            }
+                        } else {
+                            queryItem_obj[name] = value ? value : null;
+                        }
+                    }
                 });
                 // loadData(btn_value, queryItem_obj);
                 console.log('queryItem_obj:', queryItem_obj);
@@ -287,174 +295,90 @@
             resolve(); // 文件載入成功，resolve
         });
     }
-    // // step_1 表單生成 function 
-    // 動態表單主fun -- JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
-    function make_question(session_key, key_class, item_a) {        // 接收參數：session, class, 單一問項
-        let int_a = '';
-        let dcff = '<div class="form-floating">';
-        // 共用部分的操作1 label標籤
-        function commonPart() {
-            let labelSuffix = item_a.required ? '<sup class="text-danger"> *</sup>' : '';
-            return '<label for="' + item_a.name + '" class="form-label">' + item_a.label + '：' + labelSuffix +'</label>';
-        }
-        // 共用部分的操作2 驗證回饋
-        function validPart() {
-            return '<div class="invalid-feedback" id="' + item_a.name + '_feedback">數值填入錯誤 ~ </div>';
-        }
-        // 共用部分的操作3 info   有單文字和物件
-        function infoPart() {
-            let info_temp = '';
-            if(typeof item_a.info !== 'object'){
-                info_temp += ' >>> ' + item_a.info;
-            }else{
-                for (const [key_1, value_1] of Object.entries(item_a.info)) {
-                    if(info_temp){
-                        info_temp += '<br/>'
+    // 240702 correspond對應選項功能
+    async function eventListener_correspond(target_class){
+        return new Promise((resolve) => { 
+            const corresponds = document.querySelectorAll(".correspond");
+            const targetClass = document.querySelector('#'+target_class);
+                corresponds.forEach((element)=> {
+                    element.hidden = true;
+                });
+                
+            targetClass.addEventListener('change', function() {
+                corresponds.forEach((correspondElement) => {
+                    correspondElement.hidden = true;
+                });
+                const selectedOption = this.options[this.selectedIndex];    // 取得所選中的<option>元素
+                const this_flag = selectedOption.getAttribute('flag');      // 用.getAttribute('flag')取得自訂flag屬性
+                document.querySelectorAll("." + this_flag).forEach((selectedElement) => {
+                    selectedElement.hidden = false; 
+                    let parentId = selectedElement.parentElement.id;        // 查詢 selectedElement 上一層的 ID
+                    let parentElement = document.getElementById(parentId);
+                    if (parentElement) {
+                        parentElement.value = "";                           // 将 value 设为默认选项的 value
                     }
-                    info_temp += key_1 + '.' + value_1
+                });
+            });
+            resolve(); // 文件載入成功，resolve
+        });
+    }
+    // 240702 監聽事件類別(表單類別)-對應選項功能
+    async function eventListener_shortName(target_class){
+        return new Promise((resolve) => { 
+            const targetClass = document.querySelector('#'+target_class);
+            const s2_combo_07 = document.getElementById('s2_combo_07');     // 事故分類
+            const s2_combo_08 = document.getElementById('s2_combo_08');     // 災害類型
+                
+            targetClass.addEventListener('change', function() {
+                if(this.value.includes('廠外交通')){   
+                    s2_combo_07.value = "";
+                    s2_combo_08.value = "";
+                    s2_combo_07.setAttribute("disabled", "disabled");
+                    s2_combo_08.setAttribute("disabled", "disabled");
+                }else{
+                    s2_combo_07.removeAttribute("disabled");
+                    s2_combo_08.removeAttribute("disabled");
                 }
-            }
-            return '<span class="info">' + info_temp + '</span>';
-        }
-        // 日期格式化函數
-        function formatDate(date) {
-            return date.toISOString().slice(0, item_a.type === 'date' ? 10 : 16);
-        }
-        // 主要fun：內層問項生成：根據字段類型生成相應的表單元素
-        switch(item_a.type) {
-            case 'radio':
-            case 'checkbox':
-                int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
-                Object(item_a.options).forEach((option)=>{
-                    // let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
-                    let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
-                    // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
-                    int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
-                          + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
-                          + ' class="form-check-input ' + item_a.name  
-                            + ((typeof option.value === 'object') ? ' other_item ' : '') + (option.value.only ? ' only_option ' : '') 
-                            + ((item_a.negative !== undefined && item_a.negative == object_type) ? ' negative ' : '') 
-                            + ((item_a.get_negative !== undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
-                            + '" ' + ((option.flag  !== undefined) ? 'flag="'+option.flag+'"' : '')
-                          + ' >' + '<label class="form-check-label '
-                            + ((item_a.negative != undefined && item_a.negative == object_type) ? ' negative ' : '') 
-                            + ((item_a.get_negative != undefined && item_a.get_negative == object_type) ? ' get_negative ' : '') 
-                          + '" for="' + item_a.name + '_' + object_type + '">' + option.label + (typeof option.value === 'object' ? '：' : '') 
-                          + '</label></div>';
-
-                    if (typeof option.value === 'object' && option.value.type == 'text') {
-                        // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
-                        int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
-                            + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
-
-                    }else if (typeof option.value === 'object' && option.value.type == 'number') {
-                        int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
-                            // + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled  min="0" max="999" maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)">';
-                            + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled ';
-                        if(option.value.limit != undefined){
-                            int_a += option.value.limit;
-                        }
-                        int_a += ' >';
-                        
-                    }else if (typeof option.value === 'object' && option.value.type == 'select') {
-                        int_a += '<div class="p-1">';
-                        int_a += '<select name="' + option.value.name + '[]" id="' + item_a.name + '_' + option.label + '_o" class="form-select unblock" disabled >'
-                                + '<option value="" hidden>-- [請選擇 ' + item_a.label + '] --</option>' 
-                        Object(option.value.options).forEach((option)=>{
-                            if (typeof option.value === 'object') {
-                                Object(option.value).forEach((key_value)=>{
-                                    int_a += '<option value="'+key_value['value']+'" class="'+option.label + ((item_a.correspond != undefined) ? ' correspond' : '')+'" >'
-                                        + key_value['value'] + '</option>' 
-                                } )
-                            }else {
-                                int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.value+'</option>' 
-                            }
-                        }) 
-                        int_a += '</select>'+'</div>';
-                    }
-                }) 
-                int_a += '</div>';
-                break;
-            case 'select':
-                int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
-                int_a += '<select name="'+item_a.name+'" id="'+item_a.name+'" class="form-select" >'
-                      + '<option value="" hidden>-- [請選擇 ' + item_a.label + '] --</option>' 
-
-                Object(item_a.options).forEach((option)=>{
-                    if (typeof option.value === 'object') {
-                        Object(option.value).forEach((key_value)=>{
-                            int_a += '<option value="'+key_value['value']+'" class="'+option.label + ((item_a.correspond != undefined) ? ' correspond' : '')+'" >'
-                                + key_value['value'] + '</option>' 
-                        } )
-                    }else {
-                        int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.label+'：'+option.value+'</option>' 
-                    }
-                }) 
-                int_a += '</select>'+'</div>';
-                break;
-
-        }
-        // 有info就呼叫fun崁入
-        int_a += (item_a.info) ? infoPart() : '';
-        // 外層session包裝 // 將表單元素添加到特定的容器中
-        if(key_class && item_a.type != 'signature'){
-            int_a = '<div class="'+ key_class +'">' + int_a + '</div>';
-        }else if(item_a.type == 'signature'){
-            int_a = '<div class="col-12 p-2">' + int_a + '</div>';
-        }
-        // 渲染form
-        $('#' + session_key +' .accordion-body').append(int_a);     
-        
-
-        if(item_a.correspond !== undefined){                // 240613 判斷是否需要啟動對應選項 for 災害類型
-            eventListener_correspond(item_a.correspond);
-        };
-        if(item_a.chooseBoth !== undefined){                // 240614 判斷是否需要以上皆是
-            eventListener_chooseBoth(item_a.name, item_a.chooseBoth);
-        };
-        if(item_a.lock_opt !== undefined){                  // 240614 判斷是否需要lock option
-            if(item_a.lock_opt == ""){
-                reflesh_correspond(item_a.correspond);      // 240627 更新correspond對應選項功能
-            }else{
-                lock_opt(item_a.name, item_a.lock_opt );
-            }
-        };
-
+            });
+            resolve(); // 文件載入成功，resolve
+        });
     }
     // 20240501 -- // 動態表單主fun -- JSON轉表單
     function bring_form(form_json){
-        let combo_item     = form_json.item;            // 抓item項目for form item
-        // let form_doc = document.getElementById('item_list');                                    // 定義動態表單id位置
-        if(combo_item){                                                                          // confirm form_item is't empty
-            // console.log('step_1-2 make_question(key_1, value_1.class, item_value) -- ');
+        let combo_item = form_json.item;                                // 抓item項目for form item
+        if(combo_item){                                                 // confirm form_item is't empty
             // step_2.生成問項...將每一筆繞出來
             Object(combo_item).forEach((item_value)=>{
                 let int_a = '';
                 Object(item_value.options).forEach((option)=>{
                     if (typeof option.value === 'object') {
                         Object(option.value).forEach((key_value)=>{
-                            int_a += '<option value="'+key_value['value']+'" class="'+option.label + (item_value.correspond != undefined ? ' correspond' : '')+'" >'
-                                + key_value['value'] + '</option>' 
+                            int_a += '<option value="'+key_value['value']+'" class="' + option.label + (item_value.correspond != undefined ? ' correspond' : '') + '" ' 
+                                + ((option.flag !== undefined) ? 'flag="' + option.flag + '"' : '')
+                                + ' >'
+                                + option.label + ' ' + key_value['label'] + '</option>' 
                         } )
+                        
                     }else {
-                        int_a += '<option value="'+option.value+'" class="'+option.label+'">'+option.label+'：'+option.value+'</option>' 
+                        int_a += '<option value="'+option.value+'" class="' + item_value.name + '" '
+                        + ((option.flag !== undefined) ? 'flag="' + option.flag + '"' : '') + ' id="' + item_value.name + '_' + option.value + '" '
+                        // + ' onchange="console.log(this.value)" ' 
+                        + ' >' + option.value + ' ' + option.label+'</option>' 
                     }
                 }) 
-                // console.log(int_a);
+
                 $("#"+item_value.name).append(int_a);
-
+                if(item_value.correspond !== undefined){                // 240613 判斷是否需要啟動對應選項 for 災害類型
+                    eventListener_correspond(item_value.correspond);
+                }
             })
-
-
             return true;
         } else {
             return false;
         }
     }
-
     // 主功能1.抓資料
     async function load_fun(fun, parm, myCallback) {                // parm = 參數
-        // console.log('fun: load_fun...', fun, parm, myCallback);
         return new Promise((resolve, reject) => {
             let formData = new FormData();
             let fun_temp = (parm['_get_dccNo'] !== undefined && parm['_get_dccNo'] === true ) ? 'caseList' : fun;
@@ -473,9 +397,7 @@
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);    // 接收回傳
                     let result_obj = response['result_obj'];        // 擷取主要物件
-
-                    resolve(myCallback(result_obj));           // resolve(true) = 表單載入成功，then 呼叫--myCallback
-
+                    resolve(myCallback(result_obj));                // resolve(true) = 表單載入成功，then 呼叫--myCallback
                 } else {
                     alert('fun load_'+fun+' failed. Please try again.');
                     reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
@@ -484,28 +406,21 @@
             xhr.send(formData);
         });
     }
-
-    
     // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData() {
         try {
-            await load_fun('combo', 's3_combo', bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
-            await eventListener();                      // step_1-2 eventListener();             // 
-
+            await load_fun('combo', 's2_combo', bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+            await eventListener();                           // step_1-2 eventListener();             // 
+            await eventListener_shortName('_short_name');    // step_1-2 eventListener();             // 
         } catch (error) {
             console.error(error);
         }
     }
         
     $(document).ready(function(){
-
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         loadData();
-        // eventListener()
-
     })
-
-
 
 </script>
 

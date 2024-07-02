@@ -1,0 +1,126 @@
+{
+    "item"  : [
+        {
+            "label": "事故分類",
+            "type" : "radio",
+            "name" : "s2_combo_07",
+            "options" : [
+                { "flag" : "AA" , "value" : "AA" , "label" : "人員受傷" },
+                { "flag" : "AB" , "value" : "AB" , "label" : "財產損失(含承攬商支付)" },
+                { "flag" : "AC" , "value" : "AC" , "label" : "生產中斷" },
+                { "flag" : "AD" , "value" : "AD" , "label" : "緊急應變小組" },
+                { "flag" : "AE" , "value" : "AE" , "label" : "爆炸、火災" },
+                { "flag" : "AF" , "value" : "AF" , "label" : "冒煙" },
+                { "flag" : "AG" , "value" : "AG" , "label" : "輻射異常事件" },
+                { "flag" : "AH" , "value" : "AH" , "label" : "化學品洩漏" },
+                { "flag" : "AI" , "value" : "AI" , "label" : "外部影響" },
+                { "flag" : "AJ" , "value" : "AJ" , "label" : "環保事件" },
+                { "flag" : "AK" , "value" : "AK" , "label" : "職業相關疾病" },
+                { "flag" : "AL" , "value" : "AL" , "label" : "其他" }
+            ]
+        },
+        {
+            "label": "災害類型",
+            "type" : "select",
+            "name" : "s2_combo_08",
+            "options" : [
+                { "label" : "AA" , "value" : [
+                    { "value" : "AA01" , "label" : "01.墜落、滾落" },
+                    { "value" : "AA02" , "label" : "02.跌倒、滑倒" },
+                    { "value" : "AA03" , "label" : "03.衝撞" },
+                    { "value" : "AA04" , "label" : "04.物體飛落、擊" },
+                    { "value" : "AA05" , "label" : "05.物體倒塌、崩塌" },
+                    { "value" : "AA06" , "label" : "06.被夾、被捲、被撞" },
+                    { "value" : "AA07" , "label" : "07.被切、割、擦傷" },
+                    { "value" : "AA08" , "label" : "08.穿刺傷" },
+                    { "value" : "AA09" , "label" : "09.被壓" },
+                    { "value" : "AA10" , "label" : "10.溺斃" },
+                    { "value" : "AA11" , "label" : "11.與高溫、低溫之接觸" },
+                    { "value" : "AA12" , "label" : "12.感電" },
+                    { "value" : "AA13" , "label" : "13.物理性異物入眼" },
+                    { "value" : "AA14" , "label" : "14.化學性異物入眼" },
+                    { "value" : "AA15" , "label" : "15.與化學品或廢液接觸" }
+                ]},
+                { "label" : "AB" , "value" : [
+                    { "value" : "AB01" , "label" : "01.直接經濟損失(含承攬商支付)" }
+                ]},
+                { "label" : "AC" , "value" : [
+                    { "value" : "AC01" , "label" : "01.無塵室全員疏散或製造廠產線停止生產" }
+        
+                ]},
+                { "label" : "AD" , "value" : [
+                    { "value" : "AD01" , "label" : "01.未啟動緊急應變小組處理事故" },
+                    { "value" : "AD02" , "label" : "02.啟動緊急應變小組處理事故" }
+        
+                ]},
+                { "label" : "AE" , "value" : [
+                    { "value" : "AE01" , "label" : "01.廠區火災" },
+                    { "value" : "AE02" , "label" : "02.宿舍火災" },
+                    { "value" : "AE03" , "label" : "03.正負壓力過大爆炸" },
+                    { "value" : "AE04" , "label" : "04.化學反應造成壓力過大爆炸" }
+        
+                ]},
+                { "label" : "AF" , "value" : [
+                    { "value" : "AF01" , "label" : "01.火警(設備原件毀損導致冒煙)" },
+                    { "value" : "AF02" , "label" : "02.由火種危害因子導致之冒煙事件" },
+                    { "value" : "AF03" , "label" : "03.其他冒煙事件" }
+        
+                ]},
+                { "label" : "AG" , "value" : [
+                    { "value" : "AG01" , "label" : "01.人員曝露異常劑量" },
+                    { "value" : "AG02" , "label" : "02.作業環境檢測輻射異常劑量率" },
+                    { "value" : "AG03" , "label" : "03.放射性物質/放射源遺失或遭竊或劑量計遺失、損毀或污染致無劑量計紀錄者" },
+                    { "value" : "AG04" , "label" : "04.其他" }
+        
+                ]},
+                { "label" : "AH" , "value" : [
+                    { "value" : "AH01" , "label" : "01.漏水" },
+                    { "value" : "AH02" , "label" : "02.液態化學品洩漏" },
+                    { "value" : "AH03" , "label" : "03.廢液洩漏" },
+                    { "value" : "AH04" , "label" : "04.氣態化學品洩漏" }
+        
+                ]},
+                { "label" : "AI" , "value" : [
+                    { "value" : "AI01" , "label" : "01.政府主管機關開立罰單" },
+                    { "value" : "AI02" , "label" : "02.民眾或環保團體等直接至廠區抗爭、抗議或圍廠" }
+        
+                ]},
+                { "label" : "AJ" , "value" : [
+                    { "value" : "AJ01" , "label" : "01.空污排放" },
+                    { "value" : "AJ02" , "label" : "02.廢水排放" },
+                    { "value" : "AJ03" , "label" : "03.廢棄物洩漏" },
+                    { "value" : "AJ04" , "label" : "04.空污防制系統/設備未依環保許可操作或未符合法規要求" },
+                    { "value" : "AJ05" , "label" : "05.廢水防制系統/設備未依環保許可操作或未符合法規要求" },
+                    { "value" : "AJ06" , "label" : "06.廢棄物貯存未依環保許可操作或未符合法規要求" },
+                    { "value" : "AJ07" , "label" : "07.『毒性』化學物質異常洩漏造達法令通報標準" },
+                    { "value" : "AJ08" , "label" : "08.無法歸類者" }
+        
+                ]},
+                { "label" : "AK" , "value" : [
+                    { "value" : "AK01" , "label" : "01.人因性危害" },
+                    { "value" : "AK02" , "label" : "02.化學性危害" },
+                    { "value" : "AK03" , "label" : "03.生物性危害" },
+                    { "value" : "AK04" , "label" : "04.物理性危害" },
+                    { "value" : "AK05" , "label" : "05.社會心理性危害" },
+                    { "value" : "AK06" , "label" : "06.拉傷" },
+                    { "value" : "AK07" , "label" : "07.扭傷" },
+                    { "value" : "AK08" , "label" : "08.法定傳染病" },
+                    { "value" : "AK09" , "label" : "09.無法歸類者" }
+        
+                ]},
+                { "label" : "AL" , "value" : [
+                    { "value" : "AL01" , "label" : "01.設備異常" },
+                    { "value" : "AL02" , "label" : "02.廠內交通事故" },
+                    { "value" : "AL03" , "label" : "03.偵測器故障/老化/劣化造成之火警誤警報" },
+                    { "value" : "AL04" , "label" : "04.毒氣系統受環境干擾(如使用溶劑造成 Gas detector 警報)" },
+                    { "value" : "AL05" , "label" : "05.偵測器故障/老化/劣化造成之毒氣誤警報" },
+                    { "value" : "AL06" , "label" : "06.漏液系統受干擾(如被重物壓到)" },
+                    { "value" : "AL07" , "label" : "07.漏液偵測故障造成之漏液誤警報" },
+                    { "value" : "AL08" , "label" : "08.生活性工傷" },
+                    { "value" : "AL09" , "label" : "09.火警系統受環境干擾" }
+                ]}
+            ],
+            "correspond":"s2_combo_07"
+        }
+    ]
+}

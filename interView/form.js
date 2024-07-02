@@ -30,6 +30,11 @@
             resetMain();                    // do something...清除欄位
             $('#modal_title').empty();      // 清除標題
         })
+        // 監聽表單內 autoinput 變更事件
+        $('#cname, #plant, #dept, #sign_code, #omager, #extp').change(function() {
+            // 當有變更時，對該input加上指定的class
+            $(this).removeClass('autoinput');
+        });
     })
 
     // 吐司顯示字條 // init toast
@@ -172,7 +177,28 @@
                 Object.keys(personal_inf).forEach((_key)=>{
                     let _key_elem = document.querySelector('#'+_key)
                     if(_key_elem){
+
                         _key_elem.value = personal_inf[_key]
+                        _key_elem.classList.add('autoinput');
+       
+                    }else{
+                        if(_key == 'gesch'){            // 性別
+                            if(personal_inf[_key] === '1'){
+                                document.getElementById('s1_combo_GESCH_男性').checked = true;
+                            }else{
+                                document.getElementById('s1_combo_GESCH_女性').checked = true;
+                            }
+                            console.log(_key, personal_inf[_key]);
+
+                        }else if(_key == 'natio'){      // 籍別
+                            if(personal_inf[_key] === 'TW'){
+                                document.getElementById('s1_combo_NATIO_本籍').checked = true;
+                            }else{
+                                document.getElementById('s1_combo_NATIO_外籍').checked = true;
+                            }
+                            console.log(_key, personal_inf[_key]);
+                        }
+
                     }
                 })
                 searchUser_modal.hide();                // 關閉searchUser_modal
@@ -514,8 +540,8 @@
 
             });
         });
-
     }
+
     // 240627 更新correspond對應選項功能
     function reflesh_correspond(target_class){
         // 获取target_class的所有radio按钮
