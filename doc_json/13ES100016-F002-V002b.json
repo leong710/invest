@@ -33,19 +33,6 @@
                     "required": false
                 },
                 {
-                    "label": "到職日",
-                    "type" : "date",
-                    "name" : "hired",
-                    "required": false,
-                    "valid": true
-                },
-                {
-                    "label": "年資",
-                    "type": "text",
-                    "name" : "rload",
-                    "required": false
-                },
-                {
                     "label": "籍別",
                     "type" : "radio",
                     "name" : "s1_combo_NATIO",
@@ -64,6 +51,19 @@
                         { "label" : "女性" , "value" : "女性" }
                     ],
                     "required": true
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
                 },
                 {
                     "label": "族群",

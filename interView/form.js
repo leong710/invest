@@ -30,12 +30,8 @@
             resetMain();                    // do something...清除欄位
             $('#modal_title').empty();      // 清除標題
         })
-        // 監聽表單內 autoinput 變更事件
-        $('#cname, #plant, #dept, #sign_code, #omager, #extp').change(function() {
-            // 當有變更時，對該input加上指定的class
-            $(this).removeClass('autoinput');
-        });
     })
+
 
     // 吐司顯示字條 // init toast
     function inside_toast(sinn){
@@ -177,28 +173,31 @@
                 Object.keys(personal_inf).forEach((_key)=>{
                     let _key_elem = document.querySelector('#'+_key)
                     if(_key_elem){
-
                         _key_elem.value = personal_inf[_key]
                         _key_elem.classList.add('autoinput');
        
                     }else{
-                        if(_key == 'gesch'){            // 性別
-                            if(personal_inf[_key] === '1'){
-                                document.getElementById('s1_combo_GESCH_男性').checked = true;
-                            }else{
-                                document.getElementById('s1_combo_GESCH_女性').checked = true;
+                        const mappings = {
+                            gesch: {
+                                '1': '男性',
+                                '2': '女性'        // 假设 personal_inf[_key] 不是 '1' 时为女性
+                            },
+                            natio: {
+                                'TW'     : '本籍',
+                                'default': '外籍'  // 假设 personal_inf[_key] 不是 'TW' 时为外籍
                             }
-                            console.log(_key, personal_inf[_key]);
+                        };
 
-                        }else if(_key == 'natio'){      // 籍別
-                            if(personal_inf[_key] === 'TW'){
-                                document.getElementById('s1_combo_NATIO_本籍').checked = true;
-                            }else{
-                                document.getElementById('s1_combo_NATIO_外籍').checked = true;
-                            }
-                            console.log(_key, personal_inf[_key]);
+                        if (mappings[_key]) {
+                            const key = personal_inf[_key];
+                            const value = mappings[_key][key] || mappings[_key]['default'];
+                            const target_element = document.getElementById('s1_combo_' + _key.toUpperCase() + '_' + value);
+                            target_element.checked = true;
+
+                            const parentId = (target_element.parentElement).parentElement;        // 查詢 target_element 上一層的 ID
+                            parentId.classList.add('autoinput');
+                            parentId.classList.remove('border');
                         }
-
                     }
                 })
                 searchUser_modal.hide();                // 關閉searchUser_modal
@@ -512,7 +511,19 @@
                 window.print();
         
             });
-            // 240613 correspond 對應選項
+            // 監聽表單內 autoinput 變更事件
+            $('#emp_id, #cname, #oftext, #cstext').change(function() {
+                // 當有變更時，對該input加上指定的class
+                $(this).removeClass('autoinput');
+            });
+            // 監聽表單內 autoinput 變更事件
+            document.querySelectorAll('[name="s1_combo_NATIO[]"], [name="s1_combo_GESCH[]"]').forEach((element) => {
+                element.addEventListener('change', function() {
+                    const parentId = (this.parentElement).parentElement;        // 查詢 target_element 上一層的 ID
+                    parentId.classList.add('border');
+                    parentId.classList.remove('autoinput');
+                })
+            })
             resolve(); // 文件載入成功，resolve
         });
     }

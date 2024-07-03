@@ -251,6 +251,114 @@
                     $result['error'] = 'Load '.$fun.' failed...(no parm)';
                 }
                 break;
+ 
+            case 'page3':
+                if(isset($_short_name)){
+                    $pdo = pdo();
+                    $stmt_arr = array();    // 初始查詢陣列
+
+                        // $site_id         = !empty($_site_id)        ? $_site_id         : null ;
+                        // $fab_id          = !empty($_fab_id)         ? $_fab_id          : null ;
+                        // $anis_no         = !empty($_anis_no)        ? $_anis_no         : null ;
+                        // $created_emp_id  = !empty($_created_emp_id) ? $_created_emp_id  : null ;
+                        // $short_name      = !empty($_short_name)     ? $_short_name      : null ;
+                        // $idty            = !empty($_idty)           ? $_idty            : null ;
+                        // $created_at_form = !empty($created_at_form) ? $created_at_form  : null ;
+                        // $created_at_to   = !empty($created_at_to)   ? $created_at_to    : null ;
+
+                    $variables = [
+                        'site_id'         => $_site_id,
+                        'fab_id'          => $_fab_id,
+                        'anis_no'         => $anis_no,
+                        'created_emp_id'  => $created_emp_id,
+                        'short_name'      => $_short_name,
+                        'idty'            => $idty,
+                        'created_at_form' => $created_at_form,
+                        'created_at_to'   => $created_at_to
+                    ];
+                    foreach ($variables as $key => $value) {
+                        $$key = !empty($value) ? $value : null;
+                    }
+
+                    $sql = "SELECT _d.anis_no , _d.idty , _d.created_emp_id , _d.created_at   , _fc.short_name , _s.site_title , _f.fab_title , _l.local_title 
+                            FROM `_document` _d
+                            LEFT JOIN _local _l ON _d.local_id = _l.id 
+                            LEFT JOIN _fab _f ON _d.fab_id = _f.id 
+                            LEFT JOIN _site _s ON _f.site_id = _s.id 
+                            LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no 
+                            ";
+
+                    $conditions = [];
+                    if ($site_id != 'All' && $site_id != 'null') {
+                        $conditions[] = "_s.id = ?";
+                        $stmt_arr[] = $site_id;
+                    }
+                    if ($fab_id != 'All' && $fab_id != 'null') {
+                        $conditions[] = "_d.fab_id = ?";
+                        $stmt_arr[] = $fab_id;
+                    }
+                    if ($anis_no != 'null') {
+                        $conditions[] = "_d.anis_no = ?";
+                        $stmt_arr[] = $anis_no;
+                    }
+                    if ($created_emp_id != 'null') {
+                        $conditions[] = "_d.created_emp_id = ?";
+                        $stmt_arr[] = $created_emp_id;
+                    }
+                    if ($short_name != 'null') {
+                        $conditions[] = "_fc.short_name = ?";
+                        $stmt_arr[] = $short_name;
+                    }
+                    if ($idty != 'All' && $idty != 'null') {
+                        $conditions[] = "_d.idty = ?";
+                        $stmt_arr[] = $idty;
+                    }
+                    if ($created_at_form != 'null' && $created_at_to != 'null') {
+                        $conditions[] = "_d.created_at BETWEEN ? AND ?";
+                        $stmt_arr[] = $created_at_form;
+                        $stmt_arr[] = $created_at_to;
+
+                    } elseif ($created_at_form != 'null') {
+                        $conditions[] = "_d.created_at >= ?";
+                        $stmt_arr[] = $created_at_form;
+
+                    } elseif ($created_at_to != 'null') {
+                        $conditions[] = "_d.created_at <= ?";
+                        $stmt_arr[] = $created_at_to;
+                    }
+                    
+                    if (!empty($conditions)) {
+                        $sql .= ' WHERE ' . implode(' AND ', $conditions);
+                    }
+                    // 後段-堆疊查詢語法：加入排序
+                    $sql .= " ORDER BY _d.fab_id, _d.local_id, _d.created_at DESC ";     //ORDER BY _d.fab_id, _d.local_id, _d.a_dept, case_count DESC
+
+                    $stmt = $pdo->prepare($sql);
+                    try {
+                        if(!empty($stmt_arr)){
+                            $stmt->execute($stmt_arr);                          //處理 byUser & byYear
+                        }else{
+                            $stmt->execute();                                   //處理 byAll
+                        }
+
+                        $caseList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // 製作返回文件
+                        $result = [
+                            'result_obj' => $caseList,
+                            'fun'        => $fun,
+                            'success'    => 'Load '.$fun.' success.'
+                        ];
+                    }catch(PDOException $e){
+                        echo $e->getMessage();
+                        $result['error'] = 'Load '.$fun.' failed...(e)';
+                    }
+
+                }else{
+                    $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                }
+                break;
+
         };
 
         if(isset($result["error"])){

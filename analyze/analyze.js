@@ -121,7 +121,7 @@
             case 'document':    // 鋪設doc內容
                 // console.log('fun: gain_bigData...document:' , fun , gain_obj);
                 // 表頭標題
-                        $('#main table thead tr').append('<th>'+gain_obj.anis_no+'</th>');
+                $('#main table thead tr').append('<th>'+gain_obj.anis_no+'</th>');
                 Object.keys(doc_keys).forEach((doc_key)=>{
                     let value = (gain_obj[doc_key] !== undefined) ? gain_obj[doc_key] : gain_obj._content[doc_key];
                         // 文字日期轉換
@@ -158,6 +158,7 @@
                     }
                 })
                 break;
+                
             case 'count':
                 $('#main table tbody').empty();
                 $('#main table thead tr').empty().append('<th>'+'fab'+' / '+'local'+'</th><th>'+'short_name'+'</th><th>'+'count'+'</th>');

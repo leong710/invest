@@ -129,7 +129,7 @@
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link "           href="count.php">案件統計</span></a></li>
                         <li class="nav-item"><a class="nav-link active"     href="index.php">訪談內容統計</span></a></li>
-                        <li class="nav-item"><a class="nav-link "           href="test.php">test案件統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link "           href="page3.php">test案件統計</span></a></li>
                     </ul>
                 </div>
                 

@@ -6,7 +6,7 @@
         "session_1" : {
             "label" : "人員基本資料",
             "info"  : "",
-            "class" : "col-6 col-md-4 p-2 ",
+            "class" : "col-6 col-md-6 p-2 ",
             "item"  : [
                 {
                     "label": "工號",
@@ -33,19 +33,6 @@
                     "required": false
                 },
                 {
-                    "label": "到職日",
-                    "type" : "date",
-                    "name" : "hired",
-                    "required": false,
-                    "valid": true
-                },
-                {
-                    "label": "年資",
-                    "type": "text",
-                    "name" : "rload",
-                    "required": false
-                },
-                {
                     "label": "籍別",
                     "type" : "radio",
                     "name" : "s1_combo_NATIO",
@@ -64,6 +51,19 @@
                         { "label" : "女性" , "value" : "女性" }
                     ],
                     "required": true
+                },
+                {
+                    "label": "到職日",
+                    "type" : "date",
+                    "name" : "hired",
+                    "required": false,
+                    "valid": true
+                },
+                {
+                    "label": "年資",
+                    "type": "text",
+                    "name" : "rload",
+                    "required": false
                 },
                 {
                     "label": "族群",
