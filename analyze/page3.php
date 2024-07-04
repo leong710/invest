@@ -87,7 +87,7 @@
         }
 
         table tbody tr td{
-            text-align: right;
+            /* text-align: right; */
             /* padding: 1em; */
         }
         /* inline */
@@ -121,7 +121,7 @@
                         <table id="query_item">
                             <tbody>
                                 <tr>
-                                    <td>廠區/棟別：</td>
+                                    <td class="text-end">廠區/棟別：</td>
                                     <td class="inf">
                                         <select name="_site_id" id="_site_id" class="form-select inb block" >
                                             <option value="" hidden selected >-- 請選擇 問卷site --</option>
@@ -129,7 +129,7 @@
                                                 // echo '<option for="_site_id" value="All" '.($_fab_id == "All" ? " selected":"").' >-- All 所有site --</option>';
                                                 foreach($site_lists as $site){
                                                     echo "<option for='_site_id' value='{$site["id"]}' ". ($site["id"] == $_site_id ? " selected" : "" );
-                                                    echo ($site["flag"] == "Off" ? " disabled" : "" ) ;
+                                                    echo ($site["flag"] == "Off" ? " disabl" : "" ) ;
                                                     echo " >";
                                                     echo $site["site_title"]."( ".$site["site_remark"]." )"; 
                                                     echo ($site["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
@@ -151,21 +151,21 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>anis_no / 申請單號：</td>
+                                    <td class="text-end">anis_no / 申請單號：</td>
                                     <td class="inf">
                                         <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --"
                                                 maxlength="21" oninput="if(value.length>21)value=value.slice(0,21)" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>created_emp_id / 申請人員：</td>
+                                    <td class="text-end">created_emp_id / 申請人員：</td>
                                     <td class="inf">
                                         <input type="text" name="created_emp_id" id="created_emp_id" class="form-control" placeholder="-- 申請人員工號 --"
                                                 maxlength="8" oninput="if(value.length>8)value=value.slice(0,8)" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>_short_name / 事件類別：</td>
+                                    <td class="text-end">_short_name / 事件類別：</td>
                                     <td class="inf">
                                         <select name="_short_name" id="_short_name" class="form-select" >
                                             <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
@@ -179,7 +179,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>idty / 結案狀態：</td>
+                                    <td class="text-end">idty / 結案狀態：</td>
                                     <td class="inf px-3">
                                         <div class="form-check px-3">
                                             <input type="radio" name="idty" id="idty_10" value="10" class="form-check-input" >
@@ -196,7 +196,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>s2_combo_07 / 事故分類：</td>
+                                    <td class="text-end">s2_combo_07 / 事故分類：</td>
                                     <td class="inf">
                                         <select name="s2_combo_07" id="s2_combo_07" class="form-select" disabl>
                                             <option value="" hidden selected >-- 請選擇 事故類型 --</option>
@@ -204,7 +204,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>s2_combo_08 / 災害類型：</td>
+                                    <td class="text-end">s2_combo_08 / 災害類型：</td>
                                     <td class="inf">
                                         <select name="s2_combo_08" id="s2_combo_08" class="form-select" disabl>
                                             <option value="" hidden selected >-- 請選擇 災害類型 --</option>
@@ -212,16 +212,18 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>created_at / 申請日期：</td>
+                                    <td class="text-end">created_at / 申請日期：</td>
                                     <td class="inf">
                                         <div class="input-group">
                                             <span class="input-group-text">From</span>
                                             <input type="date" name="created_at_form" id="created_at_form" class="form-control mb-0" >
+                                            <div class="invalid-feedback" id="created_at_form_feedback">日期填入錯誤 ~ </div>
                                         </div>
                                         &nbsp
                                         <div class="input-group">
                                             <span class="input-group-text">To</span>
                                             <input type="date" name="created_at_to"   id="created_at_to"   class="form-control mb-0" >
+                                            <div class="invalid-feedback" id="created_at_to_feedback">日期填入錯誤 ~ </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -234,7 +236,7 @@
                                 <!-- H：downLoad Excel -->
                                 <form id="myForm" method="post" action="../_Format/download_excel.php">
                                     <input type="hidden" name="htmlTable" id="htmlTable" value="">
-                                    <button type="submit" name="submit" class="btn btn-outline-success" disabled title="<?php echo isset($_fab["id"]) ? $_fab["fab_title"]." (".$_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
+                                    <button type="submit" name="submit" class="btn btn-outline-success" title="abc" value="stock" onclick="submitDownloadExcel('stock')" >
                                         <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
                                 </form>
                             </div>
@@ -259,7 +261,7 @@
 
     <!-- 彈出modal -->
     <div class="modal fade" id="searchUser" aria-hidden="true" aria-labelledby="searchUser" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
             <div class="modal-content">
 
                 <div class="modal-header bg-warning rounded p-3 m-2">
@@ -268,20 +270,16 @@
                 </div>
 
                 <div class="modal-body mx-2">
-                    <div class="row">
-                        <div class="col-12 border rounded p-3 " id="selectScomp_no">
-                            <!-- 第三排的功能 : 放查詢結果-->
-                            <div class="result" id="result">
-                                <table id="result_table" class="table table-striped table-hover">
+                        <div class="col-12 border rounded  result" id="result">
+                            <!-- 放查詢結果-->
+                                <table id="result_table" class="table table-striped table-hover mb-1">
                                     <thead>
                                         <tr></tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
                                 </table>
-                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -307,6 +305,31 @@
     // init
     var doc_keys = [];
     var big_data = [];
+    var doc_list_keys = {
+        'anis_no'         : 'ANIS單號', 
+        'idty'            : '簽核狀態', 
+        'created_cname'   : '申請人員', 
+        'created_at'      : '申請日期', 
+        'short_name'      : '表單名稱', 
+        'site_title'      : '廠區', 
+        'fab_title'       : '棟別', 
+        'local_title'     : '廠別'
+        // '_content'        : '訪談內容'
+    };
+    var content_keys = {
+        // 'a_day'           : '發生日期',
+        'a_day'           : '發生時間',
+        'a_location'      : '發生地點',
+        'a_description'   : '事件詳述',
+        's2_combo_06'     : '事件等級',
+        's2_combo_07'     : '事件主類型',
+        's2_combo_08'     : '災害主類型',
+        's8_direct_cause' : '直接原因',
+        's8_combo_02'     : '間接原因',
+        // 's8_combo_02'     : '間接原因分類',
+        // 's8_combo_02'     : '間接大項分類',
+        // 's8_combo_02'     : '間接項目'
+    };
 
     $(function () {
         // 在任何地方啟用工具提示框
@@ -321,10 +344,47 @@
         toast.show();
     }
 
+    // 20231128_下載Excel
+    function submitDownloadExcel() {
+        // 先定義一個陣列(裝輸出資料使用)for 下載Excel
+        // let listData        = <=json_encode($row_lists)?>;                   // 引入$row_lists資料
+        // 定義要抓的key=>value
+        let list_item_keys = {
+            "id"             : "aid", 
+            "created_at"     : "開單日期", 
+            "plant"          : "申請單位", 
+            "dept"           : "申請部門", 
+            "sign_code"      : "部門代號",
+            "cname"          : "領用人", 
+            "emp_id"         : "工號", 
+            "cata_SN_amount" : "需求清單", 
+            "receive_remark" : "用途說明",
+            "fab_title"      : "提貨廠區", 
+            "fab_remark"     : "提貨廠區說明", 
+            "local_title"    : "儲存點",
+            "local_remark"   : "儲存點說明",
+            "ppty"           : "類別\n0臨時1一般3緊急",
+            "idty"           : "狀態\n10結案",
+            "updated_at"     : "最後編輯"
+        };
+        let sort_listData = [];         // 建立陣列
+        for(let i=0; i < listData.length; i++){
+            sort_listData[i] = {};      // 建立物件
+            Object.keys(list_item_keys).forEach(function(item_key){
+                sort_listData[i][list_item_keys[item_key]] = listData[i][item_key];
+            })
+        }
+        let htmlTableValue = JSON.stringify(sort_listData);
+        document.getElementById('htmlTable').value = htmlTableValue;
+    }
+
     // 240702 監聽送出按鈕
     async function eventListener(){
         return new Promise((resolve) => { 
             document.getElementById('search_btn').addEventListener('click', function() {
+
+                mloading(); 
+
                 const btn_value = this.value;
                 const queryItem = document.getElementById('query_item');
                 const elements = queryItem.querySelectorAll('select, input');
@@ -347,6 +407,25 @@
                 //     $('#result_table tbody').append('<tr><td>'+_key+'</td><td class="text-start">'+_value+'</td></tr>');
                 // } 
                 load_fun('page3', queryItem_obj, post_result); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+            });
+
+            // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
+            $('#created_at_form, #created_at_to').change(function() {
+                let currentDate = new Date().toISOString().split('T')[0];   // 取得今天的日期部分
+                let created_at_form = $("#created_at_form").val();          // 取得起始
+                let created_at_to   = $("#created_at_to").val();            // 取得訖止
+
+                let pet_created_at_form = created_at_form ? new Date(created_at_form).toISOString().split('T')[0] : '2000-01-01';
+                let pet_created_at_to   = created_at_to   ? new Date(created_at_to).toISOString().split('T')[0]   : currentDate;
+
+                // 工作起始需不需要小於現在時間....需要確認
+                if(this.id == 'created_at_form'){
+                    let confirm_pet_from = pet_created_at_form <= currentDate ;
+                    $("#created_at_form").removeClass("is-valid is-invalid").addClass(confirm_pet_from ? "is-valid" : "is-invalid");
+                }
+                // 訖止時間需大於起始時間....
+                let confirm_pet_to = (pet_created_at_to <= currentDate && pet_created_at_to >= pet_created_at_form) ;
+                $("#created_at_to").removeClass("is-valid is-invalid").addClass( confirm_pet_to ? "is-valid" : "is-invalid");
             });
             resolve(); // 文件載入成功，resolve
         });
@@ -466,20 +545,41 @@
     }
 
     async function post_result(result_obj){
-        // console.log('post_result...', Object.keys(result_obj[0]));
-        
-        Object.keys(result_obj[0]).forEach((doc_key)=>{
-            $('#result_table thead tr').append('<th>'+doc_key+'</th>');
-        })
+        console.log('post_result...', result_obj);
+        if(result_obj.length != 0){
 
-        Object(result_obj).forEach((_doc)=>{
-            o_doc_item = '';
-            for (const [key, value] of Object.entries(_doc)) {
-                console.log(value);
-                o_doc_item += '<td>'+value+'</td>';
+            // 鋪表頭
+            for (const [_key, _value] of Object.entries(doc_list_keys)){
+                $('#result_table thead tr').append('<th>'+_value+'</th>');
             }
-            $('#result_table tbody').append('<tr>'+ o_doc_item +'</tr>');
-        })
+            for (const [_key, _value] of Object.entries(content_keys)){
+                $('#result_table thead tr').append('<th>'+_value+'</th>');
+            }
+            // 鋪body
+            Object(result_obj).forEach((_doc)=>{
+                o_doc_item = '';
+                for (const [list_key, _value] of Object.entries(doc_list_keys)){
+                    if(list_key == 'anis_no'){
+                        o_doc_item += '<td><button type="button" value="../interView/form.php?action=review&uuid='+_doc['uuid']+'" '
+                        o_doc_item += 'class="tran_btn" onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷">'+_doc[list_key]+'</button></td>';
+
+                    }else if(list_key == '_content'){
+                        o_doc_item += '<td>'+_doc[list_key]['s2_combo_06']+'</td>';
+
+                    }else{
+                        o_doc_item += '<td>'+_doc[list_key]+'</td>';
+                    }
+                }
+                for (const [_key, _value] of Object.entries(content_keys)){
+                    o_doc_item += (_doc['_content'][_key] !== undefined) ? '<td>'+_doc['_content'][_key]+'</td>' : '<td>--</td>';
+                }
+
+                $('#result_table tbody').append('<tr>'+ o_doc_item +'</tr>');
+            })
+        }else{
+            $('#result_table tbody').append('-- 查無符合條件記錄 --');
+        }
+        $("body").mLoading("hide");
     }
 
             // // 主功能2.渲染/鋪設

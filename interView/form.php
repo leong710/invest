@@ -7,13 +7,25 @@
 
     // 複製本頁網址藥用
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
-    $action  = (isset($_REQUEST["action"])) ? $_REQUEST["action"] : 'create';   // 有action就帶action，沒有action就新開單
-    $uuid    = (isset($_REQUEST["uuid"]))   ? $_REQUEST["uuid"]   : "";
+    $action  = (isset($_REQUEST["action"]))      ? $_REQUEST["action"]      : 'create';   // 有action就帶action，沒有action就新開單
+    $uuid    = (isset($_REQUEST["uuid"]))        ? $_REQUEST["uuid"]        : "";
+    $anis_no = (isset($_REQUEST["anis_no"]))     ? $_REQUEST["anis_no"]     : "";
 
     if(!empty($uuid)){
         $document_row = edit_document(["uuid" => $uuid]);
             if(empty($document_row)){
                 echo "<script>alert('uuid-error：{$uuid}')</script>";
+                header("refresh:0;url=index.php");
+                return;
+            }
+        // 路径到 form_a.json 文件
+        $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
+        $dcc_no   = (isset($document_row["dcc_no"]) ? $document_row["dcc_no"] : "" );
+
+    }else if(!empty($anis_no)){
+        $document_row = edit_document(["anis_no" => $anis_no]);
+            if(empty($document_row)){
+                echo "<script>alert('anis_no-error：{$anis_no}')</script>";
                 header("refresh:0;url=index.php");
                 return;
             }
@@ -181,9 +193,9 @@
                 </div>
                 <div class="row px-1">
                     <div class="col-12 col-md-6 py-1">
-                        訪談單號：<?php echo ($action == 'create') ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
-                        開單日期：<?php echo ($action == 'create') ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
-                        填單人員：<?php echo ($action == 'create') ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
+                        訪談單號：<?php echo ($action == 'create' || !isset($document_row['id'])) ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
+                        開單日期：<?php echo ($action == 'create' || !isset($document_row['created_at'])) ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
+                        填單人員：<?php echo ($action == 'create' || !isset($document_row['id'])) ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
                     </div>
                     <div class="col-12 col-md-6 py-1 text-end head_btn"  >
                         <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>

@@ -95,10 +95,19 @@
                 FROM _document _d
                 LEFT JOIN _fab _f       ON _d.fab_id   = _f.id 
                 LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no 
-                WHERE _d.uuid = ? ";
+                WHERE ";
+
+        if(!empty($uuid)){
+            $sql .= "_d.uuid = ? ";
+            $query = $uuid;
+        }else if(!empty($anis_no)){
+            $sql .= "_d.anis_no = ? ";
+            $query = $anis_no;
+        }
+                
         $stmt = $pdo->prepare($sql);
         try {
-            $stmt->execute([$uuid]);
+            $stmt->execute([$query]);
             $_document = $stmt->fetch(PDO::FETCH_ASSOC);        // no index
 
             // 把特定json轉物件

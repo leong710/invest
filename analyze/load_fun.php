@@ -280,7 +280,9 @@
                         $$key = !empty($value) ? $value : null;
                     }
 
-                    $sql = "SELECT _d.anis_no , _d.idty , _d.created_emp_id , _d.created_at   , _fc.short_name , _s.site_title , _f.fab_title , _l.local_title 
+                    $sql = "SELECT _d.uuid, _d.anis_no , _d.idty ,_d._content
+                            , CONCAT(_d.created_emp_id,' / ',_d.created_cname) AS created_cname , DATE(_d.created_at) AS created_at   
+                            , _fc.short_name , _s.site_title , _f.fab_title , _l.local_title 
                             FROM `_document` _d
                             LEFT JOIN _local _l ON _d.local_id = _l.id 
                             LEFT JOIN _fab _f ON _d.fab_id = _f.id 
@@ -314,16 +316,16 @@
                         $stmt_arr[] = $idty;
                     }
                     if ($created_at_form != 'null' && $created_at_to != 'null') {
-                        $conditions[] = "_d.created_at BETWEEN ? AND ?";
+                        $conditions[] = "DATE(_d.created_at) BETWEEN ? AND ?";
                         $stmt_arr[] = $created_at_form;
                         $stmt_arr[] = $created_at_to;
 
                     } elseif ($created_at_form != 'null') {
-                        $conditions[] = "_d.created_at >= ?";
+                        $conditions[] = "DATE(_d.created_at) >= ?";
                         $stmt_arr[] = $created_at_form;
 
                     } elseif ($created_at_to != 'null') {
-                        $conditions[] = "_d.created_at <= ?";
+                        $conditions[] = "DATE(_d.created_at) <= ?";
                         $stmt_arr[] = $created_at_to;
                     }
                     
@@ -342,6 +344,11 @@
                         }
 
                         $caseList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        // 240704 將_content進行json解碼....
+                        foreach ($caseList as &$case) {                         // *** 要注意這裡的$case 前面有 & 符號
+                            $case["_content"] = json_decode($case["_content"]); 
+                        }
+                        unset($case);                                           // 刪除引用
 
                         // 製作返回文件
                         $result = [
