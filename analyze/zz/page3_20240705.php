@@ -154,7 +154,7 @@
                                     <td class="text-end">anis_no / 申請單號：</td>
                                     <td class="inf">
                                         <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --"
-                                                maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();" >
+                                                maxlength="21" oninput="if(value.length>21)value=value.slice(0,21)" >
                                     </td>
                                 </tr>
                                 <tr>

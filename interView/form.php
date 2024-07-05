@@ -201,6 +201,15 @@
                         <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>
                         <span id="pdf_name" class="unblock">
                             <?php echo isset($document_row["fab_title"]) ? $document_row["fab_title"]:""; echo isset($document_row["short_name"]) ? "_".$document_row["short_name"]:"";?></span>
+
+                        <span id="cansole_btn">
+                            <?php
+                                // 表單狀態：1送出 2退回 4編輯 5轉呈 6暫存
+                                if(in_array($receive_row['idty'], [ 1, 2, 4, 5, 6 ])){ 
+                                    echo $let_btn_s."bg-warning text-dark".$let_btn_m."3".$let_btn_e."作廢 (Abort)</button> ";
+                                } 
+                            ?>
+                        </span>
                         <span id="delete_btn">
                             <?php if(($sys_role <= 1 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
                                 <form action="process.php" method="post">
@@ -225,7 +234,7 @@
                                         <!-- line 0 -->
                                         <div class="col-6 col-md-6 py-0">
                                             <div class="form-floating">
-                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" require >
+                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" require maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();">
                                                 <label for="anis_no" class="form-label">anis_no/ANIS表單編號：<sup class="text-danger"> * </sup></label>
                                                 <div class="invalid-feedback" id="anis_no_feedback">編號填入錯誤 ~ (大寫ANIS+數字流水號共21碼)</div>
                                             </div>

@@ -295,7 +295,7 @@
         };
         xhr.send(formData);
     }
-    // a_pic的 uplinkFile 函数
+    // a_pic的 unlinkFile 函数
     function unlinkFile(key) {
         let formData = new FormData();
         let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
@@ -303,6 +303,50 @@
         formData.append('unlinkFile', unlinkFile);
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'unlink.php', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+                document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
+                document.getElementById(key + '_row').value = '';                                                       // 清除選擇row檔案
+                document.getElementById(key).value = '';                                                                // 清除a_pic
+
+            } else {
+                alert('unlink failed. Please try again.');
+            }
+        };
+        xhr.send(formData);
+    }
+    // a_pdf的 uploadFile 函数
+    function uploadFile_pdf(key) {
+        let formData = new FormData();
+        let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
+        let uploadDir = '../doc_pdf/temp/';                                                                               // a_pic temp dir
+        formData.append('file', fileInput.files[0]);
+        formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'upload.php', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+                let preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">';                            // 生成預覽按鈕a
+                let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+response.fileName+'</p>';
+                document.getElementById('preview_' + key).innerHTML = preview_modal + file_info +'</a>';                  // 套上a+img
+                document.getElementById(key).value = response.fileName;                                                 // a_pic加上時間搓
+
+            } else {
+                alert('Upload failed. Please try again.');
+            }
+        };
+        xhr.send(formData);
+    }
+    // a_pdf的 unlinkFile 函数
+    function unlinkFile_pdf(key) {
+        let formData = new FormData();
+        let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
+        console.log(key, unlinkFile);
+        formData.append('unlinkFile', unlinkFile);
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'unlink_pdf.php', true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
@@ -469,9 +513,9 @@
                 let input = event.target;
                 let value = input.value;
                 let value_valid = '';
-                value = value.toUpperCase();                                        // 自動轉大寫
-                value = value.replace(/[^A-Z0-9]/g, '');                            // 去掉所有非字母和數字的字符
-                value_valid += (!value.startsWith('ANIS')) ? '大寫ANIS' : '';      // 檢查前四個字是否為'ANIS'
+                // value = value.toUpperCase();                                      // 自動轉大寫
+                value = value.replace(/[^A-Z0-9]/g, '');                             // 去掉所有非字母和數字的字符
+                value_valid += (!value.startsWith('ANIS')) ? '大寫ANIS' : '';        // 檢查前四個字是否為'ANIS'
                 if (value.length >= 21) {                                            // 限制字數為21個字符
                     value = value.substring(0, 21);
                     value_valid += '';
@@ -772,14 +816,25 @@
                 }) 
                 int_a += '</select>'+'</div>';
                 break;
-            case 'file':       // session_2 事故位置簡圖
+            case 'file':       // session_3 事故位置簡圖
                 int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6 py-1 px-2';         // create = 半開；review = 全開
                 int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
                 if(!check_action){
                     int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
-                        + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" accept=".jpg,.png,.gif,.bmp" >'
-                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">Upload</button>' 
-                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">Delete</button>' 
+                        + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" '+(item_a.accept ? 'accept="'+item_a.accept+'"':'')+' >'
+                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">上傳</button>' 
+                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">移除</button>' 
+                        + '</div></div>' + '</div></div>'
+                }
+                break;  
+            case 'file_pdf':       // session_3 目擊者+事故者自述
+                int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6';         // create = 半開；review = 全開
+                int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
+                if(!check_action){
+                    int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
+                        + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" '+(item_a.accept ? 'accept="'+item_a.accept+'"':'')+' >'
+                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile_pdf(\'' + item_a.name + '\')">上傳</button>' 
+                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile_pdf(\'' + item_a.name + '\')">移除</button>' 
                         + '</div></div>' + '</div></div>'
                 }
                 break;  
@@ -919,7 +974,7 @@
 
         // edit step2.特例呈現：'confirm_sign','ruling_sign','a_pic'
             // console.log('step_2-1-2 special_items.forEach((special_item)=> -- 特例呈現');
-            let special_items = ['ruling_sign','a_pic','_odd']
+            let special_items = ['ruling_sign','a_pic','_focus','_odd']
             special_items.forEach((special_item)=>{
                 if(document_row[special_item] != null){
 
@@ -936,6 +991,24 @@
                         if(input_item){
                             input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
                         }
+                    }else if(special_item == '_focus'){                              // 240705 事故者+目擊者 自述
+                        let a_desc_path    = '../doc_pdf/a_desc/'                                                                    // 指定a_desc路徑
+                        // let _focus = JSON.parse(document_row[special_item]);
+                        let _focus = document_row[special_item];
+
+                        for (const [_key, _value] of Object.entries(_focus)){
+                            let preview_modal = '<a href="' + a_desc_path + _value + '" target="_blank" class="btn text-danger add_btn">';  // 生成預覽按鈕a
+                            let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+_value+'</p>';
+
+                            let preview_item  = document.getElementById('preview_' + _key); 
+                            if(preview_item){
+                                preview_item.innerHTML = preview_modal + file_info +'</a>';                                               // 套上a+img
+                            }            
+                            let input_item    = document.getElementById(_key);
+                            if(input_item){
+                                input_item.value = _value;                                                                           // 欄位填上pic_value
+                            }
+                        } 
                     }else if(special_item == '_odd'){                              // 240611 職災申報
                         let _odd = JSON.parse(document_row[special_item]);
                         let show_odd  = (_odd['due_day'] != undefined && _odd['due_day'] != null) ? "due_day："+_odd['due_day']+"/申報日：" : "";

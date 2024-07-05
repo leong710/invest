@@ -154,7 +154,7 @@
                                     <td class="text-end">anis_no / 申請單號：</td>
                                     <td class="inf">
                                         <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --"
-                                                maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();" >
+                                                maxlength="21" oninput="if(value.length>21)value=value.slice(0,21)" >
                                     </td>
                                 </tr>
                                 <tr>
@@ -166,16 +166,14 @@
                                 </tr>
                                 <tr>
                                     <td class="text-end">_short_name / 事件類別：</td>
-                                    <td class="inf">
-                                        <select name="_short_name" id="_short_name" class="form-select" >
-                                            <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
-                                            <?php 
-                                                // echo "<option for='_short_name' value='All' ".(($_short_name == "All") ? " selected":"" )." >-- 全問卷類型 / All --</option>";
-                                                foreach($shortName_lists as $shortName){
-                                                    echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
-                                                    echo ($shortName["short_name"] == $_short_name ? " selected" : "" )." >".$shortName["short_name"]."</option>";
-                                                } ?>
-                                        </select>
+                                    <td class="inf px-3">
+                                        <?php 
+                                            foreach($shortName_lists as $shortName){
+                                                echo "<div class='form-check px-3'>";
+                                                echo     "<input type='radio' name='_short_name' id='_short_name_{$shortName["short_name"]}' value='{$shortName["short_name"]}' class='form-check-input' >";
+                                                echo     "<label for='_short_name_{$shortName["short_name"]}' class='form-check-label'>{$shortName["short_name"]}</label>";
+                                                echo "</div>";
+                                            } ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -727,7 +725,7 @@
         try {
             await load_fun('combo', 's2_combo', bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
             await eventListener();                           // step_1-2 eventListener();             // 
-            await eventListener_shortName('_short_name');    // step_1-2 eventListener();             // 
+            await eventListener_shortName('_short_name_廠外交通事故');    // step_1-2 eventListener();             // 
         } catch (error) {
             console.error(error);
         }

@@ -81,7 +81,7 @@
     }
 
     function do_swal(res){
-
+        console.log(res);
         let this_content = swal_json['content'];
         this_content += (res['result']['content'] !== undefined) ? res['result']['content'] : '參數異常';
         

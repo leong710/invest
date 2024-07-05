@@ -137,7 +137,7 @@
 
 <script>    
 
-    swal_json = {                                 // for swal_json
+    var swal_json = {                                 // for swal_json
         "fun"     : "interView document",
         "content" : "process_PDF -- ",
         "action"  : "error"

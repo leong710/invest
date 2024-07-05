@@ -61,7 +61,9 @@
         // 疊加路徑 並 確認路徑資料夾
         foreach($path_arr as $key => $value){               // 逐筆繞出來
             $file_to   .= $row_obj[$value]."/";             // 疊加to
-            if(!is_dir($file_to)){ mkdir($file_to); }       // 检查資料夾是否存在 then mkdir
+            if(!is_dir($file_to)){ 
+                mkdir($file_to);
+            }       // 检查資料夾是否存在 then mkdir
         }
 
         // 確認檔案在form目錄下

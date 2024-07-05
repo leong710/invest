@@ -343,6 +343,7 @@
                     "type" : "file",
                     "name" : "a_pic",
                     "class": "",
+                    "accept"  : ".jpg,.png,.gif,.bmp",
                     "required": false
                 }
             ]

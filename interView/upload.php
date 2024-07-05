@@ -17,14 +17,14 @@
         // 初始化變量
         $i = 1;
         $upload_FileName = $baseName.$extension;   // 組合成 檔名+副檔名
-        // // 迴圈檢查檔案是否存在
-        // while (is_file($uploadDir.$upload_FileName)) {
-        //     $upload_FileName =  $baseName ."_". $i. $extension;
-        //     $i++;
-        // }
-        if(is_file($uploadDir.$upload_FileName)){  // 直接unlink
-            unlink($uploadDir.$upload_FileName);
+        // 迴圈檢查檔案是否存在
+        while (is_file($uploadDir.$upload_FileName)) {
+            $upload_FileName =  $baseName ."_". $i. $extension;
+            $i++;
         }
+        // if(is_file($uploadDir.$upload_FileName)){  // 直接unlink
+        //     unlink($uploadDir.$upload_FileName);
+        // }
             
         $uploadFile = $uploadDir . basename($upload_FileName);
 
