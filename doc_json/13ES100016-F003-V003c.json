@@ -757,7 +757,7 @@
                     "label": "3.其他",
                     "type" : "text",
                     "name" : "s7b_text_other",
-                    "required": true
+                    "required": false
                 }
             ]
         },
@@ -780,18 +780,30 @@
                     "options" : [
                         { "label" : "不安全行為" ,  "value" : {
                                                         "label": "不安全行為",
-                                                        "type" : "text",
+                                                        "type" : "select",
                                                         "name" : "s8_combo_02",
                                                         "info"  : "(unsafe behavior)",
-                                                        "value": ""
+                                                        "options" : [
+                                                            { "label" : "UA" , "value" : "UA_作業步驟遵循(人的行為)" },
+                                                            { "label" : "UB" , "value" : "UB_設備與工具的使用(指人所使用工具)" },
+                                                            { "label" : "UC" , "value" : "UC_保護措施執行(指設備安全面向)" },
+                                                            { "label" : "UD" , "value" : "UD_缺乏注意力和認知(描述事件、行為)" }
+                                                        ],
+                                                        "required"  : true
                                                     },
                             "class" : "other_item" },
                         { "label" : "不安全環境" , "value" : {
                                                         "label": "不安全環境",
-                                                        "type" : "text",
+                                                        "type" : "select",
                                                         "name" : "s8_combo_02",
                                                         "info"  : "(unsafe environment)",
-                                                        "value": ""
+                                                        "options" : [
+                                                            { "label" : "IA" , "value" : "IA_警示防護設施(環境上的警示)" },
+                                                            { "label" : "IB" , "value" : "IB_工具與設備(指設備本身設計)" },
+                                                            { "label" : "IC" , "value" : "IC_危害因子暴露(人傷相關)" },
+                                                            { "label" : "ID" , "value" : "ID_作業場所環境與配置(指環境因素)" }
+                                                        ],
+                                                        "required"  : true
                                                     },
                             "class" : "other_item" },
                         { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }

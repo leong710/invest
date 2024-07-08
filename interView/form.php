@@ -55,6 +55,10 @@
         $init_error = ($form_doc) ? '查無表單：'.$form_doc : "無參照範本";
     }
 
+    // 
+    $let_btn_s = '<button type="button" class="btn ';
+    $let_btn_m = '" data-bs-toggle="modal" data-bs-target="#saveSubmit" value="';
+    $let_btn_e = '" onclick="saveSubmit_modal(this.value, this.innerHTML);">';
 ?>
 
 <?php include("../template/header.php"); ?>
@@ -161,7 +165,7 @@
             <div class="col-12 col-md-2 col-lg-2 px-1 py-0">
                 <div id="session-group" class="list-group">
                     <?php if(in_array($action,["create", "edit"])){ ?>
-                        <button class="list-group-item list-group-item-action text-center" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
+                        <button class="list-group-item list-group-item-action text-center" onclick="saveSubmit_modal('6', this.innerHTML)" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存 (Save)</button>
                     <?php } ?>
                     <a class="list-group-item list-group-item-action" href="#form_top">Home</a>
                 </div>
@@ -174,12 +178,12 @@
                     </div>
                     <div class="col-6 col-md-6 py-0 text-end head_btn">
                         <span id="submit_btn">
-                            <?php if(!$init_error){ ?>
-                                <a href="#" target="_blank" title="Submit" class="btn btn-primary" onclick="changeMode('submit')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa fa-paper-plane" aria-hidden="true"></i> 送出</a>
-                            <?php }
-                            if(in_array($action,["create", "edit"])){ ?>
-                                <button type="button" id="add_site_btn" class="btn btn-success" onclick="changeMode('save')" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存</button>
-                            <?php } ?>
+                            <?php if(!$init_error){ 
+                                echo $let_btn_s."btn-primary".$let_btn_m."1".$let_btn_e."立案 (Register)</button> ";
+                             }
+                            if(in_array($action,["create", "edit"])){ 
+                                echo $let_btn_s."btn-success".$let_btn_m."6".$let_btn_e."儲存 (Save)</button> ";
+                            } ?>
                         </span>
                         <?php if(isset($action) && $action == "review"){
                             echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp另存PDF</button> ";
@@ -201,23 +205,19 @@
                         <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>
                         <span id="pdf_name" class="unblock">
                             <?php echo isset($document_row["fab_title"]) ? $document_row["fab_title"]:""; echo isset($document_row["short_name"]) ? "_".$document_row["short_name"]:"";?></span>
-
-                        <span id="cansole_btn">
-                            <?php
-                                // 表單狀態：1送出 2退回 4編輯 5轉呈 6暫存
-                                if(in_array($receive_row['idty'], [ 1, 2, 4, 5, 6 ])){ 
-                                    echo $let_btn_s."bg-warning text-dark".$let_btn_m."3".$let_btn_e."作廢 (Abort)</button> ";
-                                } 
-                            ?>
-                        </span>
                         <span id="delete_btn">
-                            <?php if(($sys_role <= 1 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
+                            <?php if(($sys_role === 0 ) && (isset($document_row['idty']) && $document_row['idty'] != 0)){ ?>
                                 <form action="process.php" method="post">
                                     <input  type="hidden" name="action"          value="delete">
                                     <input  type="hidden" name="uuid"            value="<?php echo $document_row["uuid"];?>">
                                     <button type="submit" name="delete_document" title="刪除申請單" class="btn btn-danger" onclick="return confirm(`確認徹底刪除此單？`)"><i class="fa-regular fa-trash-can"></i> 刪除</button>
                                 </form>
-                            <?php }?>
+                            <?php }else{
+                                // 表單狀態：1送出 2退回 4編輯 5轉呈 6暫存
+                                if($action !== 'create' && in_array($document_row['idty'], [ 1, 2, 4, 5, 6 ])){ 
+                                    echo $let_btn_s."bg-warning text-dark".$let_btn_m."3".$let_btn_e."作廢 (Abort)</button> ";
+                                } 
+                            } ?>
                         </span>
                     </div>
                 </div>
@@ -357,7 +357,7 @@
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header rounded p-3 m-2 text-white">
-                                        <h5 class="modal-title">Do you want to <span id="modal_action"></span> this 事故訪談表</h5>
+                                        <h5 class="modal-title">Do you want to <span id="modal_action"></span> this Case</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">

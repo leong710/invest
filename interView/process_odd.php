@@ -94,7 +94,7 @@
                            <!-- upload utility -->
                     <div class="form-floating">
                         <input type="date" name="_odd['od_day']" id="od_day" class="form-control mb-0" value="" require>
-                        <label for="od_day" class="form-label">_odd/職災申報完成日期：<sup class="text-danger"> * </sup></label>
+                        <label for="od_day" class="form-label">od_day/職災申報完成日期：<sup class="text-danger"> * </sup></label>
                     </div>
                 </div>
             </div>

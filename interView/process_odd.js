@@ -1,4 +1,9 @@
 
+    $(function () {
+        // 在任何地方啟用工具提示框
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+
     function Callback_submit_btn(result){
         result["window"] = 'auto_close';
         do_swal(result);
@@ -66,23 +71,24 @@
         });
     }
 
-    $(function () {
-        // 在任何地方啟用工具提示框
-        $('[data-toggle="tooltip"]').tooltip();
-    })
 
     $(document).ready(function () {
 
-        let submit_btn = document.getElementById("submit");
+        const row_json = document.getElementById('row_json').innerText;   // 取得row_json
+        const row_obj  = JSON.parse(row_json);                            // row_json轉row_obj
+        if(row_obj["_odd"] !== undefined && row_obj["_odd"]["od_day"]){
+            document.getElementById('od_day').value = row_obj["_odd"]["od_day"];
+        }
+
+        const submit_btn = document.getElementById("submit");
         submit_btn.addEventListener('click', function(){
-            let od_day_new = document.getElementById('od_day').value;           // 取得新od_day上傳名稱
+            const od_day_new = document.getElementById('od_day').value;           // 取得新od_day上傳名稱
             if((od_day_new == "") && !confirm('未填職災申報完成日期!! 此動作會將原有日期(od_day)移除，確定要這麼做?')){
                 return;
 
             }else{
-                let row_json = document.getElementById('row_json').innerText;   // 取得row_json
-                let row_obj  = JSON.parse(row_json);                            // row_json轉row_obj
                 row_obj['_odd']['od_day'] = od_day_new;                         // 將od_day_new導入row_obj
+                console.log('row_obj...', row_obj);
                 update_odd(row_obj , Callback_submit_btn);                      // myCallback
             }
         })

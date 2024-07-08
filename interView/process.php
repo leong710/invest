@@ -24,7 +24,7 @@
             $swal_json  =  store_document($_REQUEST); 
             break;
 
-        case "edit":                                    // 編輯.更新    $idty => 1(送出--詳細比對); 6(暫存--排除比對);
+        case "edit":                                    // 編輯.更新    $idty => 1(送出--詳細比對); 3(取消--詳細比對); 6(暫存--排除比對);
             $action_fun = "update_document";
             $swal_json  =  update_document($_REQUEST);
             break;

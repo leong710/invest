@@ -151,14 +151,14 @@
             $row_editions = $row_document["editions"];
 
         // step3.使用迴圈刪除指定的元素for舊紀錄 因為不需要比對 == DB_item
-            $unset_keys = array('id','uuid','dcc_no',  'idty','action','step',  'created_emp_id','created_cname','created_at',  'updated_at','updated_cname','sign_comm',  'logs','editions', 
-                                 'in_sign','in_signName','flow', 'submit_document','update_document','save_document'); 
+            $unset_keys = array('id','uuid','dcc_no',  'action','step',  'created_emp_id','created_cname','created_at',  'updated_at','updated_cname','sign_comm',  'logs','editions', 
+                                 'in_sign','in_signName','flow', 'submit_document','update_document','save_document','cancel_document', 'confirm_sign'); 
             //使用 array_diff_key() 函數，它會返回兩個或多個數組之間的差異，這樣就不需要使用循環逐個 unset 了。這樣會更簡潔和高效。
             $row_document = array_diff_key($row_document, array_flip($unset_keys));                 // 舊文件--去殼成 純舊文件
             $new_document = array_diff_key($request     , array_flip($unset_keys));                 // 新文件--去殼成 純新文件
 
         // step4.使用迴圈將指定的元素提前進行比對 == Basic_item
-            $check_1 = array('anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'confirm_sign','ruling_sign','a_pic','meeting_man_d','omager');
+            $check_1 = array('idty', 'anis_no','fab_id','local_id',  'case_title','a_dept','meeting_time','meeting_local',  'ruling_sign','a_pic','meeting_man_d','omager');
             $check_2 = array('meeting_man_a','meeting_man_o','meeting_man_s');
             $check_desc = array('a_self_desc','a_others_desc');    // 240705 事故者+目擊者自述
 
@@ -291,7 +291,7 @@
 
             unset($new_content["_odd"]);                                                            // _odd從記錄中移除 for $_content
             // 20240611 確認申報日期 -- 呼叫通報判斷fun
-            $new_document["_odd"] = confirm_odd($new_content);
+            $new_document["_odd"] = !empty($row_document["_odd"]) ? $row_document["_odd"] : confirm_odd($new_content);
 
             $check_3 = [
                     "_odd"    => [

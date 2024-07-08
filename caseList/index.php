@@ -196,12 +196,15 @@
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
                                     <td>
-                                        <button type="button" value="..\interView\form.php?action=review&uuid=<?php echo $caseList['uuid'];?>" class="tran_btn" 
-                                            onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷"><?php echo $caseList["anis_no"] ?></button>
-                                        <?php if(empty($caseList["confirm_sign"])){ ?>&nbsp;
-                                            <button type="button" value="..\interView\form.php?action=edit&uuid=<?php echo $caseList['uuid'];?>" class="btn btn-sm btn-xs btn-success" 
-                                                onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="編輯問卷"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <?php } ?>
+                                        <?php 
+                                        echo "<button type='button' value='../interView/form.php?action=review&uuid={$caseList["uuid"]}' class='tran_btn' 
+                                            onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='檢視問卷'>{$caseList["anis_no"]}</button>";
+
+                                        if((empty($caseList["confirm_sign"]) && $caseList["idty"] != '3') && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= '1')){ 
+                                            echo "&nbsp<button type='button' value='../interView/form.php?action=edit&uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
+                                                .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
+                                                "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯問卷'><i class='fa-solid fa-pen-to-square'></i></button>";
+                                        } ?>
                                     </td>
 
 
@@ -219,7 +222,7 @@
                                                 case '0':  $c_idty .= '.啟單';      break;
                                                 case '1':  $c_idty .= '.簽核中';    break;
                                                 case '2':  $c_idty .= '.退件';      break;
-                                                case '3':  $c_idty .= '.取消';      break;
+                                                case '3':  $c_idty .= '.作廢';      break;
                                                 case '4':  $c_idty .= '.編輯';      break;
                                                 case '6':  $c_idty .= '.暫存';      break;
                                                 case '10': $c_idty .= '.結案';      break;
@@ -239,10 +242,10 @@
                                             echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
                                             echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
                                             echo "</span>";
-                                            if(!empty($_odd["due_day"]) && (empty($_odd["od_day"]) || $sys_role <=1 )){
-                                                echo "&nbsp<button type='button' class='btn btn-sm btn-xs btn-outline-success add_btn' data-toggle='tooltip' data-placement='bottom' title='編輯申報日' ";
-                                                echo " value='../interView/process_odd.php?uuid={$caseList["uuid"]}' ";
-                                                echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-pen-to-square'></i></button>";
+                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= '1' )){
+                                                echo "&nbsp<button type='button' value='../interView/process_odd.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
+                                                    .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
+                                                    "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯申報日'><i class='fa-solid fa-pen-to-square'></i></button>";
                                             } 
                                         ?>
                                     </td>
@@ -256,10 +259,10 @@
                                             echo "value='../doc_pdf/{$pdf_path}{$caseList["confirm_sign"]}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
                                         };
-                                        if(!empty($caseList["confirm_sign"]) || $sys_role <= 2){
-                                            echo "<button type='button' class='btn btn-sm btn-xs btn-outline-secondary add_btn' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
-                                            echo "value='../interView/process_pdf.php?uuid={$caseList["uuid"]}' ";
-                                            echo " onclick='openUrl(this.value)' ><i class='fa fa-plus'></i></button>";
+                                        if((empty($caseList["confirm_sign"]) && $caseList["idty"] === "1" && $caseList["idty"] !== "3" && $caseList["created_emp_id"] == $auth_emp_id) || $sys_role <= 1){
+                                            echo "<button type='button' value='../interView/process_pdf.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
+                                                .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-secondary" : "btn-outline-secondary add_btn" ).
+                                                "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ><i class='fa fa-plus'></i></button>";
                                         }; ?>
                                     </td>
                                         

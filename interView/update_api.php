@@ -15,18 +15,6 @@
         } else if (empty($function) && !empty($aResult['error'])) {
             $aResult['error'] .= ' 未指定function!';
         }
-
-    // step-2.組合查詢參數陣列
-        $su = ["case_year", "confirm_sign", "confirm_sign_new", "fab_title", "short_name", "uuid"]; // update_confirm_sign
-        $su = ["_odd", "uuid"]; // update_confirm_sign
-    // 接收來自前端的資料
-        foreach($_REQUEST as $key => $key_value){
-            // if(empty($key_value) && $key != "confirm_sign_new"){        // 但書for刪除=>
-            //     $aResult['error'] = (empty($aResult['error'])) ? $key.' - 空值錯誤!' : $aResult['error'].$key.' - 空值錯誤!';
-            // }else{
-            // }
-            $su[$key] = $key_value;
-        };
         
     // step-3.確認基本數值具備且無誤 => 執行function
         if( !isset($aResult['error']) ) {
@@ -35,6 +23,16 @@
             switch($function) {
                 // fun-1.update_confirm_sign 快速更換上傳pdf文件 
                 case 'update_confirm_sign':
+                    // step-2.組合查詢參數陣列
+                    $su = ["case_year", "confirm_sign", "confirm_sign_new", "fab_title", "short_name", "uuid"]; // update_confirm_sign
+                    // 接收來自前端的資料
+                        foreach($_REQUEST as $key => $key_value){
+                            // if(empty($key_value) && $key != "confirm_sign_new"){        // 但書for刪除=>
+                            //     $aResult['error'] = (empty($aResult['error'])) ? $key.' - 空值錯誤!' : $aResult['error'].$key.' - 空值錯誤!';
+                            // }else{
+                            // }
+                            $su[$key] = $key_value;
+                        };
                     if(empty($su['uuid'])) {
                         $aResult['error'] = $function.'：uuid - 參數錯誤!';
                     } else {
@@ -44,6 +42,12 @@
 
                 // fun-2.update_odd 快速更換 職災申報日期_odd
                 case 'update_odd':
+                    // step-2.組合查詢參數陣列
+                    $su = ["_odd", "uuid"]; // update_confirm_sign
+                    // 接收來自前端的資料
+                        foreach($_REQUEST as $key => $key_value){
+                            $su[$key] = $key_value;
+                        };
                     if(empty($su['uuid'])) {
                         $aResult['error'] = $function.'：uuid - 參數錯誤!';
                     } else {

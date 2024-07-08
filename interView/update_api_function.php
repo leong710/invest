@@ -26,10 +26,11 @@
         if(isset($result["upload"])){
             $uuid = $request["uuid"];
             $confirm_sign = $result["upload"];
-            $sql = "UPDATE _document SET confirm_sign=? WHERE uuid=?";
+            $idty = !empty($confirm_sign) ? "10" : "1"; 
+            $sql = "UPDATE _document SET confirm_sign=? , idty=? WHERE uuid=?";
             $stmt = $pdo->prepare($sql);
             try {
-                $stmt->execute([$confirm_sign, $uuid]);
+                $stmt->execute([$confirm_sign, $idty, $uuid]);
                 $swal_json["action"]   = "success";
                 $swal_json["content"] .= '儲存成功';
             }catch(PDOException $e){
@@ -68,8 +69,14 @@
 
         // 確認檔案在form目錄下
         if(is_file($file_from.$uploadFile)){
-            $new_uploadFile = (is_file($file_to.$uploadFile)) ? $baseName."_".$rename_time.$extension : $uploadFile ;
-            $uploadResult = rename( $file_from.$uploadFile , $file_to.$new_uploadFile );                // 搬到to
+
+            $new_uploadFile = $baseName."_".$rename_time .$extension;
+            // 檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
+            for ($i = 2; is_file($file_to.$new_uploadFile); $i++) {
+                $new_uploadFile = $baseName."_".$rename_time."_".$i .$extension;    // 合成上傳 檔名
+            }
+
+            $uploadResult = rename($file_from.$uploadFile , $file_to.$new_uploadFile);                // 搬到to
             return $uploadResult ? $new_uploadFile : false;
         }else{
             return false;
@@ -99,7 +106,14 @@
         // 確認檔案在form目錄下
         if(is_file($file_from.$unlinkFile)){
             // unlink($unlinkFile);                         // 移除檔案 => 盡量避免憾事發生
-            return rename( $file_from.$unlinkFile , $file_to.$baseName."_".$rename_time.$extension );    // 搬到offLine
+
+            $toFile = $file_to.$unlinkFile;
+            // 檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
+            for ($i = 2; is_file($toFile); $i++) {
+                $refileName = $baseName . "_" . $i . $extension;    // 合成上傳 檔名
+                $toFile = $file_to.$refileName;
+            }
+            return rename( $file_from.$unlinkFile , $toFile );    // 搬到offLine
         }else{
             return false;
         }
