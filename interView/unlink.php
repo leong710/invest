@@ -1,13 +1,29 @@
 <?php
     // 检查文件是否有帶來
     if(isset($_REQUEST['unlinkFile'])) {
-        extract($_REQUEST);                                                 // unlinkFile、fileName
+        extract($_REQUEST);                                 // unlinkFile、fileName
 
-            // 這裡 for a_pic
-            if(!isset($_REQUEST['fileName'])){
+        switch($fun_key){
+            case "a_pic":
                 $uploadDir = '../image/temp/';              // 過度路徑，submit後再搬移到正是路徑
-                $unlinkFile =  $uploadDir.$unlinkFile;      // 組合成 路徑+檔案
-            }
+                $sourceDir  = '../image/a_pic/';                                    // let doc_pdf 路徑
+                $offLineDir = '../image/a_pic/offLine/';                            // let doc_pdf/offLine 路徑
+                break;
+            case "a_self_desc":    
+            case "a_others_desc":    
+                $uploadDir = '../doc_pdf/temp/';            // 過度路徑，submit後再搬移到正是路徑
+                $sourceDir  = '../doc_pdf/a_desc/';                             // let doc_pdf 路徑
+                $offLineDir = '../doc_pdf/a_desc_offLine/';                     // let doc_pdf/offLine 路徑
+                break;
+            default:
+                $uploadDir = "";
+        }
+
+
+        // 這裡 for a_pic
+        if(!isset($_REQUEST['fileName'])){
+            $unlinkFile =  $uploadDir.$unlinkFile;      // 組合成 路徑+檔案
+        }
 
         // 1.確認檔案在目錄下
         if(is_file($unlinkFile)) {
@@ -22,8 +38,7 @@
                     $moved = unlink($unlinkFile);                                   // 移除檔案 => 盡量避免憾事發生
     
                 }else{  // 2.不是過度 then 搬移~
-                    $sourceDir  = '../doc_pdf/';                                    // let doc_pdf 路徑
-                    $offLineDir = '../doc_pdf/offLine/';                            // let doc_pdf/offLine 路徑
+
                     if(!is_dir($offLineDir)){ mkdir($offLineDir); }                 // 检查offLineDir資料夾是否存在
     
                     $offLineDir_path_unlinkFile = str_replace($sourceDir, $offLineDir, $unlinkFile);   // 含有 offLine path+fileName

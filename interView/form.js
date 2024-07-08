@@ -57,25 +57,25 @@
         }
     }
     // 20240506 saveSubmit modal添加save功能
-    function changeMode(mode){
+    function saveSubmit_modal(idty, idty_title){
         $('#modal_action, #submit_action').empty();         // 清除model標題和btn功能
-        $('#modal_action').append(mode);                    // 炫染model標題
+        $('#modal_action').append(idty_title);                    // 炫染model標題
+        $('#idty').val(idty);                               // 1 = 送出 // 3 = 取消 // 6 = 暫存
 
-        if(mode == 'submit'){
-            $('#idty').val('1');                            // 1 = 送出
-            $('#saveSubmit .modal-header').removeClass('bg-success').addClass("bg-primary");    // 切換標題底色
+        if(idty == '1'){
+            $('#saveSubmit .modal-header').removeClass('bg-success bg-warning text-dark').addClass("bg-primary text-white");    // 切換標題底色
             $('#modal_body').removeClass('unblock');        // 切換sign command
-            let submit_btn = '<button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>';
-            $('#submit_action').append(submit_btn);         // model_btn功能
-            
-        }else if(mode == 'save'){
-            $('#idty').val('6');                            // 6 = 暫存
-            $('#saveSubmit .modal-header').removeClass('bg-primary').addClass("bg-success");    // 切換標題底色
+            var append_btn = '<button type="submit" value="Submit" name="submit_document" class="btn btn-primary" ><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>';
+        }else if(idty == '3'){
+            $('#saveSubmit .modal-header').removeClass('bg-primary bg-success text-white').addClass("bg-warning text-dark");    // 切換標題底色
+            $('#modal_body').removeClass('unblock');        // 切換sign command
+            var append_btn = '<button type="submit" value="Cancel" name="cancel_document" class="btn btn-warning text-dark" onclick="setFormBequired()" ><i class="fa-solid fa-ban"></i> 作廢 (Abort)</button>';
+        }else if(idty == '6'){
+            $('#saveSubmit .modal-header').removeClass('bg-primary bg-warning text-dark').addClass("bg-success text-white");    // 切換標題底色
             $('#modal_body').addClass("unblock");           // 切換sign command
-            let save_btn =   '<button type="submit" value="Save" name="save_document" class="btn btn-success" onclick="setFormBequired()" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 儲存 (Save)</button>';
-            $('#submit_action').append(save_btn);           // model_btn功能
-
+            var append_btn = '<button type="submit" value="Save" name="save_document" class="btn btn-success" onclick="setFormBequired()" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> 儲存 (Save)</button>';
         }
+        $('#submit_action').append(append_btn);           // model_btn功能
     }
     
     // tab_table的顯示關閉功能
@@ -274,24 +274,69 @@
     }
     // a_pic的 uploadFile 函数
     function uploadFile(key) {
-        let formData = new FormData();
-        let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
-        let uploadDir = '../image/temp/';                                                                               // a_pic temp dir
-        formData.append('file', fileInput.files[0]);
-        formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
-        let xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        const fileInput = document.getElementById(key + '_row');        // 取得row input檔名
+        const unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
+
+        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+            alert('No file selected.');
+            return;
+        }
+
+        var uploadDir = "";
+        switch(key){
+            case "a_pic":
+                uploadDir = '../image/temp/';           // a_pic temp dir
+                break;
+            case "a_self_desc":    
+            case "a_others_desc":    
+                uploadDir = '../doc_pdf/temp/';         // a_pic temp dir
+                break;
+            default:
+                alert('Invalid key...1');
+                return;
+        }
+
+        formData.append('file', fileInput.files[0]);    // 新的檔案
+        formData.append('uploadDir', uploadDir);        // 上船路徑
+        formData.append('fun_key', key);                // 呼叫功能來源
+        formData.append('unlinkFile', unlinkFile);      // 舊的檔案
+
+        const xhr = new XMLHttpRequest();
         xhr.open('POST', 'upload.php', true);
+
         xhr.onload = function () {
             if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-                let preview_modal = '<a href="' + response.filePath + '" target="_blank" >';                            // 生成預覽按鈕a
-                let src_img = '<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;">';        // 生成img
-                document.getElementById('preview_' + key).innerHTML = preview_modal + src_img +'</a>';                  // 套上a+img
+                const response = JSON.parse(xhr.responseText);      // 接收回傳
+
+                var preview_modal = '';
+                switch(key){
+                    case "a_pic":
+                        preview_modal = '<a href="' + response.filePath + '" target="_blank" >'
+                                        +'<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;"></a>'; // 套上a+img
+                        break;
+                    case "a_self_desc":    
+                    case "a_others_desc":    
+                        preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">'
+                                        + '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'
+                                        + response.fileName + '</p>';
+                        break;
+                    default:
+                        alert('Invalid key...2');
+                        return;
+                }
+                document.getElementById('preview_' + key).innerHTML = preview_modal;
                 document.getElementById(key).value = response.fileName;                                                 // a_pic加上時間搓
 
             } else {
                 alert('Upload failed. Please try again.');
             }
+        };
+        xhr.onerror = function() {
+            alert('Upload failed due to a network error. Please try again.');
+        };
+        xhr.onabort = function() {
+            alert('Upload aborted. Please try again.');
         };
         xhr.send(formData);
     }
@@ -301,6 +346,7 @@
         let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
         console.log(key, unlinkFile);
         formData.append('unlinkFile', unlinkFile);
+        formData.append('fun_key', key);            // a_pic temp dir
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'unlink.php', true);
         xhr.onload = function () {
@@ -316,50 +362,50 @@
         };
         xhr.send(formData);
     }
-    // a_pdf的 uploadFile 函数
-    function uploadFile_pdf(key) {
-        let formData = new FormData();
-        let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
-        let uploadDir = '../doc_pdf/temp/';                                                                               // a_pic temp dir
-        formData.append('file', fileInput.files[0]);
-        formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'upload.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-                let preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">';                            // 生成預覽按鈕a
-                let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+response.fileName+'</p>';
-                document.getElementById('preview_' + key).innerHTML = preview_modal + file_info +'</a>';                  // 套上a+img
-                document.getElementById(key).value = response.fileName;                                                 // a_pic加上時間搓
+    // // a_pdf的 uploadFile 函数
+    // function uploadFile_pdf(key) {
+    //     let formData = new FormData();
+    //     let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
+    //     let uploadDir = '../doc_pdf/temp/';                                                                               // a_pic temp dir
+    //     formData.append('file', fileInput.files[0]);
+    //     formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
+    //     let xhr = new XMLHttpRequest();
+    //     xhr.open('POST', 'upload.php', true);
+    //     xhr.onload = function () {
+    //         if (xhr.status === 200) {
+    //             let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+    //             let preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">';                            // 生成預覽按鈕a
+    //             let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+response.fileName+'</p>';
+    //             document.getElementById('preview_' + key).innerHTML = preview_modal + file_info +'</a>';                  // 套上a+img
+    //             document.getElementById(key).value = response.fileName;                                                 // a_pic加上時間搓
 
-            } else {
-                alert('Upload failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
-    // a_pdf的 unlinkFile 函数
-    function unlinkFile_pdf(key) {
-        let formData = new FormData();
-        let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
-        console.log(key, unlinkFile);
-        formData.append('unlinkFile', unlinkFile);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'unlink_pdf.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-                document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
-                document.getElementById(key + '_row').value = '';                                                       // 清除選擇row檔案
-                document.getElementById(key).value = '';                                                                // 清除a_pic
+    //         } else {
+    //             alert('Upload failed. Please try again.');
+    //         }
+    //     };
+    //     xhr.send(formData);
+    // }
+    // // a_pdf的 unlinkFile 函数
+    // function unlinkFile_pdf(key) {
+    //     let formData = new FormData();
+    //     let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
+    //     console.log(key, unlinkFile);
+    //     formData.append('unlinkFile', unlinkFile);
+    //     let xhr = new XMLHttpRequest();
+    //     xhr.open('POST', 'unlink_pdf.php', true);
+    //     xhr.onload = function () {
+    //         if (xhr.status === 200) {
+    //             // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
+    //             document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
+    //             document.getElementById(key + '_row').value = '';                                                       // 清除選擇row檔案
+    //             document.getElementById(key).value = '';                                                                // 清除a_pic
 
-            } else {
-                alert('unlink failed. Please try again.');
-            }
-        };
-        xhr.send(formData);
-    }
+    //         } else {
+    //             alert('unlink failed. Please try again.');
+    //         }
+    //     };
+    //     xhr.send(formData);
+    // }
     // signature簽名板 // 240600-改用輸出PDF後簽名
     async function signature_canva() {
         return new Promise((resolve) => { 
@@ -833,8 +879,8 @@
                 if(!check_action){
                     int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
                         + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" '+(item_a.accept ? 'accept="'+item_a.accept+'"':'')+' >'
-                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile_pdf(\'' + item_a.name + '\')">上傳</button>' 
-                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile_pdf(\'' + item_a.name + '\')">移除</button>' 
+                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">上傳</button>' 
+                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">移除</button>' 
                         + '</div></div>' + '</div></div>'
                 }
                 break;  
@@ -999,7 +1045,7 @@
                         for (const [_key, _value] of Object.entries(_focus)){
                             let preview_modal = '<a href="' + a_desc_path + _value + '" target="_blank" class="btn text-danger add_btn">';  // 生成預覽按鈕a
                             let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+_value+'</p>';
-
+                            // let del_btn = "<button type='button' class='btn btn-outline-danger' onclick='return confirm(`確定要刪除此文件？`) &&unlinkFile_pdf(`_focus`,`"+_key+"`)' data-toggle='tooltip' data-placement='bottom' title='刪除"+_key+"檔案'><i class='fa-solid fa-delete-left'></i></button>"; 
                             let preview_item  = document.getElementById('preview_' + _key); 
                             if(preview_item){
                                 preview_item.innerHTML = preview_modal + file_info +'</a>';                                               // 套上a+img
@@ -1195,6 +1241,7 @@
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData() {
         try {
+                mloading(); 
                 // await load_fun('locals','', init_locals);   // step_0 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
@@ -1207,6 +1254,8 @@
         } catch (error) {
             console.error(error);
         }
+        $("body").mLoading("hide");
+
     }
 
     // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw123456p.cminl.oa
