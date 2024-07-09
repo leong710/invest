@@ -254,9 +254,9 @@
 
                                     <td class="text-end"><?php
                                         if(!empty($caseList["confirm_sign"])) {
-                                            $pdf_path = "{$caseList["fab_title"]}/{$caseList["short_name"]}/{$caseList["case_year"]}/";
+                                            $pdf_path = "{$caseList["case_year"]}/{$caseList["anis_no"]}/";
                                             echo "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' ";
-                                            echo "value='../doc_pdf/{$pdf_path}{$caseList["confirm_sign"]}' ";
+                                            echo "value='../doc_files/{$pdf_path}{$caseList["confirm_sign"]}' ";
                                             echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
                                         };
                                         if((empty($caseList["confirm_sign"]) && $caseList["idty"] === "1" && $caseList["idty"] !== "3" && $caseList["created_emp_id"] == $auth_emp_id) || $sys_role <= 1){

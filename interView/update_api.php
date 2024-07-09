@@ -24,7 +24,7 @@
                 // fun-1.update_confirm_sign 快速更換上傳pdf文件 
                 case 'update_confirm_sign':
                     // step-2.組合查詢參數陣列
-                    $su = ["case_year", "confirm_sign", "confirm_sign_new", "fab_title", "short_name", "uuid"]; // update_confirm_sign
+                    $su = ["case_year", "confirm_sign", "confirm_sign_new", "anis_no", "uuid"]; // update_confirm_sign
                     // 接收來自前端的資料
                         foreach($_REQUEST as $key => $key_value){
                             // if(empty($key_value) && $key != "confirm_sign_new"){        // 但書for刪除=>

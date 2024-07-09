@@ -8,7 +8,7 @@
 
     $document_row = [];
     $row_obj      = [];
-    $get_item_arr = ["uuid", "confirm_sign", "fab_title", "short_name"];  // 建立取用欄位； 例外處理："created_at", "case_year", "row_confirm_sign"
+    $get_item_arr = ["uuid", "confirm_sign", "anis_no"];  // 建立取用欄位； 例外處理："created_at", "case_year", "row_confirm_sign"
     
     $uuid         = (isset($_REQUEST["uuid"])) ? $_REQUEST["uuid"] : "";
     if(!empty($uuid)){
@@ -70,9 +70,9 @@
                     <div class="row">
                         <div class="col-6 col-md-7 py-0 t-right" id="confirm_sign_asis" style="font-size: 12px;">
                             <?php if(!empty($document_row["confirm_sign"])){
-                                    echo "<button type='button' class='btn text-danger add_btn' id='doc_pdf_icon' data-toggle='tooltip' data-placement='bottom' title='{$document_row["confirm_sign"]}' ";
-                                    echo " value='../doc_pdf/{$row_obj["fab_title"]}/{$row_obj["short_name"]}/{$row_obj["case_year"]}/{$document_row["confirm_sign"]}' ";
-                                    echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></br>as is</button>"; 
+                                    echo "<a target='_blank' class='btn text-danger add_btn' id='doc_pdf_icon' data-toggle='tooltip' data-placement='bottom' title='{$document_row["confirm_sign"]}' ";
+                                    echo " href='../doc_files/{$row_obj["case_year"]}/{$row_obj["anis_no"]}/{$document_row["confirm_sign"]}' ";
+                                    echo " ><i class='fa-solid fa-file-pdf fa-2x'></i></br>as is</a>"; 
                                 }else{
                                     echo "-- nothing --";
                             } ?>

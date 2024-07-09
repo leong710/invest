@@ -1,19 +1,18 @@
 
-    // PDF的 uploadFile --暫存區 函数        // 這裡只負責上到../doc_pdf/temp/內，轉存由下一步處理
+    // PDF的 uploadFile --暫存區 函数    // btn觸發    // 這裡只負責上到../doc_files/temp/內，轉存由下一步處理
     function uploadFile_pdf(key) {
         let formData = new FormData();
         let fileInput = document.getElementById(key + '_upload');                                                       // 取得row input檔名
-        let uploadDir = '../doc_pdf/temp/';                                                                             // doc_pdf temp dir
+        let uploadDir = '../doc_temp/';                                                                             // doc_pdf temp dir
         formData.append('file', fileInput.files[0]);
         formData.append('uploadDir', uploadDir);                                                                        // doc_pdf temp dir
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'upload.php', true);
         xhr.onload = function () {
             if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);                               // 接收回傳
-                let new_tobe_pdf = '<button type="button" class="btn text-success add_btn" id="doc_pdf_icon" data-toggle="tooltip" data-placement="bottom" ';
-                new_tobe_pdf += ' title="'+response.fileName+'" value="'+response.filePath+'" ';
-                new_tobe_pdf += " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></br>to be</button>"; 
+                const response = JSON.parse(xhr.responseText);                               // 接收回傳
+                let new_tobe_pdf = '<a target="_blank" class="btn text-success add_btn" id="doc_pdf_icon" data-toggle="tooltip" data-placement="bottom" ';
+                new_tobe_pdf += ' title="'+response.fileName+'" href="'+response.filePath+'" ><i class="fa-solid fa-file-pdf fa-2x"></i></br>to be</a>'; 
 
                 document.getElementById(key + '_tobe').innerHTML = new_tobe_pdf ;        // 套上btn
                 document.getElementById(key).value = response.fileName;                  // pdf加上時間搓
@@ -26,12 +25,12 @@
         xhr.send(formData);
     }
 
-    // PDF的 uplinkFile --暫存區 函数
+    // PDF的 uplinkFile --暫存區 函数   // btn觸發
     function unlinkFile_pdf(key, tag) {
         let formData = new FormData();
         if(tag =='tobe'){
             var fileName = document.getElementById(key).value;                    // 取得confirm_sign_upload上的value=檔名
-            var filePath = '../doc_pdf/temp/';
+            var filePath = '../doc_temp/';
 
         }else if(tag =='asis'){
             var row_json = document.getElementById('row_json').innerText;                   // 取得row_json
@@ -47,8 +46,10 @@
         }
         let unlinkFile = filePath+fileName;
         
-        formData.append('fileName'  , fileName);
-        formData.append('unlinkFile', unlinkFile);
+        formData.append('fileName'  , fileName);            // 純檔名
+        formData.append('unlinkFile', unlinkFile);          // 路徑+檔名
+        formData.append('row_json', row_json);          // 路徑封包
+
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'unlink.php', true);
         xhr.onload = function () {
@@ -118,7 +119,7 @@
             // swal( TITLE , CONTENT , ACTION , {buttons: false, timer:3000}).then(()=>{ closeWindow() });         // 3秒自動關閉畫面+false=不更新
     }
 
-    // doc confirm_sign的 update 函数       
+    // doc confirm_sign的 update 函数       // submit-btn觸發
     function update_confirm_sign(row_obj, myCallback) {
 
         row_obj["function"] = 'update_confirm_sign';         // 操作功能

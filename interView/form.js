@@ -272,34 +272,21 @@
             }
         })
     }
-    // a_pic的 uploadFile 函数
+    // a_pic/pdf 的 uploadFile 函数
     function uploadFile(key) {
         const formData = new FormData();
-        const fileInput = document.getElementById(key + '_row');        // 取得row input檔名
-        const unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
+        const uploadDir = '../doc_temp/';
+        const unlinkFile = document.getElementById(key).value;          // 取得 key    上的檔名
+        const fileInput = document.getElementById(key + '_row');        // 取得 key_row上的檔名(選擇檔案裡)
 
         if (!fileInput || !fileInput.files || !fileInput.files[0]) {
             alert('No file selected.');
             return;
         }
-
-        var uploadDir = "";
-        switch(key){
-            case "a_pic":
-                uploadDir = '../image/temp/';           // a_pic temp dir
-                break;
-            case "a_self_desc":    
-            case "a_others_desc":    
-                uploadDir = '../doc_pdf/temp/';         // a_pic temp dir
-                break;
-            default:
-                alert('Invalid key...1');
-                return;
-        }
-
-        formData.append('file', fileInput.files[0]);    // 新的檔案
-        formData.append('uploadDir', uploadDir);        // 上船路徑
+        
         formData.append('fun_key', key);                // 呼叫功能來源
+        formData.append('uploadDir', uploadDir);        // 上船路徑
+        formData.append('file', fileInput.files[0]);    // 新的檔案
         formData.append('unlinkFile', unlinkFile);      // 舊的檔案
 
         const xhr = new XMLHttpRequest();
@@ -313,13 +300,12 @@
                 switch(key){
                     case "a_pic":
                         preview_modal = '<a href="' + response.filePath + '" target="_blank" >'
-                                        +'<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;"></a>'; // 套上a+img
+                                      +'<img src="' + response.filePath + '" class="img-thumbnail" style="width: 50%;"></a>'; // 套上a+img
                         break;
                     case "a_self_desc":    
                     case "a_others_desc":    
                         preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">'
-                                        + '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'
-                                        + response.fileName + '</p>';
+                                        + '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">' + response.fileName + '</p>';
                         break;
                     default:
                         alert('Invalid key...2');
@@ -340,72 +326,53 @@
         };
         xhr.send(formData);
     }
-    // a_pic的 unlinkFile 函数
+    // a_pic/pdf 的 unlinkFile 函数
     function unlinkFile(key) {
-        let formData = new FormData();
-        let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
-        console.log(key, unlinkFile);
-        formData.append('unlinkFile', unlinkFile);
-        formData.append('fun_key', key);            // a_pic temp dir
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'unlink.php', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-                document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
-                document.getElementById(key + '_row').value = '';                                                       // 清除選擇row檔案
-                document.getElementById(key).value = '';                                                                // 清除a_pic
+        const formData = new FormData();
+        const uploadDir = '../doc_temp/';
+        const unlinkFile = document.getElementById(key).value;           // 取得 key上的檔名
+        const key_row_File = document.getElementById(key + '_row').value;        // 取得 key_row上的檔名(選擇檔案裡)
+        const row_json  = document.getElementById('row_json').innerText; // 取得unlink_fileName
 
-            } else {
-                alert('unlink failed. Please try again.');
+        console.log(key, unlinkFile, row_json);
+        console.log('key_row_File...', key_row_File.length);
+        
+        if(key_row_File.length !== 0){                      // true = 移除temp上傳檔； false = 清除doc檔名  (移除的動作交給儲存時的function)
+            // formData.append('fun_key', key);                // 呼叫功能來源
+            // formData.append('file', fileInput.files[0]);    // 新的檔案
+            formData.append('uploadDir', uploadDir);        // 上船路徑
+            formData.append('unlinkFile', unlinkFile);      // 純檔名key上的檔名
+            formData.append('row_json', row_json);          // 路徑封包
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'unlink.php', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // let response = JSON.parse(xhr.responseText);                          // 接收回傳
+                    document.getElementById('preview_' + key).innerHTML = '-- preView --';   // 清除preview
+                    document.getElementById(key + '_row').value = '';                        // 清除選擇row檔案
+                    document.getElementById(key).value = '';                                 // 清除a_pic
+    
+                } else {
+                    alert('unlink failed. Please try again.');
+                }
+            };
+            xhr.onerror = function() {
+                alert('unlink failed due to a network error. Please try again.');
+            };
+            xhr.onabort = function() {
+                alert('unlink aborted. Please try again.');
+            };
+            xhr.send(formData);
+
+        }else{
+            if(confirm('確認移除檔案：'+unlinkFile+'？') ){
+                document.getElementById('preview_' + key).innerHTML = '-- preView --';       // 清除preview
+                document.getElementById(key + '_row').value = '';                            // 清除選擇row檔案
+                document.getElementById(key).value = '';                                     // 清除a_pic
             }
-        };
-        xhr.send(formData);
+        }
     }
-    // // a_pdf的 uploadFile 函数
-    // function uploadFile_pdf(key) {
-    //     let formData = new FormData();
-    //     let fileInput = document.getElementById(key + '_row');                                                          // 取得row input檔名
-    //     let uploadDir = '../doc_pdf/temp/';                                                                               // a_pic temp dir
-    //     formData.append('file', fileInput.files[0]);
-    //     formData.append('uploadDir', uploadDir);                                                                        // a_pic temp dir
-    //     let xhr = new XMLHttpRequest();
-    //     xhr.open('POST', 'upload.php', true);
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-    //             let preview_modal = '<a href="' + response.filePath + '" target="_blank" class="btn text-danger add_btn">';                            // 生成預覽按鈕a
-    //             let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+response.fileName+'</p>';
-    //             document.getElementById('preview_' + key).innerHTML = preview_modal + file_info +'</a>';                  // 套上a+img
-    //             document.getElementById(key).value = response.fileName;                                                 // a_pic加上時間搓
-
-    //         } else {
-    //             alert('Upload failed. Please try again.');
-    //         }
-    //     };
-    //     xhr.send(formData);
-    // }
-    // // a_pdf的 unlinkFile 函数
-    // function unlinkFile_pdf(key) {
-    //     let formData = new FormData();
-    //     let unlinkFile = document.getElementById(key).value;                                                          // 取得a_pic加上時間搓
-    //     console.log(key, unlinkFile);
-    //     formData.append('unlinkFile', unlinkFile);
-    //     let xhr = new XMLHttpRequest();
-    //     xhr.open('POST', 'unlink_pdf.php', true);
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             // let response = JSON.parse(xhr.responseText);                                                            // 接收回傳
-    //             document.getElementById('preview_' + key).innerHTML = '-- preView --';                                  // 清除preview
-    //             document.getElementById(key + '_row').value = '';                                                       // 清除選擇row檔案
-    //             document.getElementById(key).value = '';                                                                // 清除a_pic
-
-    //         } else {
-    //             alert('unlink failed. Please try again.');
-    //         }
-    //     };
-    //     xhr.send(formData);
-    // }
     // signature簽名板 // 240600-改用輸出PDF後簽名
     async function signature_canva() {
         return new Promise((resolve) => { 
@@ -863,19 +830,9 @@
                 int_a += '</select>'+'</div>';
                 break;
             case 'file':       // session_3 事故位置簡圖
-                int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6 py-1 px-2';         // create = 半開；review = 全開
-                int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
-                if(!check_action){
-                    int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
-                        + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" '+(item_a.accept ? 'accept="'+item_a.accept+'"':'')+' >'
-                        + '<button type="button" class="btn btn-outline-success" onclick="uploadFile(\'' + item_a.name + '\')">上傳</button>' 
-                        + '<button type="button" class="btn btn-outline-danger" onclick="unlinkFile(\'' + item_a.name + '\')">移除</button>' 
-                        + '</div></div>' + '</div></div>'
-                }
-                break;  
             case 'file_pdf':       // session_3 目擊者+事故者自述
-                int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6';         // create = 半開；review = 全開
-                int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
+                int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6  ';         // create = 半開；review = 全開    py-1 px-2
+                int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="text" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
                 if(!check_action){
                     int_a += '<div class="col-6 col-md-6 py-1 px-2"><div class="col-12 bg-white border rounded ">' + commonPart()
                         + '<div class="input-group "><input type="file" name="' + item_a.name + '_row" id="' + item_a.name + '_row" class="form-control mb-0" '+(item_a.accept ? 'accept="'+item_a.accept+'"':'')+' >'
@@ -1023,36 +980,40 @@
             let special_items = ['ruling_sign','a_pic','_focus','_odd']
             special_items.forEach((special_item)=>{
                 if(document_row[special_item] != null){
+                    let files_path    = '../doc_files/'                                                                       // 指定pic路徑
+                    let case_year     = document_row.created_at.substr(0, 4);
+                    let anis_no       = document_row.anis_no;
 
                     if(special_item == 'a_pic'){        // 路線圖檔
-                        let a_pic_path    = '../image/a_pic/'                                                                       // 指定pic路徑
                         let a_pic_val     = document_row[special_item];                                                             // 取得pic_value
-                        let preview_modal = '<a href="'  + a_pic_path + a_pic_val + '" target="_blank" >';                          // 生成預覽按鈕a
-                        let src_img       = '<img src="' + a_pic_path + a_pic_val + '" class="img-thumbnail" style="width: 50%;">'; // 生成img
-                        let preview_item  = document.getElementById('preview_' + special_item); 
-                        if(preview_item){
-                            preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
-                        }            
-                        let input_item    = document.getElementById(special_item);
-                        if(input_item){
-                            input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
+                        if(a_pic_val){
+                            let preview_modal = '<a  href="' + files_path + case_year + '/' + anis_no + '/' + a_pic_val + '" target="_blank" >';                          // 生成預覽按鈕a
+                            let src_img       = '<img src="' + files_path + case_year + '/' + anis_no + '/' + a_pic_val + '" class="img-thumbnail" style="width: 50%;">'; // 生成img
+                            let preview_item  = document.getElementById('preview_' + special_item); 
+                            if(preview_item){
+                                preview_item.innerHTML = preview_modal + src_img +'</a>';                                               // 套上a+img
+                            }            
+                            let input_item    = document.getElementById(special_item);
+                            if(input_item){
+                                input_item.value = a_pic_val;                                                                           // 欄位填上pic_value
+                            }
                         }
                     }else if(special_item == '_focus'){                              // 240705 事故者+目擊者 自述
-                        let a_desc_path    = '../doc_pdf/a_desc/'                                                                    // 指定a_desc路徑
                         // let _focus = JSON.parse(document_row[special_item]);
                         let _focus = document_row[special_item];
 
                         for (const [_key, _value] of Object.entries(_focus)){
-                            let preview_modal = '<a href="' + a_desc_path + _value + '" target="_blank" class="btn text-danger add_btn">';  // 生成預覽按鈕a
-                            let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+_value+'</p>';
-                            // let del_btn = "<button type='button' class='btn btn-outline-danger' onclick='return confirm(`確定要刪除此文件？`) &&unlinkFile_pdf(`_focus`,`"+_key+"`)' data-toggle='tooltip' data-placement='bottom' title='刪除"+_key+"檔案'><i class='fa-solid fa-delete-left'></i></button>"; 
-                            let preview_item  = document.getElementById('preview_' + _key); 
-                            if(preview_item){
-                                preview_item.innerHTML = preview_modal + file_info +'</a>';                                               // 套上a+img
-                            }            
-                            let input_item    = document.getElementById(_key);
-                            if(input_item){
-                                input_item.value = _value;                                                                           // 欄位填上pic_value
+                            if(_value){
+                                let preview_modal = '<a href="' + files_path + case_year + '/' + anis_no + '/' + _value + '" target="_blank" class="btn text-danger add_btn">';  // 生成預覽按鈕a
+                                let file_info = '<i class="fa-solid fa-file-pdf fa-2x"></i><p style="font-size:12px;">'+_value+'</p>';
+                                let preview_item = document.getElementById('preview_' + _key); 
+                                if(preview_item){
+                                    preview_item.innerHTML = preview_modal + file_info +'</a>';                                               // 套上a+img
+                                }            
+                                let input_item = document.getElementById(_key);
+                                if(input_item){
+                                    input_item.value = _value;                                                                           // 欄位填上pic_value
+                                }
                             }
                         } 
                     }else if(special_item == '_odd'){                              // 240611 職災申報
@@ -1129,8 +1090,18 @@
                 }
             })
 
+        // 240709 修正上傳路徑
+        let currentYear = new Date().getFullYear(); // 获取当前年份
+        let row_obj = {};
+        row_obj.anis_no = ((document_row['anis_no'] !== undefined) ? document_row['anis_no'] : '');
+        row_obj.case_year = (document_row.created_at) ? document_row.created_at.substr(0,4) : currentYear.toString();   // 例外處理
+        let row_json = document.getElementById('row_json');
+        if(row_json){
+            row_json.innerHTML = JSON.stringify(row_obj);
+        }
+
         // edit step9.鋪設logs紀錄
-            let json         = JSON.parse(document_row["logs"]);
+            let json     = JSON.parse(document_row["logs"]);
             let forTable = document.querySelector('.logs tbody');
             $('#logs_div').removeClass('unblock');                              // 解除隱藏
             for (let i = 0, len = json.length; i < len; i++) {

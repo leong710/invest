@@ -52,35 +52,34 @@
         $uploadFileInfo = pathinfo($uploadFile);                                                        // 分解檔名
         $baseName       = $uploadFileInfo['filename'];                                                  // 主檔名
         $extension      = isset($uploadFileInfo['extension']) ? '.'.$uploadFileInfo['extension']:'';    // 副檔名
-        $file_from      = "../doc_pdf/temp/";                // submit後正是路徑
-        $file_to        = "../doc_pdf/";                     // submit後再搬移到垃圾路徑
-        $path_arr       = [
-                            0 => "fab_title", 
-                            1 => "short_name", 
-                            2 => "case_year"
-                        ];
-        // 疊加路徑 並 確認路徑資料夾
-        foreach($path_arr as $key => $value){               // 逐筆繞出來
-            $file_to   .= $row_obj[$value]."/";             // 疊加to
-            if(!is_dir($file_to)){ 
-                mkdir($file_to);
-            }       // 检查資料夾是否存在 then mkdir
-        }
-
-        // 確認檔案在form目錄下
-        if(is_file($file_from.$uploadFile)){
-
-            $new_uploadFile = $baseName."_".$rename_time .$extension;
-            // 檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
-            for ($i = 2; is_file($file_to.$new_uploadFile); $i++) {
-                $new_uploadFile = $baseName."_".$rename_time."_".$i .$extension;    // 合成上傳 檔名
+        $file_from      = "../doc_temp/";                   // submit後正是路徑
+        $file_to        = "../doc_files/";                  // submit後再搬移到垃圾路徑
+        
+        // step_1.疊加路徑 並 確認路徑資料夾 是否存在
+            $path_arr = [
+                0 => "case_year", 
+                1 => "anis_no" 
+            ];
+            foreach($path_arr as $key => $value){               // 逐筆繞出來
+                $file_to   .= $row_obj[$value]."/";             // 疊加to
+                if(!is_dir($file_to)){ mkdir($file_to); }       // 检查資料夾是否存在 then mkdir
             }
-
-            $uploadResult = rename($file_from.$uploadFile , $file_to.$new_uploadFile);                // 搬到to
-            return $uploadResult ? $new_uploadFile : false;
-        }else{
-            return false;
-        }
+            
+        // step_2.確認檔案在form目錄下
+            if(is_file($file_from.$uploadFile)){
+                $new_uploadFile = $baseName.$extension;
+                
+                // step_3.檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
+                for ($i = 2; is_file($file_to.$new_uploadFile); $i++) {
+                    $new_uploadFile = $baseName."_".$i.$extension;    // 合成上傳 檔名
+                }
+                
+                // step_4.移動文件到指定目錄
+                $uploadResult = rename($file_from.$uploadFile , $file_to.$new_uploadFile);                // 搬到to
+                return $uploadResult ? $new_uploadFile : false;
+            }else{
+                return false;
+            }
     }    
     // 20240606_(子)移到offLine垃圾桶pdf
     function unlinkFile_pdf($row_obj){
@@ -89,30 +88,31 @@
         $unlinkFileInfo = pathinfo($unlinkFile);                                                        // 分解檔名
         $baseName       = $unlinkFileInfo['filename'];                                                  // 主檔名
         $extension      = isset($unlinkFileInfo['extension']) ? '.'.$unlinkFileInfo['extension']:'';    // 副檔名
-        $file_from      = "../doc_pdf/";                    // submit後正是路徑
-        $file_to        = "../doc_pdf/offLine/";            // submit後再搬移到垃圾路徑
-        $path_arr       = [
-                            0 => "fab_title", 
-                            1 => "short_name", 
-                            2 => "case_year"
-                        ];
-        // 疊加路徑 並 確認路徑資料夾
-        foreach($path_arr as $key => $value){               // 逐筆繞出來
-            $file_from .= $row_obj[$value]."/";             // 疊加from
-            $file_to   .= $row_obj[$value]."/";             // 疊加to
-            if(!is_dir($file_to)){ mkdir($file_to); }       // 检查資料夾是否存在 then mkdir
-        }
+        $file_from      = "../doc_files/";                  // submit後正是路徑
+        $file_to        = "../doc_offLine/";                // submit後再搬移到垃圾路徑
+        // step_1.疊加路徑 並 確認路徑資料夾 是否存在
+            $path_arr = [
+                0 => "case_year", 
+                1 => "anis_no" 
+            ];
+            foreach($path_arr as $key => $value){               // 逐筆繞出來
+                $file_from .= $row_obj[$value]."/";             // 疊加from
+                $file_to   .= $row_obj[$value]."/";             // 疊加to
+                if(!is_dir($file_to)){ mkdir($file_to); }       // 检查資料夾是否存在 then mkdir
+            }
 
-        // 確認檔案在form目錄下
+        // step_2.確認檔案在form目錄下
         if(is_file($file_from.$unlinkFile)){
             // unlink($unlinkFile);                         // 移除檔案 => 盡量避免憾事發生
 
             $toFile = $file_to.$unlinkFile;
-            // 檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
+            // step_3.檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
             for ($i = 2; is_file($toFile); $i++) {
                 $refileName = $baseName . "_" . $i . $extension;    // 合成上傳 檔名
                 $toFile = $file_to.$refileName;
             }
+            
+            // step_4.移動文件到指定目錄
             return rename( $file_from.$unlinkFile , $toFile );    // 搬到offLine
         }else{
             return false;

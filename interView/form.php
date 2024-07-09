@@ -234,7 +234,7 @@
                                         <!-- line 0 -->
                                         <div class="col-6 col-md-6 py-0">
                                             <div class="form-floating">
-                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" require maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();">
+                                                <input type="text" name="anis_no" id="anis_no" class="form-control text-center " placeholder="ANIS表單編號：" required maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();">
                                                 <label for="anis_no" class="form-label">anis_no/ANIS表單編號：<sup class="text-danger"> * </sup></label>
                                                 <div class="invalid-feedback" id="anis_no_feedback">編號填入錯誤 ~ (大寫ANIS+數字流水號共21碼)</div>
                                             </div>
@@ -387,6 +387,8 @@
                             </div>
                         </div>
                     </form>
+                    <!-- 240709 row_json -->
+                    <snap name="row_json" id="row_json" class="t-left block" style="font-size: 10px;"></snap>
                     <!-- 尾段logs訊息 -->
                     <div class="row rounded bg-light my-2 unblock" id="logs_div">
                         <div class="col-6 col-md-6 pb-0">

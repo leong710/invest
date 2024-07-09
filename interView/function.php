@@ -11,14 +11,21 @@
         $swal_json["content"] .= $idty == "6" ? "暫存表單--":"";                // 20240506 -- 表單暫存
 
         // 例外處理單元：s
+            // 240709 組合上傳目的路徑 $to_path_obj
+            $to_path_obj = [
+                "case_year" => date('Y'),
+                "anis_no"   => $anis_no
+            ];
+
             // 處理a_pic上傳檔案
-            $a_pic         = !empty($a_pic)         ? uploadFile('a_pic', $a_pic)          : null ; 
-            $a_self_desc   = !empty($a_self_desc)   ? uploadFile('a_desc'  , $a_self_desc) : null ;
-            $a_others_desc = !empty($a_others_desc) ? uploadFile('a_desc', $a_others_desc) : null ;
-            $_odd          = !empty($_odd)          ? $_odd                                : null ;      // 這裡先帶入預設，後續呼叫通報判斷fun
-            $confirm_sign  = !empty($confirm_sign)  ? $confirm_sign                        : null ; 
-            $ruling_sign   = !empty($ruling_sign)   ? $ruling_sign                         : null ; 
-            $_focus        = !empty($_focus)        ? $_focus                              : null ;
+            $a_pic         = !empty($a_pic)         ? uploadFile($to_path_obj, $a_pic)         : null ; 
+            $a_self_desc   = !empty($a_self_desc)   ? uploadFile($to_path_obj, $a_self_desc)   : null ;
+            $a_others_desc = !empty($a_others_desc) ? uploadFile($to_path_obj, $a_others_desc) : null ;
+
+            $_odd          = !empty($_odd)          ? $_odd         : null ;        // 這裡先帶入預設，後續呼叫通報判斷fun
+            $confirm_sign  = !empty($confirm_sign)  ? $confirm_sign : null ; 
+            $ruling_sign   = !empty($ruling_sign)   ? $ruling_sign  : null ; 
+            $_focus        = !empty($_focus)        ? $_focus       : null ;
 
             if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $meeting_time)) {   // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
                 $meeting_time = convertDateTimeFormat($meeting_time);               // 转换日期时间格式
@@ -149,6 +156,12 @@
             $row_document = edit_document(["uuid"=>$uuid]);                                         // 叫出舊紀錄
             $row_logs     = $row_document["logs"];
             $row_editions = $row_document["editions"];
+            
+            // 240709 組合上傳目的路徑 $to_path_obj
+                $to_path_obj = [
+                    "case_year" => substr($row_document["created_at"],0,4),
+                    "anis_no"   => $row_document["anis_no"]
+                ];
 
         // step3.使用迴圈刪除指定的元素for舊紀錄 因為不需要比對 == DB_item
             $unset_keys = array('id','uuid','dcc_no',  'action','step',  'created_emp_id','created_cname','created_at',  'updated_at','updated_cname','sign_comm',  'logs','editions', 
@@ -187,14 +200,14 @@
                     switch($check_key){
                         case "a_pic" :      // 處理a_pic上傳檔案
                             if(!empty($old_item)){                                                  // 判斷舊a_pic是否有值
-                                $result = unlinkFile("a_pic", $old_item);                                    // 有=清除舊檔
+                                $result = unlinkFile($to_path_obj, $old_item);                                    // 有=清除舊檔
                                 if(!$result){
                                     $swal_json["action"]   = "error";
                                     $swal_json["content"] .= 'a_pic刪除失敗';
                                 }
                             }
                             if(!empty($new_item)){                                                  // 判斷新a_pic是否有值
-                                $new_item = uploadFile('a_pic', $new_item);                                  // 有=上傳檔案，並返回新檔名
+                                $new_item = uploadFile($to_path_obj, $new_item);                    // 有=上傳檔案，並返回新檔名
                             }
                             break;
                         case "confirm_sign" :   
@@ -254,17 +267,17 @@
                         echo "new_item: ".$new_item."<br>";
                         if(!empty($old_item)){                                          // 判斷舊a_desc是否有值
                             echo "old_item: ".$old_item."<br>";
-                            $result = unlinkFile("a_desc", $old_item);                                    // 有=清除舊檔
+                            $result = unlinkFile($to_path_obj, $old_item);                  // 有=清除舊檔
                             if(!$result){
                                 $swal_json["action"]   = "error";
                                 $swal_json["content"] .= $check_key.'刪除失敗';
                             }
                         }
-                        $new_item = uploadFile('a_desc', $new_item);                                  // 有=上傳檔案，並返回新檔名
+                        $new_item = uploadFile($to_path_obj, $new_item);                // 有=上傳檔案，並返回新檔名
                     }
 
-                    $edit_item = $old_item." => ".$new_item;                                        // 生成修改訊息
-                    echo $check_key." : ".$edit_item. "</br>";                                      // 螢幕顯示
+                    $edit_item = $old_item." => ".$new_item;                            // 生成修改訊息
+                    echo $check_key." : ".$edit_item. "</br>";                          // 螢幕顯示
 
                     $_focus[$check_key] = $new_item;
                 }else{
@@ -272,14 +285,14 @@
                 }
                 // 確認修改訊息，有值就是需要添加SQL修改項目
                 if(!empty($edit_item)){
-                    $edited_log[$check_key] = $edit_item;                                           // 將修改訊息倒入指定陣列位置
+                    $edited_log[$check_key] = $edit_item;                               // 將修改訊息倒入指定陣列位置
                     $check_desc_edit = $edit_item;
                 }
             }
             if(!empty($check_desc_edit)){
                 // 確認修改訊息，有需要添加SQL修改項目
                 $sql .= "_focus=?, ";
-                array_push($stmt_arr, json_encode($_focus));                                 // , JSON_UNESCAPED_UNICODE--中文不編碼
+                array_push($stmt_arr, json_encode($_focus));                            // , JSON_UNESCAPED_UNICODE--中文不編碼
             }
                     
             // step4-3.*** 這裡要重新拆內容，以符合save暫存的比對需求
@@ -437,31 +450,24 @@
         $row_doc = edit_document(["uuid"=>$uuid]);         // 叫出舊檔案
         $row_special = [ "a_pic", "confirm_sign", "_focus" ];
 
+        // 240709 組合上傳目的路徑 $to_path_obj
+            $to_path_obj = [
+                "case_year" => substr($row_doc["created_at"],0,4),
+                "anis_no"   => $row_doc["anis_no"]
+            ];
+
         foreach($row_special as $row_item){
             $row_value = isset($row_doc[$row_item]) ? $row_doc[$row_item] : null;
-            if(is_object($row_value)) { 
-                $row_value = (array)$row_value; 
-            }                   // 將物件轉成陣列
-            if(!empty($row_value)){                           // 判斷是否有值
+            if(is_object($row_value)) { $row_value = (array)$row_value; }           // 將物件轉成陣列
+            if(!empty($row_value)){                                                 // 判斷是否有值
                 switch($row_item){
-                    case "a_pic":
-                        $result = unlinkFile("a_pic", $row_value);             // 清除舊檔
-                        break;
-                    case "confirm_sign":
-                        $row_obj = [
-                            "confirm_sign" => $row_value,
-                            "fab_title"    => $row_doc["fab_title"], 
-                            "short_name"   => $row_doc["short_name"], 
-                            "case_year"    => $row_doc["case_year"]
-                        ];
-                        $result = unlinkFile("confirm_sign", $row_obj);         // 清除舊檔
-                        break;
                     case "_focus":
                         foreach($row_value as $_key => $_value){
-                            $result = unlinkFile("a_desc", $_value);            // 清除舊檔
+                            $result = unlinkFile($to_path_obj, $_value);            // 清除舊檔
                         }
                         break;
                     default:
+                        $result = unlinkFile($to_path_obj, $row_value);             // 清除舊檔
                 }
                 if(!$result){
                     $swal_json["action"]   = "error";
@@ -476,6 +482,7 @@
             $stmt->execute([$uuid]);
             $swal_json["action"]   = "success";
             $swal_json["content"] .= '刪除成功';
+
         }catch(PDOException $e){
             echo $e->getMessage();
             $swal_json["action"]   = "error";
@@ -524,99 +531,69 @@
     }
 
     // 20240419、240705_上傳檔案a_pic、a_desc
-    function uploadFile($fun, $fileName){
-        switch($fun){
-            case "a_pic":
-                $file_from = "../image/temp/";              // 過度路徑
-                $file_to   = "../image/a_pic/";             // submit後正是路徑
-                break;
-            case "a_desc":
-                $file_from = "../doc_pdf/temp/";            // 過度路徑
-                $file_to   = "../doc_pdf/a_desc/";          // submit後正是路徑
-                break;
-            default:
-                $file_from = "../image/temp/";              // 過度路徑
-                $file_to   = "../image/a_pic/";             // submit後正是路徑
-        }
+    function uploadFile($to_path_obj, $fileName){
+        $file_from = "../doc_temp/";                // 過度路徑
+        $file_to   = "../doc_files/";               // submit後再搬移到垃圾路徑
 
-            if(!is_dir($file_to)){                  // 检查資料夾是否存在
-                mkdir($file_to); 
+        // step_1.疊加路徑 並 確認路徑資料夾 是否存在
+            $path_arr       = [
+                0 => "case_year", 
+                1 => "anis_no" 
+            ];
+            foreach($path_arr as $key => $value){           // 逐筆繞出來
+                $file_to .= $to_path_obj[$value]."/";       // 疊加to
+                if(!is_dir($file_to)){ mkdir($file_to); }   // 检查to資料夾是否存在 then mkdir
             }
 
-        $refileName = $fileName;
-        $toFile = $file_to . $fileName;          // 合成上傳路徑 + 檔名
-
-        // 檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
-        for ($i = 2; is_file($toFile); $i++) {
-            $refileName = $i . "_" . $fileName;
-            $toFile = $file_to . $refileName;    // 合成上傳路徑 + 檔名
-        }
+        // step_2.檢查是否已存在相同檔名的檔案，如果存在則在檔名前加上數字
+            $refileName = $fileName;
+            $toFile = $file_to . $fileName;         // 合成上傳路徑 + 檔名
+            for ($i = 2; is_file($toFile); $i++) {
+                $refileName = $i . "_" . $fileName;
+                $toFile = $file_to . $refileName;       // 合成上傳路徑 + 檔名
+            }
     
-        // 移動文件到指定目錄
-        if (rename($file_from . $fileName , $toFile)) {
-            return $refileName;                   // 返回檔案名稱
-        } else {
-            return false;                         // 返回錯誤
-        }
+        // step_3.移動文件到指定目錄
+            if (rename($file_from.$fileName , $toFile)) {
+                return $refileName;                     // 返回檔案名稱
+            } else {
+                return false;                           // 返回錯誤
+            }
     }    
     // 20240417、240705_移到垃圾桶a_pic、a_desc
-    function unlinkFile($fun, $unlinkFile){
-        switch($fun){
-            case "a_pic":
-                $file_from = "../image/a_pic/";                // submit後正是路徑
-                $file_to   = "../image/a_pic_offLine/";        // submit後再搬移到垃圾路徑
-                break;
+    function unlinkFile($to_path_obj, $unlinkFile){
+        $file_from = "../doc_files/";                // submit後正是路徑
+        $file_to   = "../doc_offLine/";              // submit後再搬移到垃圾路徑
 
-            case "a_desc":
-                $file_from = "../doc_pdf/a_desc/";             // submit後正是路徑
-                $file_to   = "../doc_pdf/a_desc_offLine/";     // submit後再搬移到垃圾路徑
-                break;
+        // step_1.疊加路徑 並 確認路徑資料夾 是否存在
+            $path_arr       = [
+                0 => "case_year", 
+                1 => "anis_no" 
+            ];
+            foreach($path_arr as $key => $value){           // 逐筆繞出來
+                $file_from .= $to_path_obj[$value]."/";     // 疊加from
+                $file_to   .= $to_path_obj[$value]."/";     // 疊加to
+                if(!is_dir($file_to)){ mkdir($file_to); }   // 检查to資料夾是否存在 then mkdir
+            }
 
-            case "confirm_sign":
-                    $row_obj        = $unlinkFile;                     // 這裡比較特別：來的時候是一整包，需要轉交給$row_obj，再來進行分解...
-                    $unlinkFile     = $row_obj["confirm_sign"];
-                    $file_from      = "../doc_pdf/";                    // submit後正是路徑
-                    $file_to        = "../doc_pdf/offLine/";            // submit後再搬移到垃圾路徑
-                    $path_arr       = [
-                                        0 => "fab_title", 
-                                        1 => "short_name", 
-                                        2 => "case_year"
-                                    ];
-                    // 疊加路徑 並 確認路徑資料夾
-                    foreach($path_arr as $key => $value){               // 逐筆繞出來
-                        $file_from .= $row_obj[$value]."/";             // 疊加from
-                        $file_to   .= $row_obj[$value]."/";             // 疊加to
-                        if(!is_dir($file_to)){ mkdir($file_to); }       // 检查資料夾是否存在 then mkdir
-                    }
-                break;
-
-            default:
-                $file_from = "../image/a_pic/";                // submit後正是路徑
-                $file_to   = "../image/a_pic_offLine/";        // submit後再搬移到垃圾路徑
-        }
-
-        $unlinkFileInfo = pathinfo($unlinkFile);                                                        // 分解檔名
-        $baseName       = $unlinkFileInfo['filename'];                                                  // 主檔名
-        $extension      = isset($unlinkFileInfo['extension']) ? '.'.$unlinkFileInfo['extension']:'';    // 副檔名
-        $rename_time    = date('Ymd-His');
-
-        // 確認檔案在目錄下
-        if(is_file($file_from.$unlinkFile)) {
-            // // 移除檔案 unlink($unlinkFile); 
-            // 搬到垃圾桶
-            $moved = rename( $file_from.$unlinkFile , $file_to.$rename_time."_".$baseName.$extension  ); // 搬到offLine
-            // 返回完成訊息
-            if($moved){
-                return true;
-            }else{
+        // step_1-5.分拆檔案資訊
+            $unlinkFileInfo = pathinfo($unlinkFile);                                                        // 分解檔名
+            $baseName       = $unlinkFileInfo['filename'];                                                  // 主檔名
+            $extension      = isset($unlinkFileInfo['extension']) ? '.'.$unlinkFileInfo['extension']:'';    // 副檔名
+            $rename_time    = date('Ymd-His');
+            
+        // step_2.移動文件到指定目錄
+            // 確認檔案在目錄下
+            if(is_file($file_from.$unlinkFile)) {
+                // unlink($file_from.$unlinkFile);     // 移除檔案
+                // 搬到垃圾桶 並返回完成訊息
+                return rename( $file_from.$unlinkFile , $file_to.$baseName."_".$rename_time.$extension  );  // 搬到offLine
+            } else {
                 return false;
             }
-        } else {
-            return false;
-        }
     }
   
-    // 20240417_確認檔案是否存在
+    // 20240417_確認JSON檔案是否存在
     function check_is_file($fileName){
         $uploadDir = '../doc_json/';                    // 過度路徑，submit後再搬移到正是路徑
         if(is_file($uploadDir .$fileName )) {

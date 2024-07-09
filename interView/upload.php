@@ -10,7 +10,7 @@
         // 確保資料夾是否有同名檔案存在
         // $upload_FileName = (is_file($uploadDir.$name)) ? (date('s'))."_".$name : $name; // 雜湊秒生成fileName避免覆蓋
         // 分解路徑
-        $fileInfo = pathinfo($name);
+        $fileInfo = pathinfo($name);                                                        // 分析拆解
         $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';     // 副檔名
         $baseName = $fileInfo['filename'];                                                  // 檔名(不含副檔名)
             // $img_name = (date('Ymd-His'))."_".$name;   // << 原始方法--雜湊年月日時分秒生成fileName避免覆蓋
