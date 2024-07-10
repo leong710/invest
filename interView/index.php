@@ -187,7 +187,7 @@
     function bring_site(site){
         if(site){   
             for (const [key_1, value_1] of Object.entries(site)) {
-                const div_site = '<div class="col-12 border rounded my-2 text-center" id="site_id_'+ value_1.id +'">' + value_1.site_title + ' / ' +value_1.site_remark + '</div>';
+                const div_site = '<div class="col-12 border rounded my-2 text-center" id="site_id_'+ value_1.id +'">' + value_1.site_title + ' / ' +value_1.site_remark + '</br></div>';
                 $('#highLight').append(div_site);    // 渲染form
             }
         }
@@ -197,7 +197,7 @@
         if(fab){   
             for (const [key_1, value_1] of Object.entries(fab)) {
                 console.log('bring_fab...', value_1.site_id, value_1.fab_title, value_1.fab_remark)
-                const div_fab = value_1.fab_title + ' / ' +value_1.fab_remark ;
+                const div_fab = '<span class="badge rounded-pill bg-success">'+value_1.fab_title + ' / ' +value_1.fab_remark +'</span>&nbsp';
                 $('#site_id_'+value_1.site_id).append(div_fab);    // 渲染form
             }
         }
