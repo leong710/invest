@@ -199,15 +199,17 @@
                 if($old_item != $new_item){
                     switch($check_key){
                         case "a_pic" :      // 處理a_pic上傳檔案
-                            if(!empty($old_item)){                                                  // 判斷舊a_pic是否有值
-                                $result = unlinkFile($to_path_obj, $old_item);                                    // 有=清除舊檔
+                            if(!empty($new_item)){                                       // 判斷新a_pic是否有值
+                                echo "upLoad new_a_pic: ".$new_item."<br>";
+                                $new_item = uploadFile($to_path_obj, $new_item);         // 有=上傳檔案，並返回新檔名
+                            }
+                            if(!empty($old_item)){                                       // 判斷舊a_pic是否有值
+                                echo "unLink old_a_pic: ".$old_item."<br>";
+                                $result = unlinkFile($to_path_obj, $old_item);           // 有=清除舊檔
                                 if(!$result){
                                     $swal_json["action"]   = "error";
                                     $swal_json["content"] .= 'a_pic刪除失敗';
                                 }
-                            }
-                            if(!empty($new_item)){                                                  // 判斷新a_pic是否有值
-                                $new_item = uploadFile($to_path_obj, $new_item);                    // 有=上傳檔案，並返回新檔名
                             }
                             break;
                         case "confirm_sign" :   
@@ -216,8 +218,8 @@
                             break;
                         default :
                     }
-                    $edit_item = $old_item." => ".$new_item;                                        // 生成修改訊息
-                    echo $check_key." : ".$edit_item. "</br>";                                      // 螢幕顯示
+                    $edit_item = $old_item." => ".$new_item;                             // 生成修改訊息
+                    echo $check_key." : ".$edit_item. "</br>";                           // 螢幕顯示
                     
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $check_key."=?, ";
@@ -257,25 +259,24 @@
             $check_desc_edit = [];
             $row_focus = isset($row_document["_focus"]) ? (array) $row_document["_focus"] : null;
             foreach($check_desc as $check_key){
-                $edited_log[$check_key] = [];                                                       // 起始-修改項目log[主題key]
-                $edit_item = [];                                                                    // 起始-修改項目 & 清空
+                $edited_log[$check_key] = [];                                           // 起始-修改項目log[主題key]
+                $edit_item = [];                                                        // 起始-修改項目 & 清空
                 $old_item = isset($row_focus[$check_key])    ? $row_focus[$check_key]    : null;            
                 $new_item = isset($new_document[$check_key]) ? $new_document[$check_key] : null;
 
                 if($old_item != $new_item){
                     if(!empty($new_item)){                                              // 判斷新a_desc是否有值
-                        echo "new_item: ".$new_item."<br>";
-                        if(!empty($old_item)){                                          // 判斷舊a_desc是否有值
-                            echo "old_item: ".$old_item."<br>";
-                            $result = unlinkFile($to_path_obj, $old_item);                  // 有=清除舊檔
-                            if(!$result){
-                                $swal_json["action"]   = "error";
-                                $swal_json["content"] .= $check_key.'刪除失敗';
-                            }
-                        }
+                        echo "upLoad new_item: ".$new_item."<br>";
                         $new_item = uploadFile($to_path_obj, $new_item);                // 有=上傳檔案，並返回新檔名
                     }
-
+                    if(!empty($old_item)){                                              // 判斷舊a_desc是否有值
+                        echo "unLink old_item: ".$old_item."<br>";
+                        $result = unlinkFile($to_path_obj, $old_item);                  // 有=清除舊檔
+                        if(!$result){
+                            $swal_json["action"]   = "error";
+                            $swal_json["content"] .= $check_key.'刪除失敗';
+                        }
+                    }
                     $edit_item = $old_item." => ".$new_item;                            // 生成修改訊息
                     echo $check_key." : ".$edit_item. "</br>";                          // 螢幕顯示
 

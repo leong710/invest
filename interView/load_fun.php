@@ -2,6 +2,72 @@
     if(isset($_REQUEST['fun'])) {
         $result = [];
         switch ($_REQUEST['fun']){
+            case 'formcase':
+                require_once("../pdo.php");
+                $pdo = pdo();
+                extract($_REQUEST);
+                $sql = "SELECT * FROM _formcase WHERE flag <> 'Off' ORDER BY id ASC";
+                $stmt = $pdo->prepare($sql);
+                try {
+                    $stmt->execute();
+                    $formcase = $stmt->fetchAll(PDO::FETCH_ASSOC);        // no index
+                    // 製作返回文件
+                    $result = [
+                        'result_obj' => $formcase,
+                        'fun'        => $fun,
+                        'success'    => 'Load '.$fun.' success.'
+                    ];
+
+                }catch(PDOException $e){
+                    echo $e->getMessage();
+                    $result['error'] = 'Load '.$fun.' failed...(e)';
+                }
+                break;
+
+            case '_site':
+                require_once("../pdo.php");
+                $pdo = pdo();
+                extract($_REQUEST);
+                $sql = "SELECT _s.id, _s.site_title, _s.site_remark FROM _site _s WHERE _s.flag <> 'Off' ORDER BY _s.id ASC";
+                $stmt = $pdo->prepare($sql);
+                try {
+                    $stmt->execute();
+                    $_site = $stmt->fetchAll(PDO::FETCH_ASSOC);        // no index
+                    // 製作返回文件
+                    $result = [
+                        'result_obj' => $_site,
+                        'fun'        => $fun,
+                        'success'    => 'Load '.$fun.' success.'
+                    ];
+
+                }catch(PDOException $e){
+                    echo $e->getMessage();
+                    $result['error'] = 'Load '.$fun.' failed...(e)';
+                }
+                break;
+
+            case '_fab':
+                require_once("../pdo.php");
+                $pdo = pdo();
+                extract($_REQUEST);
+                $sql = "SELECT _f.id, _f.site_id, _f.fab_title, _f.fab_remark FROM _fab _f WHERE _f.flag <> 'Off' ORDER BY _f.id ASC";
+                $stmt = $pdo->prepare($sql);
+                try {
+                    $stmt->execute();
+                    $_fab = $stmt->fetchAll(PDO::FETCH_ASSOC);        // no index
+                    // 製作返回文件
+                    $result = [
+                        'result_obj' => $_fab,
+                        'fun'        => $fun,
+                        'success'    => 'Load '.$fun.' success.'
+                    ];
+
+                }catch(PDOException $e){
+                    echo $e->getMessage();
+                    $result['error'] = 'Load '.$fun.' failed...(e)';
+                }
+                break;
+
             case 'form':
                 if(isset($_REQUEST['parm'])) {
                     extract($_REQUEST);
