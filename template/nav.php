@@ -20,7 +20,7 @@
             <ul class="navbar-nav me-auto   my-2 my-lg-0 navbar-nav-scroll">
                 <?php if($sys_auth){ ?>
                     <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="#"><i class="fa-regular fa-square-plus"></i>&nbsp外層Link</a></li> -->
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="<?php echo $webroot;?>/interView/"><i class="fa fa-edit"></i>&nbsp填寫訪問單</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="<php echo $webroot;?>/interView/"><i class="fa fa-edit"></i>&nbsp填寫訪問單</a></li> -->
                     <!-- 下拉式選單 -->
                     <?php if($sys_role >= 0){ ?>
 
@@ -53,13 +53,13 @@
                             </li>
 
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDD_4" role="button" data-bs-toggle="dropdown" aria-expanded="false" disabled >
+                                <a class="nav-link dropdown-toggle" id="navbarDD_4" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
                                     <i class="fa-solid fa-gear"></i>&nbsp管理員專區</a>
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDD_4">
                                     <?php if($sys_role <= 1 ){ ?>
-                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/insign_msg/"><i class="fa-solid fa-comment-sms"></i>&nbsp待簽清單統計</a></li>
+                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/notify/"><i class="fa-solid fa-comment-sms"></i>&nbsp待通報清單統計</a></li>
                                     <?php } ?>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/autolog/"><i class="fa-regular fa-rectangle-list"></i>&nbspMAPP發報記錄管理</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/autolog/"><i class="fa-regular fa-rectangle-list"></i>&nbsp發報記錄管理</a></li>
                                 </ul>
                             </li>
                         <?php } ?>

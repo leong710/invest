@@ -97,12 +97,8 @@
                 <div class="col-12 bg-white">
                     <!-- by各Local儲存點： -->
                     <div class="row">
-                        <div class="col-md-3 pb-0 ">
-                            <h5><?php echo isset($_fab["id"]) ? $_fab["id"].".".$_fab["fab_title"]." (".$_fab["fab_remark"].")":"$_fab_id";?>_訪談清單管理： </h5>
-                        </div>
-
                         <!-- sort/groupBy function -->
-                        <div class="col-md-6 pb-0 ">
+                        <div class="col-md-9 pb-0 ">
                             <form action="" method="GET">
                                 <div class="input-group">
                                     <span class="input-group-text">篩選</span>
@@ -138,11 +134,9 @@
                                         <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
                                         <?php 
                                             echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? "selected":"").' >-- All 所有棟別 --</option>';
-                                            echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? "selected":"");
-                                            echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
+                                            echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? "selected":"").' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
                                             foreach($fab_lists as $fab){
-                                                echo "<option for='_fab_id' value='{$fab["id"]}' ";
-                                                echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
+                                                echo "<option for='_fab_id' value='{$fab["id"]}' ".($fab["id"] == $_fab_id ? "selected" : "" ) ." >";
                                                 echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
                                                 echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
                                             } ?>

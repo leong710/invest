@@ -5,7 +5,7 @@ function update_sw(){
         if(el.flag == 'Off'){                           // 排除flag已關閉
             return;
         }
-        sw[el.fab_title] = [];
+        sw[el.site_title+'_'+el.fab_title] = [];
         var pm_emp_id_str = el.pm_emp_id;
         
         if(pm_emp_id_str != null && pm_emp_id_str.length > 0){      // 預防null或異常
@@ -15,7 +15,7 @@ function update_sw(){
                     return false;
                 }
                 let pm_s_arr = search_sw_fun(pm_s);                 // call:查詢email
-                sw[el.fab_title].push(pm_s_arr);
+                sw[el.site_title+'_'+el.fab_title].push(pm_s_arr);
             })
         }
     });

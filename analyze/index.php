@@ -172,12 +172,9 @@
                                     <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
                                     <?php 
                                         echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").($sys_role >= "0" ? " disabled":"" ).' >-- All 所有棟別 --</option>';
-                                        echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? " selected":"");
-                                        echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
+                                        echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? " selected":"").' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
                                         foreach($fab_lists as $fab){
-                                            echo "<option for='_fab_id' value='{$fab["id"]}' ";
-                                            echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
-                                            echo $fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                            echo "<option for='_fab_id' value='{$fab["id"]}' ". ($fab["id"] == $_fab_id ? " selected" : "")." >".$fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
                                             echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
                                         } ?>
                                 </select>
