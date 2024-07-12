@@ -28,12 +28,12 @@
     <div class="row justify-content-center">
         <div class="col-xl-12 col-12 border rounded bg-white p-4 ">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 pb-0">
                     <div>
                         <h5>表單管理 列表 - 共 <?php echo count($formcases);?> 筆</h5>
                     </div>
                 </div>
-                <div class="col-md-6 text-end">
+                <div class="col-md-6 pb-0 text-end">
                     <a href="https://fontawesome.com/v6/icons/" target="_blank" title="fontawesome" class="btn btn-info text-white"><i class="fa-solid fa-font-awesome"></i> fontawesome</a>
                     <?php if($sys_role <= 1){ ?>
                         <button type="button" id="add_formcase_btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit_modal" onclick="add_module('formcase')" > <i class="fa fa-plus"></i> 新增表單</button>
@@ -44,7 +44,7 @@
             <hr>
             <!-- 分類列表 -->
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 pt-0">
                     <table class="table table-striped table-hover" id="formcase_list">
                         <thead>
                             <tr>

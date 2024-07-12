@@ -596,7 +596,7 @@
   
     // 20240417_確認JSON檔案是否存在
     function check_is_file($fileName){
-        $uploadDir = '../doc_json/';                    // 過度路徑，submit後再搬移到正是路徑
+        $uploadDir = '../form_json/';                    // 過度路徑，submit後再搬移到正是路徑
         if(is_file($uploadDir .$fileName )) {
             $result = true;
         } else {

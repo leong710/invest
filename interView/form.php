@@ -19,7 +19,7 @@
                 return;
             }
         // 路径到 form_a.json 文件
-        $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
+        $form_doc = (isset($document_row["dcc_no"]) ? "../form_json/".$document_row["dcc_no"].".json" : "" );
         $dcc_no   = (isset($document_row["dcc_no"]) ? $document_row["dcc_no"] : "" );
 
     }else if(!empty($anis_no)){
@@ -30,14 +30,14 @@
                 return;
             }
         // 路径到 form_a.json 文件
-        $form_doc = (isset($document_row["dcc_no"]) ? "../doc_json/".$document_row["dcc_no"].".json" : "" );
+        $form_doc = (isset($document_row["dcc_no"]) ? "../form_json/".$document_row["dcc_no"].".json" : "" );
         $dcc_no   = (isset($document_row["dcc_no"]) ? $document_row["dcc_no"] : "" );
 
     }else{
         // 決定表單開啟方式
         $document_row = array( "uuid" => "" );      // 預設document_row[uuid]=空array
         // 路径到 form_a.json 文件
-        $form_doc = (isset($_REQUEST["dcc_no"]) ? "../doc_json/".$_REQUEST["dcc_no"].".json" : "" );
+        $form_doc = (isset($_REQUEST["dcc_no"]) ? "../form_json/".$_REQUEST["dcc_no"].".json" : "" );
         $dcc_no   = (isset($_REQUEST["dcc_no"]) ? $_REQUEST["dcc_no"] : "" );
     }
 

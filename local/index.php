@@ -92,7 +92,7 @@
                 <!-- NAV title -->
                 <div class="row">
                     <!-- 分頁標籤 -->
-                    <div class="col-12">
+                    <div class="col-12 pt-0">
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                 <button class="nav-link" id="nav-site-tab"  data-bs-toggle="tab" data-bs-target="#nav-site_table"  type="button" role="tab" aria-controls="nav-site"  aria-selected="false">Site</button>

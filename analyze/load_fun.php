@@ -7,7 +7,7 @@
             case 'combo':
                 if(isset($parm)) {
                     $doc_no     = $parm;
-                    $combo      = "../doc_json/".$doc_no.".json";
+                    $combo      = "../form_json/".$doc_no.".json";
                     if(file_exists($combo)){
                         // 从 JSON 文件加载内容
                         $combo_json = file_get_contents($combo);
@@ -31,7 +31,7 @@
             case 'form':
                 if(isset($parm)) {
                     $dcc_no = $parm;
-                    $form_doc     = "../doc_json/".$dcc_no.".json";
+                    $form_doc     = "../form_json/".$dcc_no.".json";
                     if(file_exists($form_doc)){
                         // 从 JSON 文件加载内容
                         $form_json = file_get_contents($form_doc);

@@ -72,7 +72,7 @@
                 if(isset($_REQUEST['parm'])) {
                     extract($_REQUEST);
                     $dcc_no = $parm;
-                    $form_doc     = "../doc_json/".$dcc_no.".json";
+                    $form_doc     = "../form_json/".$dcc_no.".json";
                     if(file_exists($form_doc)){
                         // 从 JSON 文件加载内容
                         $form_json = file_get_contents($form_doc);

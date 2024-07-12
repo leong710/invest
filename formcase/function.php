@@ -171,7 +171,7 @@
     function uploadFile($files){
         extract($files);
 
-        $uploadDir = '../doc_json/';                    // 過度路徑，submit後再搬移到正是路徑
+        $uploadDir = '../form_json/';                    // 過度路徑，submit後再搬移到正是路徑
             if(!is_dir($uploadDir)){ mkdir($uploadDir); }   // 检查資料夾是否存在
         $row_fileName = basename($name);                // 取得檔案名稱
         $uploadFile = $uploadDir.$row_fileName;         // 合成上船路境+檔名
@@ -194,8 +194,8 @@
     // 20240417
     function unlinkFile($unlinkFile){
                 
-        $file_from = "../doc_json/";                // submit後正是路徑
-        $file_to   = "../doc_json/offLine/";        // submit後再搬移到垃圾路徑
+        $file_from = "../form_json/";                // submit後正是路徑
+        $file_to   = "../form_json/offLine/";        // submit後再搬移到垃圾路徑
 
         $rename_time = date('Ymd-His');
         $ext_name = ".json";
@@ -217,7 +217,7 @@
     }
     // 20240417
     function check_is_file($fileName){
-        $uploadDir = '../doc_json/';                    // 過度路徑，submit後再搬移到正是路徑
+        $uploadDir = '../form_json/';                    // 過度路徑，submit後再搬移到正是路徑
         if(is_file($uploadDir .$fileName )) {
             $result = true;
         } else {

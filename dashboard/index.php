@@ -237,7 +237,7 @@
         }
         const _title = ('時間差：'+ Number(hoursDifference.toFixed(2)) +'（小時）>= 3小時：'+ result +' => '+ _method);
         document.getElementById('reload_time').title = _title;
-        console.log('check3hourse...', _title);
+        // console.log('check3hourse...', _title);
         return _method;
     }
     // 3.更新畫面上reload_time時間                  // 呼叫來源：recordTime
@@ -245,7 +245,7 @@
         reload_time.innerText = rightNow;       // 更新畫面上reload_time時間
     }
 
-
+// // // 
     async function load_fun(fun, parm, myCallback) {        // parm = 參數
         return new Promise((resolve, reject) => {
             let formData = new FormData();
@@ -271,8 +271,7 @@
     // 1.取得目前時間，並格式化；2.更新reloadTime.txt時間；完成後=>3.更新畫面上reload_time時間          // 呼叫來源：check3hourse
     async function recordTime(){
         let rightNow = new Date().toLocaleString('zh-TW', { hour12: false });                     // 取得今天日期時間
-        console.log('rightNow:', rightNow);
-
+        // console.log('rightNow:', rightNow);
         try {
             await load_fun('urt' , rightNow+', true' , update_reloadTime);      
             

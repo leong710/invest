@@ -50,14 +50,6 @@
                     }
                     break;
 
-                case 'searchSupp':
-                    if(empty($su['key_word'])) {
-                        $aResult['error'] = $function.' - 參數錯誤!';
-                    } else {
-                        $aResult['result'] = searchSupp($su);
-                    }
-                    break;
-
                 default:
                     $aResult['error'] = 'Not found function '.$function.'!';
                     break;
