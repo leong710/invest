@@ -193,8 +193,8 @@
                                         <?php 
                                         echo "<button type='button' value='../interView/form.php?action=review&uuid={$caseList["uuid"]}' class='tran_btn' 
                                             onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='檢視問卷'>{$caseList["anis_no"]}</button>";
-
-                                        if((empty($caseList["confirm_sign"]) && $caseList["idty"] != '3') && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= '1')){ 
+                                        // 1簽核中  3作廢  10結案
+                                        if((empty($caseList["confirm_sign"]) && !in_array($caseList["idty"], ['1','3','10'])) && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= '1')){ 
                                             echo "&nbsp<button type='button' value='../interView/form.php?action=edit&uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                 .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
                                                 "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯問卷'><i class='fa-solid fa-pen-to-square'></i></button>";

@@ -79,7 +79,7 @@
             <div class="col-mm-10 col-12 border rounded bg-light p-4 ">
                 <div class="row">
                     <!-- 左上：訪問單 -->
-                    <div class="col-12 col-md-3 px-2 py-0 t-center">
+                    <div class="col-3 col-md-3 px-2 py-0 t-center">
                         <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪問單&nbsp--</span></h2>
                         <div class="col-12 p-0" id="btn_list">
 
@@ -88,7 +88,7 @@
                     </div>
 
                     <!-- 右上：各廠燈號 -->
-                    <div class="col-12 col-md-9 px-2 py-0 mb-2 ">
+                    <div class="col-9 col-md-9 px-2 py-0 mb-2 ">
                         <!-- 廠區燈號欄 -->
                         <h2><span class="badge bg-primary w-100">--&nbsp各廠管控燈號&nbsp--</span></h2>
                         <div class="col-12 bg-white rounded p-0" id="highLight">

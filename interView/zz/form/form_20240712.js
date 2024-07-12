@@ -42,6 +42,9 @@
         toast.show();
     }
 
+    // function init_locals(result){
+    //     const locals = result;
+    // }
     // 20240506 local select生成
     function select_local(sortFab_id){
         $("#local_id").empty();
@@ -149,6 +152,7 @@
                         'natiotxt' : res_r[i].natiotxt.trim(),
                         'oftext'   : res_r[i].dept_no.trim() +'\/'+ res_r[i].oftext
                     };
+            // let user_json = res_r[i].emp_id.trim() +','+ res_r[i].cname.trim() +','+ res_r[i].cstext.trim() + ',' + res_r[i].dept_no.trim() + '\/' + res_r[i].oftext;
             div_result_tbody.innerHTML += 
                 '<tr>' +
                     '<td>' + res_r[i].emp_id.trim() +'</br>' + res_r[i].cname.trim() + '</td>' +
@@ -404,6 +408,15 @@
                         var dataURL = signaturePad.toDataURL();
                         signatureImage.src = dataURL;                           // 預覽圖
                         $('#' + padNumber + '_signature-input').val(dataURL);   // base64儲存格
+                            // // 20240517_創建包含簽名和UUID的對象
+                               // var uuid = 'a6c56412-0ce3-11ef-8582-2cfda183ef4f';
+                               // var signatureData = {
+                               //     uuid: uuid,
+                               //     signature: dataURL
+                               // };
+                               // var signatureJSON = JSON.stringify(signatureData);              // 將對象轉換為JSON字串
+                               // var encodedSignature = btoa(signatureJSON);                     // 將JSON字串進行base64編碼
+                               // $('#' + padNumber + '_signature-input').val(encodedSignature);  // 將編碼後的字串儲存在輸入框中
                     }
                 });
             });
@@ -534,6 +547,7 @@
                 }
             })
             // 列印PDF時，渲染簽名欄+遮蔽部分欄位...
+            // document.getElementById('download_pdf').addEventListener('click', function() {
             $('#download_pdf').on('click', function() {
 
                 $('#logs_div, #editions_div, .head_btn, #show_odd_div' ).addClass('unblock');         // 遮蔽頂部按鈕
@@ -734,6 +748,7 @@
             case 'date':
             case 'datetime':
                 int_a = dcff +
+                        // '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control" id="' + item_a.name + '" value="' + formatDate(new Date()) + '" ' +
                         '<input type="' + (item_a.type === 'date' ? 'date' : 'datetime-local') + '" name="' + item_a.name + '" class="form-control " id="' + item_a.name + '" value="" ' +
                         (item_a.required ? 'required' : '') + '>' + commonPart() + (item_a.valid ? validPart() : '') + '</div>';
                 break;
@@ -742,12 +757,15 @@
                     '<textarea name="' + item_a.name + '" id="' + item_a.name + '" class="form-control " style="height: 100px" placeholder="' + item_a.label + '"' 
                     + (item_a.required ? ' required' : '') + '>' + '</textarea>' + commonPart() + '</div>';
 
+                // int_a = '<div class="p-2">' + int_a + '</div>';
                 break;
             case 'radio':
             case 'checkbox':
                 int_a = '<div class=" border rounded p-2"><snap title="'+item_a.name+'"><b>*** ' + item_a.label + '：' + (item_a.required ? '<sup class="text-danger"> *</sup>' : '') + '</b></snap><br>';
                 Object(item_a.options).forEach((option)=>{
+                    // let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
                     let object_type = ((typeof option.value == 'object') ? option.label : option.value);   // for other's value
+                    // int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + (item_a.type == 'checkbox' ? '[]':'') + '" value="' + object_type + '" '
                     int_a += '<div class="form-check bg-light rounded"><input type="' + item_a.type + '" name="' + item_a.name + '[]' + '" value="' + object_type + '" '
                           + ' id="' + item_a.name + '_' + object_type + '" ' + (item_a.required ? ' required ' : '') + 'onchange="onchange_option(this.name)" ' 
                           + ' class="form-check-input ' + item_a.name  
@@ -762,11 +780,13 @@
                           + '</label></div>';
 
                     if (typeof option.value === 'object' && option.value.type == 'text') {
+                        // int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + (item_a.type == 'checkbox' ? '[]':'') + '" '
                         int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
                             + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled >';
 
                     }else if (typeof option.value === 'object' && option.value.type == 'number') {
                         int_a += '<input type="'+ option.value.type +'" name="' + option.value.name + '[]' + '" '
+                            // + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled  min="0" max="999" maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)">';
                             + ' placeholder="' + option.value.label + '" id="' + item_a.name + '_' + option.label + '_o" class="form-control unblock" disabled ';
                         if(option.value.limit != undefined){
                             int_a += option.value.limit;
@@ -1026,7 +1046,21 @@
                     if(option_value !== null){                          // 預防空值null
                         if(typeof option_value === 'object'){
                             option_value.forEach((item_value, index)=>{
-                                // console.log(content_key, item_value);                                
+                                // console.log(content_key, item_value);
+                                    // if (['其他', '無', 'Other', '1', '2', '3'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                    // if (['其他', '無', '否', '有', 'Other', '損工', '限工'].includes(option_value[index-1])) {       // ** 當你的上一個value，有涉及到'其他','無','否'，就將它的例外input_o打開，並帶入value
+                                        // $('#' + content_key + '_' + option_value[index-1] + '_o').removeClass('unblock').removeAttr("disabled").val(item_value);
+                                    // }else{                                                                          // ** 如果沒有就直接帶入value  // checkbox和checkbox都適用
+                                        // $('#' + content_key + '_' + item_value).prop('checked', true);
+                                    // }
+                                    
+                                    //     $('#' + content_key + '_' + item_value).prop('checked', true);
+                                    // if ($('#' + content_key + '_' + item_value).hasClass("other_item")){                // 其他選項
+                                    //     $('#' + content_key + '_' + item_value + '_o').removeClass('unblock').removeAttr("disabled");
+                                    // }else{
+                                    //     $('#' + content_key + '_' + option_value[index-1] + '_o').val(item_value);
+                                    // }
+                                
                                 let targetItemSelector = `${content_key}_${item_value}`;
                                 let targetItem = document.querySelector(`[id^="${targetItemSelector}"]`);
                                 if(targetItem){
@@ -1099,6 +1133,7 @@
                 }
             }
 
+        // let sinn = 'submit - ( '+swal_json['fun']+' : '+swal_json['content']+' ) <b>'+ swal_json['action'] +'</b>&nbsp!!';
         let sinn = action + '&nbsp模式開啟，表單套用成功&nbsp!!';
         inside_toast(sinn);
         return true;
@@ -1165,6 +1200,7 @@
             });
             // 唯讀模式下，移除特定對象elements
             if(cherk_action){
+                // $('#submit_btn, #delete_btn, #saveSubmit, #searchUser').empty();
                 $('#submit_btn, #delete_btn, #submit_action, #searchUser').empty();
             }
             resolve(); // 文件載入成功，resolve

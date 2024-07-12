@@ -95,7 +95,7 @@
                     async: false,                                               // ajax取得數據包後，可以return的重要參數
                     dataType:'json',
                     data:{
-                        uuid    : '752382f7-207b-11ee-a45f-2cfda183ef4f',       // ppe
+                        uuid    : '3cd9a6fd-4021-11ef-9173-1c697a98a75f',       // invest
                         eid     : user_emp_id,                                  // 傳送對象
                         // eid     : '10008048',                                   // 傳送對象
                         message : mg_msg                                        // 傳送訊息
@@ -123,8 +123,8 @@
                     async: false,                                               // ajax取得數據包後，可以return的重要參數
                     dataType:'json',
                     data:{
-                        uuid    : '752382f7-207b-11ee-a45f-2cfda183ef4f',       // ppe
-                        sysName : 'PPE',                                        // 貫名
+                        uuid    : '3cd9a6fd-4021-11ef-9173-1c697a98a75f',       // invest
+                        sysName : 'invest',                                     // 貫名
                         to      : user_email,                                   // 傳送對象
                         // to      : 'leong.chen@innolux.com',                     // 傳送對象
                         subject : int_msg1_title,                               // 信件標題
@@ -161,7 +161,7 @@
                 dataType:'json',
                 data:{
                     functionname : 'showStaff',                             // 操作功能
-                    uuid         : '752382f7-207b-11ee-a45f-2cfda183ef4f',  // ppe
+                    uuid    : '3cd9a6fd-4021-11ef-9173-1c697a98a75f',       // invest
                     emp_id       : search                                   // 查詢對象key_word  // 使用開單人工號查詢
                 },
                 success: function(res){

@@ -821,7 +821,7 @@
                                                             { "label" : "UC" , "value" : "UC_保護措施執行(指設備安全面向)" },
                                                             { "label" : "UD" , "value" : "UD_缺乏注意力和認知(描述事件、行為)" }
                                                         ],
-                                                        "required"  : true
+                                                        "required"  : false
                                                     },
                             "class" : "other_item" },
                         { "label" : "不安全環境" , "value" : {
@@ -835,18 +835,18 @@
                                                             { "label" : "IC" , "value" : "IC_危害因子暴露(人傷相關)" },
                                                             { "label" : "ID" , "value" : "ID_作業場所環境與配置(指環境因素)" }
                                                         ],
-                                                        "required"  : true
+                                                        "required"  : false
                                                     },
                             "class" : "other_item" },
                         { "label" : "以上皆是(Both)"                 , "value" : "以上皆是" }
                     ],
                     "chooseBoth" : "以上皆是",
-                    "required"   : true
+                    "required"   : false
                 },
                 {
                     "label": "事故基本原因",
                     "type" : "checkbox",
-                    "name" : "s8_basic_reasons",
+                    "name" : "s8_basic_reasons_combo",
                     "options" : [
                         { "label" : "作業程序不完整或不適當"            , "value" : "作業程序不完整或不適當" },
                         { "label" : "工作紀律不良"                     , "value" : "工作紀律不良" },
