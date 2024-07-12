@@ -66,6 +66,30 @@
                     $result['error'] = 'Load '.$fun.' failed...(no parm)';
                 }
                 break;
+
+            case 'urt':       // 2.更新reloadTime.txt時間；完成後=>3.更新畫面上reload_time時間
+                    if(isset($_REQUEST['parm'])) {
+                        extract($_REQUEST);
+                        $parm_arr = explode(",", $parm);    // 將參數parm炸成陣列：0= 要抓的對象； 1= true/false 是否輸出更新json檔
+                        $filename = "reloadTime.txt";
+                        $rightNow = $parm_arr[0];
+
+                        if($parm_arr[1]){                   // 判斷是否更新
+                            $rt = fopen($filename,"w");     // 寫入新的資料
+                            fputs($rt, $rightNow);
+                            fclose($rt);
+                        }    
+
+                        $result = [                         // 製作返回文件
+                            'result_obj' => $rightNow,
+                            'fun'        => $fun,
+                            'success'    => 'Load '.$fun.' success.'
+                        ];
+
+                    } else {
+                        $result['error'] = 'Load '.$fun.' failed...(no parm)';
+                    }
+                break;
             default:
                 
         };

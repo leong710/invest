@@ -5,15 +5,15 @@
     require_once("service_window.php");             // service window
     $sw_arr = (array) json_decode($sw_json);        // service window 物件轉陣列
 
-        //    accessDenied($sys_id);
-        if(!empty($_SESSION["AUTH"]["pass"]) && empty($_SESSION[$sys_id])){
-            accessDenied_sys($sys_id);
-        }
+    //    accessDenied($sys_id);
+    if(!empty($_SESSION["AUTH"]["pass"]) && empty($_SESSION[$sys_id])){
+        accessDenied_sys($sys_id);
+    }
 
     // 複製本頁網址藥用
-    $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
+    // $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
 
-    $reloadTime = (file_exists("reloadTime.txt")) ? file_get_contents("reloadTime.txt") : "";              // 從文件加载reloadTime内容
+    $reloadTime = (file_exists("reloadTime.txt")) ? file_get_contents("reloadTime.txt") : "";       // 從文件加载reloadTime内容
         
 ?>
 
@@ -79,8 +79,11 @@
             <div class="col-mm-10 col-12 border rounded bg-light p-4 ">
                 <div class="row">
                     <!-- 左上：訪問單 -->
-                    <div class="col-12 col-md-3 px-2 py-0 t-center" id="btn_list">
+                    <div class="col-12 col-md-3 px-2 py-0 t-center">
                         <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪問單&nbsp--</span></h2>
+                        <div class="col-12 p-0" id="btn_list">
+
+                        </div>
                         <!-- append button here -->
                     </div>
 
@@ -107,16 +110,18 @@
                                 <li>通知對象：開單人、窗口、部門副理、部門經理、大PM</li>
                             </ul>
                             <!-- 20231108-資料更新時間 -->
-                            <div class="col-12 pb-0 px-3 text-end">
-                                <span style="display: inline-block;"><i class="fa-solid fa-rotate"></i>  Last reload time：</span>
-                                <span style="display: inline-block;" id="reload_time"><?php echo $reloadTime;?> </span>
+                            <div class="col-12 py-0 px-3 text-end">
+                                <span style="display: inline-block;" >
+                                    <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新">
+                                        <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                                <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?> </span>
                             </div>
                         </div>
                     </div>
 
                     <!-- 中下：聯絡窗口 -->
                     <div class="col-12 my-3 p-3 text-center">
-                        <h4><span class="badge bg-success"><i class="fa-solid fa-circle-info"></i>&nbsp各廠聯絡窗口</span></h4>
+                        <h4><span class="badge bg-info"><i class="fa-solid fa-circle-info"></i>&nbsp各廠聯絡窗口</span></h4>
                         <table id="service_window" class="table table-striped table-hover bs-b">
                             <thead>
                                 <tr>
@@ -168,10 +173,15 @@
 <script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 
 <script>
-    var icon_s = '<i class="';
-    var icon_e = ' fa-3x"></i>';
+
+    $(function () {
+        // 在任何地方啟用工具提示框
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 
     function make_formBtn(fc_value){
+        const icon_s = '<i class="';
+        const icon_e = ' fa-3x"></i>';
         if(fc_value.dcc_no){
             let int_b = "<button type='button' class='btn btn-outline-primary add_btn form_btn bs-b' value='../interView/form.php?dcc_no="+ fc_value.dcc_no +"' onclick='openUrl(this.value)' >"
                 + "<div class='col-12 p-1 pt-3'>" + icon_s + fc_value._icon + icon_e + "<h5 class='mb-0 mt-1'><b>- " + fc_value.short_name +" -</b><h5></div></button>";
@@ -182,6 +192,7 @@
     }
 
     function bring_form(formcases){
+        $('#btn_list').empty();     // 鋪設前清除
         if(formcases){   
             for (const [key_1, value_1] of Object.entries(formcases)) {
                 const int_btn = '<div class="col-12 text-center p-2">' + make_formBtn(value_1) + '</div>';
@@ -191,6 +202,7 @@
     }
     
     function bring_site(site){
+        $('#highLight').empty();     // 鋪設前清除
         if(site){   
             for (const [key_2, value_2] of Object.entries(site)) {
                 const div_site = '<div class="card my-3 bs-b">'+'<h5 class="card-header">'+ value_2.site_title +' / '+ value_2.site_remark +'</h5>' 
@@ -204,16 +216,35 @@
         if(fab){   
             for (const [key_3, value_3] of Object.entries(fab)) {
                 const div_fab = '<div class="col-md-2 p-2 py-3 inb t-center">'
-                        +'<a href="../caseList/?_month=All&_fab_id='+ value_3.id +'" class="btn rounded-pill btn-secondary" >'+ value_3.fab_title +'</a>'+'</div>';
+                        +'<a href="../caseList/?_month=All&_fab_id='+ value_3.id +'" class="btn rounded-pill btn-secondary" id="btn_fab_'+value_3.id+'">&nbsp'+ value_3.fab_title +'&nbsp</a>'+'</div>';
                 $('#site_id_'+value_3.site_id).append(div_fab);    // 渲染form
             }
         }
     }
+    // 1.確認是否超過3小時；true=_db/更新時間；false=_json          // 呼叫來源：dashboard_init
+    function check3hourse(action){
+        // let currentDate = new Date().toLocaleString('zh-TW', { hour12: false });                      // 取得今天日期時間
+        // let reloadTime  = new Date(reload_time.innerText).toLocaleString('zh-TW', { hour12: false }); // 取得reloadTime時間
+        let currentDate = new Date();                               // 取得今天日期時間
+        let reloadTime  = new Date(reload_time.innerText);          // 取得reloadTime時間
 
-    $(function () {
-        // 在任何地方啟用工具提示框
-        $('[data-toggle="tooltip"]').tooltip();
-    })
+        let timeDifference = currentDate - reloadTime;              // 計算兩個時間之間的毫秒差異
+        let hoursDifference = timeDifference / (1000 * 60 * 60);    // 將毫秒差異轉換為小時數
+        let result = hoursDifference >= 3 ;                          // 判斷相差時間是否大於3小時，並顯示結果
+        let _method = result ? '_db' : '_json';
+        if(result || action){
+            recordTime();       // 1.取得目前時間，並格式化；2.更新reloadTime.txt時間；完成後=>3.更新畫面上reload_time時間
+        }
+        const _title = ('時間差：'+ Number(hoursDifference.toFixed(2)) +'（小時）>= 3小時：'+ result +' => '+ _method);
+        document.getElementById('reload_time').title = _title;
+        console.log('check3hourse...', _title);
+        return _method;
+    }
+    // 3.更新畫面上reload_time時間                  // 呼叫來源：recordTime
+    function update_reloadTime(rightNow){
+        reload_time.innerText = rightNow;       // 更新畫面上reload_time時間
+    }
+
 
     async function load_fun(fun, parm, myCallback) {        // parm = 參數
         return new Promise((resolve, reject) => {
@@ -237,16 +268,34 @@
             xhr.send(formData);
         });
     }
+    // 1.取得目前時間，並格式化；2.更新reloadTime.txt時間；完成後=>3.更新畫面上reload_time時間          // 呼叫來源：check3hourse
+    async function recordTime(){
+        let rightNow = new Date().toLocaleString('zh-TW', { hour12: false });                     // 取得今天日期時間
+        console.log('rightNow:', rightNow);
 
-    async function dashboard_init() {
+        try {
+            await load_fun('urt' , rightNow+', true' , update_reloadTime);      
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function dashboard_init(action) {
+        const _method = check3hourse(action);
+        const _type = action ?  "_db" : _method;      // action來決定 false=自動判斷check3hourse 或 true=強制_db
+        // console.log('dashboard_init...', _type);
         try {
             mloading(); 
-            // await load_fun('_db', 'formcase,'      , bring_form);     // step_1 直接抓db(true/false 輸出json檔)，取得 formcase 內容後鋪設內容
-            // await load_fun('_db', '_site,'         , bring_site);     // step_2 直接抓db(true/false 輸出json檔)，取得 _site    內容後鋪設內容
-            // await load_fun('_db', '_fab,'          , bring_fab);      // step_3 直接抓db(true/false 輸出json檔)，取得 _fab     內容後鋪設內容
-            await load_fun('_json', 'formcase, true'  , bring_form);     // step_1 先抓json，沒有then抓db(true/false 輸出json檔)，取得 formcase 內容後鋪設內容
-            await load_fun('_json', '_site, true'     , bring_site);     // step_2 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _site    內容後鋪設內容
-            await load_fun('_json', '_fab, true'      , bring_fab);      // step_3 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _fab     內容後鋪設內容
+                // await load_fun('_db', 'formcase,'      , bring_form);     // step_1 直接抓db(true/false 輸出json檔)，取得 formcase 內容後鋪設內容
+                // await load_fun('_db', '_site,'         , bring_site);     // step_2 直接抓db(true/false 輸出json檔)，取得 _site    內容後鋪設內容
+                // await load_fun('_db', '_fab,'          , bring_fab);      // step_3 直接抓db(true/false 輸出json檔)，取得 _fab     內容後鋪設內容
+                // await load_fun('_json', 'formcase, true'  , bring_form);     // step_1 先抓json，沒有then抓db(true/false 輸出json檔)，取得 formcase 內容後鋪設內容
+                // await load_fun('_json', '_site, true'     , bring_site);     // step_2 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _site    內容後鋪設內容
+                // await load_fun('_json', '_fab, true'      , bring_fab);      // step_3 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _fab     內容後鋪設內容
+            await load_fun(_type, 'formcase, true'  , bring_form);     // step_1 先抓json，沒有then抓db(true/false 輸出json檔)，取得 formcase 內容後鋪設內容
+            await load_fun(_type, '_site, true'     , bring_site);     // step_2 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _site    內容後鋪設內容
+            await load_fun(_type, '_fab, true'      , bring_fab);      // step_3 先抓json，沒有then抓db(true/false 輸出json檔)，取得 _fab     內容後鋪設內容
 
         } catch (error) {
             console.error(error);
@@ -254,41 +303,12 @@
         await $("body").mLoading("hide");
     }
 
-    function testTime(){
-
-        let a_time = new Date().toLocaleString('zh-TW', { hour12: false });
-        let b_time = '2024/07/11 15:00:00';
-
-        // 將 a_time 和 b_time 轉換為 Date 物件
-        let dateA = new Date(a_time);
-        let dateB = new Date(b_time);
-
-        // 計算兩個時間之間的毫秒差異
-        let timeDifference = dateA - dateB;
-
-        // 將毫秒差異轉換為小時數
-        let hoursDifference = timeDifference / (1000 * 60 * 60);
-
-        // 判斷相差時間是否大於3小時，並顯示結果
-        let result = hoursDifference > 3 ? 'true' : 'false';
-        console.log('相差時間是否大於3小時:', result);
-        console.log('相差時間（小時）:', hoursDifference);
-
-    }
-
     $(document).ready(function(){
 
-        let reloadTime  = new Date(reload_time.innerText).toLocaleString('zh-TW', { hour12: false }); // 取得reloadTime時間
-        let currentDate = new Date().toLocaleString('zh-TW', { hour12: false });                     // 取得今天日期時間
-        console.log('reloadTime...', reloadTime);
-        console.log('currentDate...', currentDate);
-
-        testTime();
-
-        dashboard_init();
+        dashboard_init(false);
+        // testTime();
         // loadData();
         // eventListener();
-
 
     })
 
