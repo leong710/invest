@@ -79,7 +79,7 @@
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col-mm-10 col-12 border rounded bg-light p-4 ">
+            <div class="col-mm-10 col-12 rounded p-4 " style="background-color: rgba(255, 255, 255, .7);">
                 <div class="row">
                     <!-- 左上：訪問單 -->
                     <div class="col-3 col-md-3 px-2 py-0 t-center">

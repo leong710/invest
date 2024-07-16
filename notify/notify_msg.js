@@ -146,9 +146,9 @@
         // 20240314 search user_empid return email
         function search_fun(search){
             var comid2 = null;
-
+            console.log('search_fun...', search);
             if(!search || (search.length < 8)){
-                alert("查詢工號字數最少 8 個字以上!!");
+                // alert("查詢工號字數最少 8 個字以上!!");
                 $("body").mLoading("hide");
                 return false;
             } 
@@ -462,7 +462,7 @@
         Object.keys(lists_obj).forEach((list_key)=>{
             let a_list = lists_obj[list_key];
             for(i=0; i < a_list.length; i++ ){
-                let q_emp_id = a_list[i]['emp_id'];
+                let q_emp_id = a_list[i]['created_emp_id'];
                 let q_email = search_fun(q_emp_id);
                 if(q_email){
                     $('#'+list_key+' #id_'+q_emp_id).append('</br>'+q_email); 
@@ -476,11 +476,11 @@
     // fun啟動自動執行
     $(document).ready( function () {
         checkPopup();
-        // op_tab('user_lists');   // 關閉清單
+        // op_tab('user_lists');            // 關閉清單
         $('#result').append('等待發報 : ');
         if(check_ip && fun){
             switch (fun) {
-                case 'notify_insign':         // MAPP待簽發報
+                case 'notify_insign':       // MAPP待簽發報
                     (async () => {
                         await notify_insign();     // 等 func1 執行完畢  // notify_insign 整理訊息、發送、顯示發送結果。
                         CountDown();        // 當 func1 執行完畢後才會執行 func2    // 倒數 n秒自動關閉視窗~

@@ -14,8 +14,7 @@
 
     $sys_role  = (isset($_SESSION[$sys_id]["role"])) ? $_SESSION[$sys_id]["role"] : false;             // 取出$_session引用
     $fun       = (!empty($_REQUEST['fun'])) ? $_REQUEST['fun'] : false ;                               // 先抓操作功能'notify_insign'= MAPP待簽發報 // 確認有帶數值才執行
-    // $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
-    $notify_lists    = [];                                                                  // 載入所有待簽名單
+    $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
 ?>
 
 <?php include("../template/header.php"); ?>
@@ -74,41 +73,46 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>姓名(工號)</th>
-                                            <th>fab (local)</th>
+                                            <th>id / idty</th>
+                                            <th>_odd</th>
+                                            <th>fab_id / title</th>
+                                            <th>sign_code</th>
+                                            <th>created_at</th>
+                                            
+                                            <th>created_cname / emp_id</th>
 
-                                            <th>請購待簽</th>
-                                            <th>領用待簽</th>
-                                            <th>合計待簽</th>
-                                            <th>急件待簽</th>
-
-                                            <th class="text-danger">請購退件</th>
-                                            <th class="text-danger">領用退件</th>
-                                            <th class="text-danger">合計退件</th>
-                                            <th class="text-danger">急件退件</th>
-
-                                            <th class="text-success">待領</th>
-                                            <th class="text-success">急件</th>
+                                            <th class="text-danger">pm_emp_id</th>
+                          
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach($notify_lists as $notify_list){ ?>
                                             <tr>
-                                                <td id="<?php echo 'id_'.$notify_list['emp_id'];?>" style="text-align: start;"><?php echo $notify_list["cname"]." (".$notify_list["emp_id"].")";?></td>
-                                                <td><?php echo $notify_list["fab_title"]."</br>(". $notify_list["local_title"].")";?></td>
-                                                
-                                                <td><?php echo $notify_list["issue_waiting"] > 0 ? $notify_list["issue_waiting"] : "" ;?></td>
-                                                <td><?php echo $notify_list["receive_waiting"] > 0 ? $notify_list["receive_waiting"] : "" ;?></td>
-                                                <td><?php echo $notify_list["total_waiting"] > 0 ? $notify_list["total_waiting"] : "" ;?></td>
-                                                <td class="text-primary"><?php echo $notify_list["ppty_3_waiting"] > 0 ? $notify_list["ppty_3_waiting"] : "" ;?></td>
-                                                
-                                                <td><?php echo $notify_list["issue_reject"] > 0 ? $notify_list["issue_reject"] : "" ;?></td>
-                                                <td><?php echo $notify_list["receive_reject"] > 0 ? $notify_list["receive_reject"] : "" ;?></td>
-                                                <td><?php echo $notify_list["total_reject"] > 0 ? $notify_list["total_reject"] : "" ;?></td>
-                                                <td class="text-danger"><?php echo $notify_list["ppty_3_reject"] > 0 ? $notify_list["ppty_3_reject"] : "" ;?></td>
+                                                <td><?php
+                                                        switch ($notify_list["idty"]){
+                                                            case '1':   $_idty = '立案/簽核中';  break;
+                                                            case '10':  $_idty = '結案';         break;
+                                                            case '6':   $_idty = '暫存';         break;
+                                                            case '3':   $_idty = '取消';         break;
+                                                            default:    $_idty = 'NA';
+                                                        }
+                                                        echo $notify_list["id"]." / ".$_idty;
+                                                    ?></td>
+                                                <td class="text-start"><?php 
+                                                        $_odd = isset($notify_list['_odd']) ? (array) json_decode($notify_list['_odd']) : [];
+                                                        echo "<span class='inb'>";
+                                                        echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
+                                                        echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
+                                                        echo "</span>";
+                                                    ?></td>
+                                                <td><?php echo $notify_list["fab_id"]." / ". $notify_list["fab_title"];?></td>
+                                                <td><?php echo $notify_list["sign_code"];?></td>
+                                                <td><?php echo $notify_list["c_day"];?></td>
 
-                                                <td><?php echo $notify_list["total_collect"] > 0 ? $notify_list["total_collect"] : "" ;?></td>
-                                                <td class="text-success"><?php echo $notify_list["ppty_3_collect"] > 0 ? $notify_list["ppty_3_collect"] : "" ;?></td>
+                                                <td id="<?php echo 'id_'.$notify_list['created_emp_id'];?>" style="text-align: start;">
+                                                    <?php echo $notify_list["created_cname"]." (".$notify_list["created_emp_id"].")";?></td>
+                                                    
+                                                <td><?php echo $notify_list["pm_emp_id"];?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

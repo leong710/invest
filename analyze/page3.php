@@ -601,7 +601,6 @@
                     $('#result_table tbody').append('<tr>'+ o_doc_item +'</tr>');
                     sort_listData.push(sort_listRow);                                   // excel預備工作 4.匯入採集資料
                 })
-            console.log('excel預備工作...', sort_listData)
             htmlTable.value = JSON.stringify(sort_listData);
 
         }else{
