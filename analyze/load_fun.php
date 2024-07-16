@@ -312,8 +312,11 @@
                         $stmt_arr[] = $short_name;
                     }
                     if ($idty != 'All' && $idty != 'null') {
-                        $conditions[] = "_d.idty = ?";
-                        $stmt_arr[] = $idty;
+                        // $conditions[] = "_d.idty = ?";
+                        // $stmt_arr[] = $idty;
+                        // 240716 radio優化成checkbox，由單選變多選...
+                        $idty = implode(",",$idty);
+                        $conditions[] = "_d.idty IN ({$idty})";
                     }
                     if ($created_at_form != 'null' && $created_at_to != 'null') {
                         $conditions[] = "DATE(_d.created_at) BETWEEN ? AND ?";

@@ -73,6 +73,23 @@
         .bg-c-blue {
             background: linear-gradient(45deg,#4099ff,#73b4ff);
         }
+
+        .bg-c-success {
+            /* green */
+            /* background: linear-gradient(45deg,#2ed8b6,#59e0c5); */
+            background: linear-gradient(45deg,#7CFC00,#ADFF2F);
+        }
+
+        .bg-c-warning {
+            /* yellow */
+            /* background: linear-gradient(45deg,#FFB64D,#ffcb80); */
+            background: linear-gradient(45deg,#FFA600,#ffcb80);
+        }
+
+        .bg-c-danger {
+            /* pink */
+            background: linear-gradient(45deg,#FF5370,#ff869a);
+        }
    </style>
 </head>
 
@@ -110,12 +127,7 @@
                             <ul>
                                 <li>通報時間：週一～週五 08:00 & 13:00</li>
                                 <li>通報方式：Mapp + eMail通知</li>
-                                <li>通知對象：remaining_days<ul>
-                                        <li><=3：窗口、課副理</li>    
-                                        <li><=1：窗口、課副理、部經理、大PM</li>    
-                                        <li>&nbsp&nbsp<&nbsp0：窗口、課副理、部經理、大PM、處長</li>    
-                                        <li>*** 以上表單狀態若是未結案，將一併通知 開單人</li>
-                                </ul></li>
+                                <li>通知對象：開單人、窗口、部門副理、部門經理、大PM</li>
                             </ul>
                             <!-- 20231108-資料更新時間 -->
                             <div class="col-12 py-0 px-3 text-end">
@@ -224,7 +236,7 @@
         if(fab){   
             for (const [key_3, value_3] of Object.entries(fab)) {
                 const div_fab = '<div class="col-md-2 p-2 py-3 inb t-center">'
-                        +'<a href="../caseList/?_month=All&_fab_id='+ value_3.id +'" class="btn rounded-pill btn-secondary " id="btn_fab_'+value_3.id+'">&nbsp'+ value_3.fab_title +'&nbsp</a>'+'</div>';
+                        +'<a href="../caseList/?_month=All&_fab_id='+ value_3.id +'" class="btn rounded-pill btn-secondary text-light" id="btn_fab_'+value_3.id+'">&nbsp'+ value_3.fab_title +'&nbsp</a>'+'</div>';
                 $('#site_id_'+value_3.site_id).append(div_fab);    // 渲染form
             }
         }
@@ -237,7 +249,7 @@
                 target_btn = document.getElementById('btn_fab_'+value_4['id']);
                 if(target_btn){
                     target_btn.classList.remove('btn-secondary');
-                    target_btn.classList.add('btn-'+value_4.light);
+                    target_btn.classList.add('bg-c-'+value_4.light);
                 }
             }
         }

@@ -79,4 +79,19 @@
                 1-3.修正php function：store、update、upload、unlink、delete...等函數
                 1-4.修正儲存比對校驗與紀錄功能
                 1-5.優化文件中 事故照片、事故者自述與目擊者自述檔案移除功能：上傳暫存temp--直接unlink刪除；既有檔案--移到offLine垃圾桶(以防不慎誤刪)
+        24/07/10
+            1. 修正並優化入口首頁顯示方式，左側表單縮排、右側各廠燈號、下方聯絡窗口；
+            2. 獨立建構dashBoard，並設定成入口首頁。
+        24/07/11
+            1. 優化 form、site、fab生成方式改成循環function
+            2. 預先準備Notify和發報紀錄功能...(尚未完成)
+        24/07/12
+            1. 為降低db讀取頻次、維持效率，將formcase、site、fab讀取結果轉存成JSON檔，並記錄成reload time，往後載入時直接讀取JSON檔。
+            2. 依據reload time與現在時間差異>=3小時，程式重新讀取db並更新JSON檔與reload time。
+            3. 建構一[強制更新]按鈕，可以跳過時間判斷，直接讀取db並更新JSON和reload time。
+        24/07/15 一
+            1. 分析紅黃綠燈之燈號條件，實驗製作mysql查詢語法。
+        24/07/16 二
+            1. 優化查詢匯出功能：結案狀態 typw=radio(單選)改成checkbox(多選)，同時修改後端db查詢語法，以符合多選需求；
+            2. 匯出功能：本次已將Excel匯出的前處理工作埋入查詢後post_result(渲染)功能中同步進行，並在Excel中預先加入凍結窗格和篩選。
 

@@ -182,17 +182,25 @@
                                     <td class="text-end">idty / 結案狀態：</td>
                                     <td class="inf px-3">
                                         <div class="form-check px-3">
-                                            <input type="radio" name="idty" id="idty_10" value="10" class="form-check-input" >
+                                            <input type="checkbox" name="idty[]" id="idty_1" value="1" class="form-check-input" checked>
+                                            <label for="idty_1" class="form-check-label">立案/簽核中</label>
+                                        </div>&nbsp
+                                        <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_10" value="10" class="form-check-input" checked>
                                             <label for="idty_10" class="form-check-label">結案</label>
-                                        </div>
+                                        </div>&nbsp
                                         <div class="form-check px-3">
-                                            <input type="radio" name="idty" id="idty_6" value="6" class="form-check-input">
+                                            <input type="checkbox" name="idty[]" id="idty_6" value="6" class="form-check-input">
                                             <label for="idty_6" class="form-check-label">暫存</label>
-                                        </div>
+                                        </div>&nbsp
                                         <div class="form-check px-3">
-                                            <input type="radio" name="idty" id="idty_All" value="All" class="form-check-input" checked >
+                                            <input type="checkbox" name="idty[]" id="idty_3" value="3" class="form-check-input">
+                                            <label for="idty_3" class="form-check-label">取消</label>
+                                        </div>&nbsp
+                                        <!-- <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_All" value="All" class="form-check-input"  >
                                             <label for="idty_All" class="form-check-label">All</label>
-                                        </div>
+                                        </div> -->
                                     </td>
                                 </tr>
                                 <tr>
@@ -232,14 +240,6 @@
                         <!-- Hear：H -->
                         <div class="col-12 text-center">
                             <button type="reset" class="btn btn-outline-success">清除</button>
-                            <div class="inb">
-                                <!-- H：downLoad Excel -->
-                                <form id="myForm" method="post" action="../_Format/download_excel.php">
-                                    <input type="hidden" name="htmlTable" id="htmlTable" value="">
-                                    <button type="submit" name="submit" class="btn btn-outline-success" title="abc" value="stock" onclick="submitDownloadExcel('stock')" >
-                                        <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
-                                </form>
-                            </div>
                             <button type="button" class="btn btn-outline-secondary search_btn" value="count" id="search_btn" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
                         </div>
                     </form>
@@ -283,6 +283,14 @@
                 </div>
 
                 <div class="modal-footer">
+                    <div class="inb">
+                        <!-- H：downLoad Excel -->
+                        <form id="myForm" method="post" action="../_Format/download_excel.php">
+                            <input type="hidden" name="htmlTable" id="htmlTable" value="">
+                            <button type="submit" name="submit" class="btn btn-outline-success" title="abc" value="interView" >
+                                <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
+                        </form>
+                    </div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">返回</button>
                 </div>
             </div>
@@ -320,7 +328,7 @@
         // 'a_day'           : '發生日期',
         'a_day'           : '發生時間',
         'a_location'      : '發生地點',
-        'a_description'   : '事件詳述',
+        // 'a_description'   : '事件詳述',
         's2_combo_06'     : '事件等級',
         's2_combo_07'     : '事件主類型',
         's2_combo_08'     : '災害主類型',
@@ -329,6 +337,7 @@
         // 's8_combo_02'     : '間接原因分類',
         // 's8_combo_02'     : '間接大項分類',
         // 's8_combo_02'     : '間接項目'
+        's8_basic_reasons_combo':'事故基本原因'
     };
 
     $(function () {
@@ -345,68 +354,49 @@
     }
 
     // 20231128_下載Excel
-    function submitDownloadExcel() {
-        // 先定義一個陣列(裝輸出資料使用)for 下載Excel
-        // let listData        = <=json_encode($row_lists)?>;                   // 引入$row_lists資料
-        // 定義要抓的key=>value
-        let list_item_keys = {
-            "id"             : "aid", 
-            "created_at"     : "開單日期", 
-            "plant"          : "申請單位", 
-            "dept"           : "申請部門", 
-            "sign_code"      : "部門代號",
-            "cname"          : "領用人", 
-            "emp_id"         : "工號", 
-            "cata_SN_amount" : "需求清單", 
-            "receive_remark" : "用途說明",
-            "fab_title"      : "提貨廠區", 
-            "fab_remark"     : "提貨廠區說明", 
-            "local_title"    : "儲存點",
-            "local_remark"   : "儲存點說明",
-            "ppty"           : "類別\n0臨時1一般3緊急",
-            "idty"           : "狀態\n10結案",
-            "updated_at"     : "最後編輯"
-        };
-        let sort_listData = [];         // 建立陣列
-        for(let i=0; i < listData.length; i++){
-            sort_listData[i] = {};      // 建立物件
-            Object.keys(list_item_keys).forEach(function(item_key){
-                sort_listData[i][list_item_keys[item_key]] = listData[i][item_key];
-            })
-        }
-        let htmlTableValue = JSON.stringify(sort_listData);
-        document.getElementById('htmlTable').value = htmlTableValue;
-    }
+    // function submitDownloadExcel() {
+        // 這裡的功能已經在post_result中的excel預備工作1~4完成，所以取消此FUN
+    // }
 
     // 240702 監聽送出按鈕
     async function eventListener(){
         return new Promise((resolve) => { 
             document.getElementById('search_btn').addEventListener('click', function() {
 
-                mloading(); 
-
-                const btn_value = this.value;
-                const queryItem = document.getElementById('query_item');
-                const elements = queryItem.querySelectorAll('select, input');
-                const queryItem_obj = {};
-
-                elements.forEach(({ name, value, type, checked }) => {
-                    if (name) {
-                        if (type === 'radio') {
-                            if (checked) {
-                                queryItem_obj[name] = value;
+                // step0.初始定義
+                    mloading(); 
+                    const btn_value = this.value;
+                    const queryItem = document.getElementById('query_item');
+                    const elements = queryItem.querySelectorAll('select, input');
+                    const queryItem_obj = {};
+                
+                // step1.取出查詢條件並打包queryItem_obj：
+                    elements.forEach(({ name, value, type, checked }) => {
+                        if (name) {
+                            if (type === 'radio') {                     // 個案處理：radio要找出被checked的項目才能帶入
+                                if (checked) {              
+                                    queryItem_obj[name] = value;
+                                }
+                            } else if (type === 'checkbox') {           // 個案處理：checkbox屬於陣列
+                                if(queryItem_obj[name] === undefined){  // 初始建立[]
+                                    queryItem_obj[name] = [];
+                                }
+                                if (checked) {                          // 找出被checked的項目才能帶入
+                                    queryItem_obj[name].push(value);
+                                }
+                            } else {
+                                queryItem_obj[name] = value ? value : null;
                             }
-                        } else {
-                            queryItem_obj[name] = value ? value : null;
                         }
-                    }
-                });
-                $('#result_table thead tr').empty();
-                $('#result_table tbody').empty();
-                // for (const [_key, _value] of Object.entries(queryItem_obj)){
-                //     $('#result_table tbody').append('<tr><td>'+_key+'</td><td class="text-start">'+_value+'</td></tr>');
-                // } 
-                load_fun('page3', queryItem_obj, post_result); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                    });
+                
+                // step2.清空result_table裡的內容
+                    $('#result_table thead tr').empty();
+                    $('#result_table tbody').empty();
+                    $('#htmlTable').value = '';                         // excel預備工作 0.清空接收欄位
+
+                // step3.呼叫load_fun，帶入查詢條件queryItem_obj，完成後callBack post_result進行渲染+鋪設
+                    load_fun('page3', queryItem_obj, post_result);
             });
 
             // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
@@ -543,184 +533,82 @@
             xhr.send(formData);
         });
     }
-
+    // 子功能：將查詢得到的資料進行整理與渲染
     async function post_result(result_obj){
-        console.log('post_result...', result_obj);
+        // console.log('post_result...', result_obj);
+        
+        let sort_listData = [];                 // excel預備工作 1.建立大陣列
+
         if(result_obj.length != 0){
-
-            // 鋪表頭
-            for (const [_key, _value] of Object.entries(doc_list_keys)){
-                $('#result_table thead tr').append('<th>'+_value+'</th>');
-            }
-            for (const [_key, _value] of Object.entries(content_keys)){
-                $('#result_table thead tr').append('<th>'+_value+'</th>');
-            }
-            // 鋪body
-            Object(result_obj).forEach((_doc)=>{
-                o_doc_item = '';
-                for (const [list_key, _value] of Object.entries(doc_list_keys)){
-                    if(list_key == 'anis_no'){
-                        o_doc_item += '<td><button type="button" value="../interView/form.php?action=review&uuid='+_doc['uuid']+'" '
-                        o_doc_item += 'class="tran_btn" onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷">'+_doc[list_key]+'</button></td>';
-
-                    }else if(list_key == '_content'){
-                        o_doc_item += '<td>'+_doc[list_key]['s2_combo_06']+'</td>';
-
-                    }else{
-                        o_doc_item += '<td>'+_doc[list_key]+'</td>';
-                    }
+            // step1.鋪表頭
+                for (const [_key, _value] of Object.entries(doc_list_keys)){
+                    $('#result_table thead tr').append('<th>'+_value+'</th>');
                 }
                 for (const [_key, _value] of Object.entries(content_keys)){
-                    o_doc_item += (_doc['_content'][_key] !== undefined) ? '<td>'+_doc['_content'][_key]+'</td>' : '<td>--</td>';
+                    $('#result_table thead tr').append('<th>'+_value+'</th>');
                 }
 
-                $('#result_table tbody').append('<tr>'+ o_doc_item +'</tr>');
-            })
+            // step2.鋪body
+                Object(result_obj).forEach((_doc)=>{
+                    o_doc_item = '';
+                    let sort_listRow = {};      // excel預備工作 2.建立小物件
+                    // step2-1.先處理doc外層doc_list_keys
+                    for (const [list_key, _value] of Object.entries(doc_list_keys)){
+                        if(list_key == 'anis_no'){
+                            o_doc_item += '<td><button type="button" value="../interView/form.php?action=review&uuid='+_doc['uuid']+'" '
+                            o_doc_item += 'class="tran_btn" onclick="openUrl(this.value)" data-toggle="tooltip" data-placement="bottom" title="檢視問卷">'+_doc[list_key]+'</button></td>';
+                            // excel預備工作 3.採集資料
+                            sort_listRow[_value] = (typeof _doc[list_key] === 'array' || typeof _doc[list_key] === 'object') ? _doc[list_key].toString() : _doc[list_key];
+
+                        }else if(list_key == '_content'){
+                            o_doc_item += '<td>'+_doc[list_key]['s2_combo_06']+'</td>';
+                            // excel預備工作 3.採集資料
+                            sort_listRow[_value] = (typeof _doc[list_key]['s2_combo_06'] === 'array' || typeof _doc[list_key]['s2_combo_06'] === 'object') ? _doc[list_key]['s2_combo_06'].toString() : _doc[list_key]['s2_combo_06'];
+                        
+                        }else if(list_key == 'idty'){
+                            let _idty = _doc[list_key];
+                            switch(_idty){
+                                case '1':   _idty = '立案/簽核中';  break;
+                                case '10':  _idty = '結案';         break;
+                                case '6':   _idty = '暫存';         break;
+                                case '3':   _idty = '取消';         break;
+                                default:
+                            }
+
+                            o_doc_item += '<td>'+_idty+'</td>';
+                            // excel預備工作 3.採集資料
+                            sort_listRow[_value] = _idty;
+                        
+                        }else{
+                            o_doc_item += '<td>'+_doc[list_key]+'</td>';
+                            // excel預備工作 3.採集資料
+                            sort_listRow[_value] = (typeof _doc[list_key] === 'array' || typeof _doc[list_key] === 'object') ? _doc[list_key].toString() : _doc[list_key];
+                        }
+                    }
+                    // step2-2.再處理doc內層content_keys
+                    for (const [_key, _value] of Object.entries(content_keys)){
+                        if (typeof _doc['_content'][_key] === 'string' && _doc['_content'][_key].match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)) {
+                            _doc['_content'][_key] = _doc['_content'][_key].replace('T', ' ');
+                        }
+                        o_doc_item += (_doc['_content'][_key] !== undefined) ? '<td>'+_doc['_content'][_key]+'</td>' : '<td>--</td>';
+                        // excel預備工作 3.採集資料
+                        if(_doc['_content'][_key] !== undefined ){
+                            sort_listRow[_value] = (typeof _doc['_content'][_key] === 'array' || typeof _doc['_content'][_key] === 'object') ? _doc['_content'][_key].toString() : _doc['_content'][_key];
+                        }else{
+                            sort_listRow[_value] = '--';
+                        }
+                    }
+                    $('#result_table tbody').append('<tr>'+ o_doc_item +'</tr>');
+                    sort_listData.push(sort_listRow);                                   // excel預備工作 4.匯入採集資料
+                })
+            console.log('excel預備工作...', sort_listData)
+            htmlTable.value = JSON.stringify(sort_listData);
+
         }else{
             $('#result_table tbody').append('-- 查無符合條件記錄 --');
         }
         $("body").mLoading("hide");
     }
-
-            // // 主功能2.渲染/鋪設
-            // async function gain_bigData(fun, gain_obj){
-            //     switch(fun){
-            //         case 'form':        // 鋪設DCC表單
-            //             // console.log('fun: gain_bigData...form:' , fun , gain_obj);
-            //             $('#main table tbody').empty();
-            //             $('#main table thead tr').empty().append('<th>'+'label / name'+'</th>');
-            //             for (const [key, value] of Object.entries(gain_obj)) {
-            //                 if (typeof value === 'object') {
-            //                     for (const [o_key, o_value] of Object.entries(value)){
-            //                         if (typeof o_value === 'object') {
-            //                             // innerText1 = '<td>'+ o_key + ' / ' + o_value.label + '</td>';
-            //                             o_value.item.forEach((o_value_item)=>{
-            //                                 let innerText2 = (typeof o_value_item === 'object')
-            //                                     ? '<td>'+o_value_item.label +'</br>('+ o_value_item.name +')</td>'
-            //                                     : '<td>'+o_value_item +'</br>('+ o_value_item +')</td>';
-            //                                 // $('#main table tbody').append('<tr id="'+ o_value_item.name +'">'+innerText1 + innerText2+'</tr>');
-            //                                 $('#main table tbody').append('<tr id="'+ o_value_item.name +'">'+innerText2+'</tr>');
-            //                                 doc_keys[o_value_item.name] = { 'label' : o_value_item.label};       // ** 建立表單key：主要是document中有可能填寫不完整，而造成缺項
-            //                                 // innerText1 = '<td></td>';
-            //                             }) 
-            //                         }else {
-            //                             // console.log('not-object_2:', o_key, o_value);
-            //                         }
-            //                     } 
-            //                 }else {
-            //                     // console.log('not-object_1: ',key, value);
-            //                 }
-            //             }
-            //             break;
-
-            //         case 'document':    // 鋪設doc內容
-            //             // console.log('fun: gain_bigData...document:' , fun , gain_obj);
-            //             // 表頭標題
-            //                     $('#main table thead tr').append('<th>'+gain_obj.anis_no+'</th>');
-            //             Object.keys(doc_keys).forEach((doc_key)=>{
-            //                 let value = (gain_obj[doc_key] !== undefined) ? gain_obj[doc_key] : gain_obj._content[doc_key];
-            //                     // 文字日期轉換
-            //                     if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)) {
-            //                         value = value.replace('T', ' ');
-            //                     }
-            //                     // console.log(doc_key, value);
-                                
-            //                     let innerText = '';
-            //                     if (typeof value === 'object') {
-            //                         // for (const [o_key, o_value] of Object.entries(value)){
-            //                         //     innerText += (innerText == '') ? o_value : '</br>'+ o_value;
-            //                         // } 
-            //                         // innerText = Object.values(value).join('</br>');
-            //                         innerText = (value !== undefined && value !== null) ? Object.values(value).join('</br>') : '- NA -</br>'; 
-            //                     }else{
-            //                         innerText = (value !== undefined && value !== null) ? value : '- NA -'; 
-            //                     }
-            //                     $('#main table tbody tr[id="'+ doc_key +'"]').append('<td>'+ innerText +'</td>');
-            //                 // 建立統計資料
-            //                 if(doc_key.match("_combo_")){
-            //                     // if(doc_keys[doc_key]['value'] == undefined){
-            //                     //     doc_keys[doc_key]['value'] = {};
-            //                     // }
-            //                     // if(doc_keys[doc_key]['value'][value] == undefined){
-            //                     //     doc_keys[doc_key]['value'][value] = 1;
-            //                     // }else{
-            //                     //     doc_keys[doc_key]['value'][value]++;
-            //                     // }
-            //                     if (!doc_keys[doc_key]['value']) {
-            //                         doc_keys[doc_key]['value'] = {};
-            //                     }
-            //                     doc_keys[doc_key]['value'][value] = (doc_keys[doc_key]['value'][value] || 0) + 1;
-            //                 }
-            //             })
-            //             break;
-            //         case 'count':
-            //             $('#main table tbody').empty();
-            //             $('#main table thead tr').empty().append('<th>'+'fab'+' / '+'local'+'</th><th>'+'short_name'+'</th><th>'+'count'+'</th>');
-
-            //             Object(gain_obj).forEach((obj)=>{
-            //                     // console.log(obj);
-            //                     let innerText = '<td>'+obj['fab_title']+' / '+obj['local_title']+'</td><td>'+obj['short_name']+'</td><td>'+obj['case_count']+'</td>';
-            //                     $('#main table tbody').append('<tr>'+ innerText +'</tr>');
-            //                 // // 建立統計資料
-            //                 // if(doc_key.match("_combo_")){
-
-            //                 //     if (!doc_keys[doc_key]['value']) {
-            //                 //         doc_keys[doc_key]['value'] = {};
-            //                 //     }
-            //                 //     doc_keys[doc_key]['value'][value] = (doc_keys[doc_key]['value'][value] || 0) + 1;
-            //                 // }
-            //             })
-
-            //             break;
-            //         default :
-            //             throw new Error(`Unknown function: ${fun}`);
-            //     }
-            // }
-
-            // // step1:   load+鋪設DCC表單
-            // async function get_dccNo(fun, gain_obj){
-            //     if(doc_keys.length == 0 && gain_obj['dcc_no'] !== undefined) {
-            //         let dcc_no = gain_obj['dcc_no'];
-            //         await load_fun('form', dcc_no, gain_bigData);             // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
-            //     }
-            // }
-            // // step2:   load+鋪設doc文件
-            // async function caseList(fun, gain_obj){
-            //     const promises = gain_obj.map(async (_doc) => {
-            //         let uuid = _doc['uuid'];
-            //         await load_fun('document', uuid, gain_bigData);  // step_2 load_document(uuid);           // 20240501 -- 改由後端取得 _document內容
-            //     });
-            //     await Promise.all(promises);  // 確保所有文檔加載完成
-            // }
-            // // step3:   鋪設最後統計
-            // async function analyze(gain_obj){
-            //     // console.log('fun: analyze...', gain_obj);
-            //     $('#main table thead tr').append('<th>'+'- 統計 -'+'</th>');
-            //     Object.keys(gain_obj).forEach((doc_key)=>{
-            //         let key_value = gain_obj[doc_key]['value'];
-            //         // if(key_value !== undefined){
-            //         //     if (typeof key_value === 'object') {
-            //         //         innerText = '';
-            //         //         for (const [o_key, o_value] of Object.entries(key_value)){
-            //         //             innerText += (innerText == '') ? o_key + ' : ' + o_value : '</br>' + o_key + ' : ' + o_value;
-            //         //         } 
-            //         //     }else {
-            //         //         innerText = (value !== undefined) ? value : '- NA -'; 
-            //         //     }
-            //         // }else{
-            //         //     innerText = '';
-            //         // }
-            //         let innerText = '';
-            //         if (key_value) {
-            //             if (typeof key_value === 'object') {
-            //                 innerText = Object.entries(key_value).map(([o_key, o_value]) => `${o_key} : ${o_value}`).join('</br>');
-            //             } else {
-            //                 innerText = (key_value !== undefined) ? key_value : '- NA -';
-            //             }
-            //         }
-            //         $('#main table tbody tr[id="'+ doc_key +'"]').append('<td>'+ innerText +'</td>');
-            //     })
-            // }
 
     // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData() {

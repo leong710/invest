@@ -14,7 +14,8 @@
 
     $sys_role  = (isset($_SESSION[$sys_id]["role"])) ? $_SESSION[$sys_id]["role"] : false;             // 取出$_session引用
     $fun       = (!empty($_REQUEST['fun'])) ? $_REQUEST['fun'] : false ;                               // 先抓操作功能'notify_insign'= MAPP待簽發報 // 確認有帶數值才執行
-    $inSign_lists    = inSign_list();                                                                  // 載入所有待簽名單
+    // $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
+    $notify_lists    = [];                                                                  // 載入所有待簽名單
 ?>
 
 <?php include("../template/header.php"); ?>
@@ -34,7 +35,7 @@
             color: #ff0000;
         }
         #result {
-            text-align: center;
+            text-align: start;
         }
     </style>
 </head>
@@ -47,12 +48,12 @@
                     <!-- 表頭 -->
                     <div class="row">
                         <div class="col-12 col-md-6 py-0">
-                            <h3>待簽清單統計</h3>
+                            <h3>待通報清單統計</h3>
                         </div>
                         <div class="col-12 col-md-6 py-0 text-end">
                             <?php if($sys_role == 0 && $check_ip){ ?>
-                                <button type="button" id="upload_myTodo_btn" class="btn btn-sm btn-xs <?php echo !$mailTo_insign ? 'btn-primary':'btn-warning';?>" data-toggle="tooltip" data-placement="bottom" 
-                                    title="send notify" onclick="return confirm('確認發報？') && notify_insign()">傳送&nbspEmail&nbsp<i class="fa-solid fa-paper-plane"></i>&nbsp+&nbspMAPP&nbsp<i class="fa-solid fa-comment-sms"></i></button>
+                                <button type="button" id="upload_myTodo_btn" class="btn btn-sm btn-xs <?php echo !$mailTo_notify ? 'btn-primary':'btn-warning';?>" data-toggle="tooltip" data-placement="bottom" 
+                                    title="send notify" onclick="return confirm('確認發報？') && notify_notify()">傳送&nbspEmail&nbsp<i class="fa-solid fa-paper-plane"></i>&nbsp+&nbspMAPP&nbsp<i class="fa-solid fa-comment-sms"></i></button>
                                     
                             <?php } ?>
                             <button type="button" class="btn btn-secondary rtn_btn" onclick="location.href = '../index.php'"><i class="fa fa-caret-up" aria-hidden="true"></i>&nbsp回首頁</button>
@@ -63,13 +64,13 @@
                             <!-- 1.領用申請單待簽名冊(receive) -->
                             <div class="row">
                                 <div class="col-12 col-md-8 py-0 text-primary">
-                                    <?php echo "待簽名單共：".count($inSign_lists)." 筆";?>
+                                    <?php echo "待簽名單共：".count($notify_lists)." 筆";?>
                                 </div>
                                 <div class="col-12 col-md-4 py-0 text-end">
-                                    <button type="button" id="inSign_lists_btn" title="訊息收折" class="op_tab_btn" value="inSign_lists" onclick="op_tab(this.value)"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></button>
+                                    <button type="button" id="notify_lists_btn" title="訊息收折" class="op_tab_btn" value="notify_lists" onclick="op_tab(this.value)"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></button>
                                 </div>
                             </div>
-                            <div id="inSign_lists" class="inSign_lists col-12 mt-2 border rounded">
+                            <div id="notify_lists" class="notify_lists col-12 mt-2 border rounded">
                                 <table>
                                     <thead>
                                         <tr>
@@ -91,23 +92,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($inSign_lists as $inSign_list){ ?>
+                                        <?php foreach($notify_lists as $notify_list){ ?>
                                             <tr>
-                                                <td id="<?php echo 'id_'.$inSign_list['emp_id'];?>" style="text-align: start;"><?php echo $inSign_list["cname"]." (".$inSign_list["emp_id"].")";?></td>
-                                                <td><?php echo $inSign_list["fab_title"]."</br>(". $inSign_list["local_title"].")";?></td>
+                                                <td id="<?php echo 'id_'.$notify_list['emp_id'];?>" style="text-align: start;"><?php echo $notify_list["cname"]." (".$notify_list["emp_id"].")";?></td>
+                                                <td><?php echo $notify_list["fab_title"]."</br>(". $notify_list["local_title"].")";?></td>
                                                 
-                                                <td><?php echo $inSign_list["issue_waiting"] > 0 ? $inSign_list["issue_waiting"] : "" ;?></td>
-                                                <td><?php echo $inSign_list["receive_waiting"] > 0 ? $inSign_list["receive_waiting"] : "" ;?></td>
-                                                <td><?php echo $inSign_list["total_waiting"] > 0 ? $inSign_list["total_waiting"] : "" ;?></td>
-                                                <td class="text-primary"><?php echo $inSign_list["ppty_3_waiting"] > 0 ? $inSign_list["ppty_3_waiting"] : "" ;?></td>
+                                                <td><?php echo $notify_list["issue_waiting"] > 0 ? $notify_list["issue_waiting"] : "" ;?></td>
+                                                <td><?php echo $notify_list["receive_waiting"] > 0 ? $notify_list["receive_waiting"] : "" ;?></td>
+                                                <td><?php echo $notify_list["total_waiting"] > 0 ? $notify_list["total_waiting"] : "" ;?></td>
+                                                <td class="text-primary"><?php echo $notify_list["ppty_3_waiting"] > 0 ? $notify_list["ppty_3_waiting"] : "" ;?></td>
                                                 
-                                                <td><?php echo $inSign_list["issue_reject"] > 0 ? $inSign_list["issue_reject"] : "" ;?></td>
-                                                <td><?php echo $inSign_list["receive_reject"] > 0 ? $inSign_list["receive_reject"] : "" ;?></td>
-                                                <td><?php echo $inSign_list["total_reject"] > 0 ? $inSign_list["total_reject"] : "" ;?></td>
-                                                <td class="text-danger"><?php echo $inSign_list["ppty_3_reject"] > 0 ? $inSign_list["ppty_3_reject"] : "" ;?></td>
+                                                <td><?php echo $notify_list["issue_reject"] > 0 ? $notify_list["issue_reject"] : "" ;?></td>
+                                                <td><?php echo $notify_list["receive_reject"] > 0 ? $notify_list["receive_reject"] : "" ;?></td>
+                                                <td><?php echo $notify_list["total_reject"] > 0 ? $notify_list["total_reject"] : "" ;?></td>
+                                                <td class="text-danger"><?php echo $notify_list["ppty_3_reject"] > 0 ? $notify_list["ppty_3_reject"] : "" ;?></td>
 
-                                                <td><?php echo $inSign_list["total_collect"] > 0 ? $inSign_list["total_collect"] : "" ;?></td>
-                                                <td class="text-success"><?php echo $inSign_list["ppty_3_collect"] > 0 ? $inSign_list["ppty_3_collect"] : "" ;?></td>
+                                                <td><?php echo $notify_list["total_collect"] > 0 ? $notify_list["total_collect"] : "" ;?></td>
+                                                <td class="text-success"><?php echo $notify_list["ppty_3_collect"] > 0 ? $notify_list["ppty_3_collect"] : "" ;?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -164,8 +165,8 @@
         const uri        = '<?=$uri?>';
         var fun          = '<?=$fun?>';                 // 是否啟動寄送信件給待簽人員
         var check_ip     = '<?=$check_ip?>';
-        var inSign_lists = <?=json_encode($inSign_lists)?>;
-        var lists_obj    = { inSign_lists : inSign_lists }
+        var notify_lists = <?=json_encode($notify_lists)?>;
+        var lists_obj    = { notify_lists : notify_lists }
 
         var receive_url  = '領用路徑：'+uri+'/ppe/receive/';
         var issue_url    = '請購路徑：'+uri+'/ppe/issue/';
@@ -196,7 +197,7 @@
 
 </script>
 
-<script src="insign_msg.js?v=<?=time()?>"></script>
+<script src="notify_msg.js?v=<?=time()?>"></script>
 
 
 <?php include("../template/footer.php"); ?>

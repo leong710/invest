@@ -1,6 +1,6 @@
 <?php
 // // // 查詢待簽名單for send MAPP
-    function inSign_list(){
+    function notify_list(){
         $pdo = pdo();
         $sql = "SELECT emp_id, cname  ,fab_title, local_title
                     , SUM(issue_waiting) AS issue_waiting , SUM(receive_waiting) AS receive_waiting
@@ -119,8 +119,8 @@
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
-            $inSign_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $inSign_list;
+            $notify_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $notify_list;
 
         }catch(PDOException $e){
             echo $e->getMessage();

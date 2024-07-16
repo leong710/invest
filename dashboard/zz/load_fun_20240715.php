@@ -38,7 +38,7 @@
                         }else if($parm_arr[0] == "_fab"){
                             $sql = "SELECT _f.id, _f.site_id, _f.fab_title, _f.fab_remark FROM _fab _f WHERE _f.flag <> 'Off' ORDER BY _f.id ASC";
                         }else if($parm_arr[0] == "highlight"){
-                            $sql = "SELECT f.id, f.fab_title, DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) AS '_remaining', 
+                            $sql = "SELECT f.id, f.fab_title, DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) AS '_dueDay', 
                                         CASE
                                             WHEN COUNT(CASE 
                                                         WHEN d.idty IN (1, 6, 10) 
@@ -120,6 +120,7 @@
                     $result['error'] = 'Load '.$fun.' failed...(no parm)';
                 }
                 break;
+
             default:
                 
         };
