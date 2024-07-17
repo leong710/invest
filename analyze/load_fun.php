@@ -280,7 +280,7 @@
                         $$key = !empty($value) ? $value : null;
                     }
 
-                    $sql = "SELECT _d.uuid, _d.anis_no , _d.idty ,_d._content
+                    $sql = "SELECT _d.uuid, _d.dcc_no, _d.anis_no , _d.idty ,_d._content
                             , CONCAT(_d.created_emp_id,' / ',_d.created_cname) AS created_cname , DATE(_d.created_at) AS created_at   
                             , _fc.short_name , _s.site_title , _f.fab_title , _l.local_title 
                             FROM `_document` _d

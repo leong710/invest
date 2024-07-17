@@ -5,19 +5,15 @@
     require_once("../caseList/function.php");
 
     // default fab_scope
-    $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";               // All :allMy
+    $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";    // All :allMy
     // tidy query condition：
-        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
-        $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
-        $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
-        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "All";        // 問卷類別
-    // tidy sign_code scope 
-        $sfab_id_str     = get_coverFab_lists("str");   // get signCode的管理轄區
-        $sfab_id_arr     = explode(',', $sfab_id_str);  // 將管理轄區字串轉陣列
+        $_site_id    = (isset($_REQUEST["_site_id"]))    ? $_REQUEST["_site_id"]    : "";   // 問卷site
+        $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : "";   // 問卷fab
+        $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "";   // 問卷類別
 
     // for select item
-        $fab_lists       = show_fab_lists();            // get 廠區清單
-        $year_lists      = show_document_GB_year();     // get 立案year清單
+        $site_lists      = show_site_lists();           // get site清單
+        $fab_lists       = show_fab_lists();            // get fab清單
         $shortName_lists = show_document_shortName();   // get 簡稱清單
 ?>
 <?php include("../template/header.php"); ?>
@@ -36,10 +32,6 @@
         body {
             position: relative;
         }
-        /* #emp_id, #excelFile{    
-            margin-bottom: 0px;
-            text-align: center;
-        } */
         .a_pic {
             width: 150px; 
             height: auto; 
@@ -50,13 +42,7 @@
             color: blue;
             text-shadow: 3px 3px 5px rgba(0,0,0,.3);
         }
-        .signature {
-            box-shadow: 0px 0px 8px rgba(0,0,0,.5);
-        }
-        /* 使用 CSS 將 canvas 的寬度設置為 100% */
-        /* canvas {
-            width: 100%;
-        } */
+
         @keyframes fadeIn {
             from { opacity: 0;}
             to { opacity: 1;}
@@ -99,111 +85,165 @@
                 margin: 10mm; /* 設置頁面邊距 */
             }
         }
-        .confirm_sign_div {
-            height: 200px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            position: relative;
-        }
 
-        .confirm_sign_div::after {
-            content: '';
-            display: block;
-            width: 100%;
-            border-top: 1px solid #000;
-            margin-top: 10px;
-        }
         table tbody tr td{
-            text-align: left;
-            /* padding: 1.5em; */
+            /* text-align: right; */
+            /* padding: 1em; */
+        }
+        /* inline */
+        .inb {
+            display: inline-block;
+            /* margin-right: 10px; */
+        }
+        .inf {
+            display: inline-flex;
+            align-items: center;
+            width: 100%; /* 让父容器占满整个单元格 */
         }
     </style>
 </head>
 <body>
     <div class="col-12">
         <div class="row justify-content-center">
-            <div class="col_xl_11 col-12 rounded pb-3" style="background-color: rgba(255, 255, 255, .8);">
+            <div class="col_xl_8 col-8 rounded pb-3" style="background-color: rgba(255, 255, 255, .8);">
                 <!-- NAV分頁標籤與統計 -->
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
-                        <li class="nav-item"><a class="nav-link "           href="count.php">案件統計</span></a></li>
-                        <li class="nav-item"><a class="nav-link active"     href="index.php">訪談內容統計</span></a></li>
-                        <li class="nav-item"><a class="nav-link "           href="page3.php">test案件統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link active"   href="index.php">條件化搜尋</span></a></li>
+                        <li class="nav-item"><a class="nav-link "         href="page2.php">訪談內容統計</span></a></li>
+                        <li class="nav-item"><a class="nav-link "         href="page3.php">案件統計</span></a></li>
                     </ul>
                 </div>
                 
                 <!-- 內頁 -->
                 <div class="col-12 bg-white rounded" id="main">
-                    <!-- Hear：H -->
-                    <div class="row">
-                        <!-- H：sort/groupBy function -->
-                        <div class="col-md-10 pb-2">
-                            <div class="input-group" id="query_item">
-                                <span class="input-group-text">篩選</span>
-
-                                <select name="_year" id="_year" class="form-select" >
-                                    <option value="" hidden selected >-- 請選擇 問卷年度 --</option>
-                                    <?php 
-                                        echo '<option for="_year" value="All" '.($_year == "All" ? " selected":"" ).($sys_role >= "0" ? " disabled":"" ).' >-- All 所有年度 --</option>';
-                                        foreach($year_lists as $list_year){
-                                            echo "<option for='_year' value='{$list_year["_year"]}' ";
-                                            echo ($list_year["_year"] == $_year ? "selected" : "" )." >".$list_year["_year"]."y</option>";
-                                        } ?>
-                                </select>
-                                <select name="_month" id="_month" class="form-select">
-                                    <?php 
-                                        echo "<option for='_month' value='All' ".(($_month == "All") ? " selected":"" )." >-- 全月份 / All --</option>";
-                                        foreach (range(1, 12) as $month_lists) {
-                                            $month_str = str_pad($month_lists, 2, '0', STR_PAD_LEFT);
-                                            echo "<option for='_month' value='{$month_str}' ".(($month_str == $_month ) ? " selected":"" )." >{$month_str}m</option>";
-                                        } ?>
-                                </select>
-                                <select name="_short_name" id="_short_name" class="form-select" >
-                                    <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
-                                    <?php 
-                                        foreach($shortName_lists as $shortName){
-                                            echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
-                                            echo ($shortName["short_name"] == $_short_name ? " selected" : "" )." >".$shortName["short_name"]."</option>";
-                                        } ?>
-                                </select>
-
-                                <select name="_fab_id" id="_fab_id" class="form-select" >
-                                    <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
-                                    <?php 
-                                        echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").($sys_role >= "0" ? " disabled":"" ).' >-- All 所有棟別 --</option>';
-                                        echo '<option for="_fab_id" value="allMy" '.($_fab_id == "allMy" ? " selected":"").' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
-                                        foreach($fab_lists as $fab){
-                                            echo "<option for='_fab_id' value='{$fab["id"]}' ". ($fab["id"] == $_fab_id ? " selected" : "")." >".$fab["id"]."：".$fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
-                                            echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
-                                        } ?>
-                                </select>
-
-                                <select name="_sfab_id" id="_sfab_id" class="form-select unblock" >
-                                    <?php 
-                                        echo '<option for="_sfab_id" value="'.($sfab_id_str ? $sfab_id_str : "").'" selected ';
-                                        echo ' >-- allMy 部門轄下 '.($sfab_id_str ? "(".$sfab_id_str.")":"").' --</option>';
-                                    ?>
-                                </select>
-                                
-                                <button type="button" class="btn btn-outline-secondary search_btn" value="caseList" id="search_btn">&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
-
-                            </div>
+                    <form id="myForm" method="post" action="">
+                        <table id="query_item">
+                            <tbody>
+                                <tr>
+                                    <td class="text-end">廠區/棟別：</td>
+                                    <td class="inf">
+                                        <select name="_site_id" id="_site_id" class="form-select inb block" >
+                                            <option value="" hidden selected >-- 請選擇 問卷site --</option>
+                                            <?php 
+                                                // echo '<option for="_site_id" value="All" '.($_fab_id == "All" ? " selected":"").' >-- All 所有site --</option>';
+                                                foreach($site_lists as $site){
+                                                    echo "<option for='_site_id' value='{$site["id"]}' ". ($site["id"] == $_site_id ? " selected" : "" );
+                                                    echo ($site["flag"] == "Off" ? " disabl" : "" ) ;
+                                                    echo " >";
+                                                    echo $site["site_title"]."( ".$site["site_remark"]." )"; 
+                                                    echo ($site["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
+                                                } ?>
+                                        </select>
+                                        &nbsp
+                                        <select name="_fab_id" id="_fab_id" class="form-select inb" >
+                                            <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
+                                            <?php 
+                                                echo '<option for="_fab_id" value="All" '.($_fab_id == "All" ? " selected":"").' >-- All 所有棟別 --</option>';
+                                                foreach($fab_lists as $fab){
+                                                    echo "<option for='_fab_id' value='{$fab["id"]}' ";
+                                                    echo ($fab["id"] == $_fab_id) ? "selected" : "" ." >";
+                                                    echo $fab["site_title"]."&nbsp".$fab["fab_title"]."( ".$fab["fab_remark"]." )"; 
+                                                    echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
+                                                } ?>
+                                        </select>
+    
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">anis_no / 申請單號：</td>
+                                    <td class="inf">
+                                        <input type="text" name="anis_no" id="anis_no" class="form-control inb" placeholder="-- ANIS表單編號 --"
+                                                maxlength="21" oninput="if(value.length>21)value=value.slice(0,21); this.value = this.value.toUpperCase();" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">created_emp_id / 申請人員：</td>
+                                    <td class="inf">
+                                        <input type="text" name="created_emp_id" id="created_emp_id" class="form-control" placeholder="-- 申請人員工號 --"
+                                                maxlength="8" oninput="if(value.length>8)value=value.slice(0,8)" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">_short_name / 事件類別：</td>
+                                    <td class="inf">
+                                        <select name="_short_name" id="_short_name" class="form-select" >
+                                            <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
+                                            <?php 
+                                                // echo "<option for='_short_name' value='All' ".(($_short_name == "All") ? " selected":"" )." >-- 全問卷類型 / All --</option>";
+                                                foreach($shortName_lists as $shortName){
+                                                    echo "<option for='_short_name' value='{$shortName["short_name"]}' ";
+                                                    echo ($shortName["short_name"] == $_short_name ? " selected" : "" )." >".$shortName["short_name"]."</option>";
+                                                } ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">idty / 結案狀態：</td>
+                                    <td class="inf px-3">
+                                        <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_1" value="1" class="form-check-input" checked>
+                                            <label for="idty_1" class="form-check-label">立案/簽核中</label>
+                                        </div>&nbsp
+                                        <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_10" value="10" class="form-check-input" checked>
+                                            <label for="idty_10" class="form-check-label">結案</label>
+                                        </div>&nbsp
+                                        <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_6" value="6" class="form-check-input">
+                                            <label for="idty_6" class="form-check-label">暫存</label>
+                                        </div>&nbsp
+                                        <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_3" value="3" class="form-check-input">
+                                            <label for="idty_3" class="form-check-label">取消</label>
+                                        </div>&nbsp
+                                        <!-- <div class="form-check px-3">
+                                            <input type="checkbox" name="idty[]" id="idty_All" value="All" class="form-check-input"  >
+                                            <label for="idty_All" class="form-check-label">All</label>
+                                        </div> -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">s2_combo_07 / 事故分類：</td>
+                                    <td class="inf">
+                                        <select name="s2_combo_07" id="s2_combo_07" class="form-select" disabl>
+                                            <option value="" hidden selected >-- 請選擇 事故類型 --</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">s2_combo_08 / 災害類型：</td>
+                                    <td class="inf">
+                                        <select name="s2_combo_08" id="s2_combo_08" class="form-select" disabl>
+                                            <option value="" hidden selected >-- 請選擇 災害類型 --</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end">created_at / 申請日期：</td>
+                                    <td class="inf">
+                                        <div class="input-group">
+                                            <span class="input-group-text">From</span>
+                                            <input type="date" name="created_at_form" id="created_at_form" class="form-control mb-0" >
+                                            <div class="invalid-feedback" id="created_at_form_feedback">日期填入錯誤 ~ </div>
+                                        </div>
+                                        &nbsp
+                                        <div class="input-group">
+                                            <span class="input-group-text">To</span>
+                                            <input type="date" name="created_at_to"   id="created_at_to"   class="form-control mb-0" >
+                                            <div class="invalid-feedback" id="created_at_to_feedback">日期填入錯誤 ~ </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Hear：H -->
+                        <div class="col-12 text-center">
+                            <button type="reset" class="btn btn-outline-success">清除</button>
+                            <button type="button" class="btn btn-outline-secondary search_btn" value="count" id="search_btn" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
                         </div>
-
-                        <!-- H：Button -->
-                        <div class="col-md-2 pb-2 text-end inb">
-                            <div class="inb">
-                                <!-- H：downLoad Excel -->
-                                <form id="myForm" method="post" action="../_Format/download_excel.php">
-                                    <input type="hidden" name="htmlTable" id="htmlTable" value="">
-                                    <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($_fab["id"]) ? $_fab["fab_title"]." (".$_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
-                                        <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
+                    </form>
+                    <hr>
                     <table id="caseList" class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -214,6 +254,44 @@
         
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彈出modal -->
+    <div class="modal fade" id="searchUser" aria-hidden="true" aria-labelledby="searchUser" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+            <div class="modal-content">
+
+                <div class="modal-header bg-warning rounded p-3 m-2">
+                    <h5 class="modal-title"><i class="fa-solid fa-circle-info"></i>&nbspsearch document for&nbsp<span id="modal_title"></span></h5>
+                    <button type="button" class="btn-close border rounded mx-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body mx-2">
+                        <div class="col-12 border rounded  result" id="result">
+                            <!-- 放查詢結果-->
+                                <table id="result_table" class="table table-striped table-hover mb-1">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="inb">
+                        <!-- H：downLoad Excel -->
+                        <form id="myForm" method="post" action="../_Format/download_excel.php">
+                            <input type="hidden" name="htmlTable" id="htmlTable" value="">
+                            <button type="submit" name="submit" class="btn btn-outline-success" title="匯出Excel" value="interView" id="downloadExcel" disabled>
+                                <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
+                        </form>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">返回</button>
                 </div>
             </div>
         </div>
@@ -233,9 +311,30 @@
 
 <script>
     // init
-    var doc_keys = [];
+    var doc_keys = [];      // 匯集所有form的key/label
     var big_data = [];
-        
+    var doc_list_keys = {
+        'anis_no'         : 'ANIS單號', 
+        'idty'            : '簽核狀態', 
+        'created_cname'   : '申請人員', 
+        'created_at'      : '申請日期', 
+        'short_name'      : '表單名稱', 
+        'site_title'      : '廠區', 
+        'fab_title'       : '棟別', 
+        'local_title'     : '廠別'
+        // '_content'        : '訪談內容'
+    };
+    var content_keys = {
+        'a_day'           : '發生時間',
+        'a_location'      : '發生地點',
+        's2_combo_06'     : '事件等級',
+        's2_combo_07'     : '事件主類型',
+        's2_combo_08'     : '災害主類型',
+        's8_direct_cause' : '直接原因',
+        's8_combo_02'     : '間接原因',
+        's8_basic_reasons_combo':'事故基本原因'
+    };
+
 </script>
 
-<script src="analyze.js?v=<?=time()?>"></script>
+<script src="index.js?v=<?=time()?>"></script>

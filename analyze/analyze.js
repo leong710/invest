@@ -56,10 +56,40 @@
             resolve(); // 文件載入成功，resolve
         });
     }
-    // 主功能1.抓資料
-    async function load_fun(fun, parm, myCallback) {                // parm = 參數
-        // console.log('fun: load_fun...', fun, parm, myCallback);
-        return new Promise((resolve, reject) => {
+    // //主功能1.抓資料 舊版使用XMLHttpRequest()
+        // async function old_load_fun(fun, parm, myCallback) {                // parm = 參數
+        //     // console.log('fun: load_fun...', fun, parm, myCallback);
+        //     return new Promise((resolve, reject) => {
+        //         let formData = new FormData();
+        //         let fun_temp = (parm['_get_dccNo'] !== undefined && parm['_get_dccNo'] === true ) ? 'caseList' : fun;
+        //         formData.append('fun', fun_temp);
+        //         // 主要for doc多參數
+        //             if (typeof parm === 'object') {
+        //                 for (const [_key, _value] of Object.entries(parm)){
+        //                     formData.append(_key, _value);              // 後端依照fun進行parm參數的採用
+        //                 } 
+        //             }else {
+        //                 formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
+        //             }
+        //         let xhr = new XMLHttpRequest();
+        //         xhr.open('POST', 'load_fun.php', true);
+        //         xhr.onload = function () {
+        //             if (xhr.status === 200) {
+        //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
+        //                 let result_obj = response['result_obj'];        // 擷取主要物件
+        //                 resolve(myCallback(fun, result_obj));           // resolve(true) = 表單載入成功，then 呼叫--myCallback
+
+        //             } else {
+        //                 alert('fun load_'+fun+' failed. Please try again.');
+        //                 reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
+        //             }
+        //         };
+        //         xhr.send(formData);
+        //     });
+        // }
+    // 0-0.多功能擷取fun 新版改用fetch
+    async function load_fun(fun, parm, myCallback) {        // parm = 參數
+        try {
             let formData = new FormData();
             let fun_temp = (parm['_get_dccNo'] !== undefined && parm['_get_dccNo'] === true ) ? 'caseList' : fun;
             formData.append('fun', fun_temp);
@@ -71,23 +101,24 @@
                 }else {
                     formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
                 }
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'load_fun.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);    // 接收回傳
-                    let result_obj = response['result_obj'];        // 擷取主要物件
-                    resolve(myCallback(fun, result_obj));           // resolve(true) = 表單載入成功，then 呼叫--myCallback
+            let response = await fetch('load_fun.php', {
+                method: 'POST',
+                body  : formData
+            });
 
-                } else {
-                    alert('fun load_'+fun+' failed. Please try again.');
-                    reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
-                }
-            };
-            xhr.send(formData);
-        });
+            if (!response.ok) {
+                throw new Error('fun load ' + fun + ' failed. Please try again.');
+            }
+
+            let responseData = await response.json();
+            let result_obj = responseData['result_obj'];    // 擷取主要物件
+            return myCallback(fun, result_obj);             // resolve(true) = 表單載入成功，then 呼叫--myCallback
+                                                            // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+        } catch (error) {
+            throw error;                                    // 載入失敗，reject
+        }
     }
-    // 主功能2.渲染/鋪設
+    // 主功能2.渲染/鋪設/處理
     async function gain_bigData(fun, gain_obj){
         switch(fun){
             case 'form':        // 鋪設DCC表單
@@ -205,17 +236,17 @@
         Object.keys(gain_obj).forEach((doc_key)=>{
             let key_value = gain_obj[doc_key]['value'];
             // if(key_value !== undefined){
-            //     if (typeof key_value === 'object') {
-            //         innerText = '';
-            //         for (const [o_key, o_value] of Object.entries(key_value)){
-            //             innerText += (innerText == '') ? o_key + ' : ' + o_value : '</br>' + o_key + ' : ' + o_value;
-            //         } 
-            //     }else {
-            //         innerText = (value !== undefined) ? value : '- NA -'; 
-            //     }
-            // }else{
-            //     innerText = '';
-            // }
+                //     if (typeof key_value === 'object') {
+                //         innerText = '';
+                //         for (const [o_key, o_value] of Object.entries(key_value)){
+                //             innerText += (innerText == '') ? o_key + ' : ' + o_value : '</br>' + o_key + ' : ' + o_value;
+                //         } 
+                //     }else {
+                //         innerText = (value !== undefined) ? value : '- NA -'; 
+                //     }
+                // }else{
+                //     innerText = '';
+                // }
             let innerText = '';
             if (key_value) {
                 if (typeof key_value === 'object') {
@@ -229,7 +260,7 @@
     }
 
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
-    async function loadData(fun_value, query_obj) {
+    async function loadData(fun_value, query_obj) {                 // 由eventListener的click發出，帶fun_value='caseList'，query_obj=查詢條件
         try {
 
             switch(fun_value){
@@ -240,7 +271,7 @@
                     break;
                 default:
                     query_obj['_get_dccNo'] = true;
-                    await load_fun('get_dccNo', query_obj, get_dccNo);
+                    await load_fun('get_dccNo', query_obj, get_dccNo);             // get_dccNo(load+鋪設DCC表單) > load_fun(form) > gain_bigData(渲染/鋪設)
                     
                     delete query_obj['_get_dccNo'];
                     await load_fun('caseList', query_obj, caseList);
@@ -261,4 +292,3 @@
         eventListener()
 
     })
-

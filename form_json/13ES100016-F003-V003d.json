@@ -369,7 +369,7 @@
                     "required": false
                 },
                 {
-                    "label": "上傳圖檔 <sup class='text-primary'> (限傳 jpg、png、gif、bmp)</sup>",
+                    "label": "上傳圖檔",
                     "info" : "事故簡圖",
                     "type" : "file",
                     "name" : "a_pic",

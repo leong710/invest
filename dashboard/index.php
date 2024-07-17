@@ -267,28 +267,53 @@
     }
 
 // // // 
-    // 0-0.多功能擷取fun
-    async function load_fun(fun, parm, myCallback) {        // parm = 參數
-        return new Promise((resolve, reject) => {
+    // 0-0.多功能擷取fun 舊版使用XMLHttpRequest()
+        // async function old_load_fun(fun, parm, myCallback) {        // parm = 參數
+        //     return new Promise((resolve, reject) => {
+        //         let formData = new FormData();
+        //         formData.append('fun', fun);
+        //         formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
+        //         let xhr = new XMLHttpRequest();
+        //         xhr.open('POST', 'load_fun.php', true);
+        //         xhr.onload = function () {
+        //             if (xhr.status === 200) {
+        //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
+        //                 let result_obj = response['result_obj'];        // 擷取主要物件
+        //                 resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
+        //                                                                 // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+        //             } else {
+        //                 let err_msg = 'fun load '+fun+' failed. Please try again.';
+        //                 // alert(err_msg);
+        //                 reject(err_msg); // 載入失敗，reject
+        //             }
+        //         };
+        //         xhr.send(formData);
+        //     });
+        // }
+    
+    // 0-0.多功能擷取fun 新版改用fetch
+    async function load_fun(fun, parm, myCallback) { // parm = 參數
+        try {
             let formData = new FormData();
             formData.append('fun', fun);
-            formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'load_fun.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);    // 接收回傳
-                    let result_obj = response['result_obj'];        // 擷取主要物件
-                    resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
-                                                                    // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
-                } else {
-                    let err_msg = 'fun load '+fun+' failed. Please try again.';
-                    // alert(err_msg);
-                    reject(err_msg); // 載入失敗，reject
-                }
-            };
-            xhr.send(formData);
-        });
+            formData.append('parm', parm); // 後端依照fun進行parm參數的採用
+
+            let response = await fetch('load_fun.php', {
+                method: 'POST',
+                body  : formData
+            });
+
+            if (!response.ok) {
+                throw new Error('fun load ' + fun + ' failed. Please try again.');
+            }
+
+            let responseData = await response.json();
+            let result_obj = responseData['result_obj']; // 擷取主要物件
+            return myCallback(result_obj);               // resolve(true) = 表單載入成功，then 呼叫--myCallback
+                                                        // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+        } catch (error) {
+            throw error;                                 // 載入失敗，reject
+        }
     }
     // 0-2.取得目前時間，並格式化；2.更新reloadTime.txt時間；完成後=>3.更新畫面上reload_time時間          // 呼叫來源：check3hourse
     async function recordTime(){

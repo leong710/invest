@@ -1103,27 +1103,52 @@
         inside_toast(sinn);
         return true;
     }
-
+    
+    // // 0-0.多功能擷取fun 舊版使用XMLHttpRequest()
+        // async function old_load_fun(fun, parm, myCallback) {        // parm = 參數
+        //     return new Promise((resolve, reject) => {
+        //         let formData = new FormData();
+        //         formData.append('fun', fun);
+        //         formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
+        //         let xhr = new XMLHttpRequest();
+        //         xhr.open('POST', 'load_fun.php', true);
+        //         xhr.onload = function () {
+        //             if (xhr.status === 200) {
+        //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
+        //                 let result_obj = response['result_obj'];        // 擷取主要物件
+        //                 resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
+        //                                                                 // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+        //             } else {
+        //                 alert('fun load_'+fun+' failed. Please try again.');
+        //                 reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
+        //             }
+        //         };
+        //         xhr.send(formData);
+        //     });
+        // }
+    // 0-0.多功能擷取fun 新版改用fetch
     async function load_fun(fun, parm, myCallback) {        // parm = 參數
-        return new Promise((resolve, reject) => {
+        try {
             let formData = new FormData();
             formData.append('fun', fun);
             formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'load_fun.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);    // 接收回傳
-                    let result_obj = response['result_obj'];        // 擷取主要物件
-                    resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
-                                                                    // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
-                } else {
-                    alert('fun load_'+fun+' failed. Please try again.');
-                    reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
-                }
-            };
-            xhr.send(formData);
-        });
+
+            let response = await fetch('load_fun.php', {
+                method: 'POST',
+                body  : formData
+            });
+
+            if (!response.ok) {
+                throw new Error('fun load ' + fun + ' failed. Please try again.');
+            }
+
+            let responseData = await response.json();
+            let result_obj = responseData['result_obj'];    // 擷取主要物件
+            return myCallback(result_obj);                  // resolve(true) = 表單載入成功，then 呼叫--myCallback
+                                                            // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
+        } catch (error) {
+            throw error;                                    // 載入失敗，reject
+        }
     }
 // // 20240430 -- step_3 依cherk_action = true/false 啟閉表單特定元素
     async function setFormDisabled(cherk_action) {
