@@ -14,10 +14,7 @@
 
     $sys_role  = (isset($_SESSION[$sys_id]["role"])) ? $_SESSION[$sys_id]["role"] : false;             // 取出$_session引用
     $fun       = (!empty($_REQUEST['fun'])) ? $_REQUEST['fun'] : false ;                               // 先抓操作功能'notify_insign'= MAPP待簽發報 // 確認有帶數值才執行
-    // $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
-
-    $reloadTime = (file_exists("reloadTime.txt")) ? file_get_contents("reloadTime.txt") : "";       // 從文件加载reloadTime内容
-
+    $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
 ?>
 
 <?php include("../template/header.php"); ?>
@@ -30,18 +27,6 @@
     <link rel="stylesheet" href="../../libs/jquery/jquery.mloading.css">
     <script src="../../libs/jquery/mloading_init.js"></script>
     <style>
-        /* 當螢幕寬度小於或等於 1366px時 */
-        @media (max-width: 1366px) {
-            .col-mm-10 {
-                flex: 0 0 calc(100% / 12 * 12);
-            }
-        }
-        /* 當螢幕寬度大於 1366px時 */
-        @media (min-width: 1367px) {
-            .col-mm-10 {
-                flex: 0 0 calc(100% / 12 * 9);
-            }
-        }
         .fa_check {
             color: #00ff00;
         }
@@ -58,7 +43,7 @@
     <div class="col-12">
         <div class="row justify-content-center">
             <!-- <div class="col-11"> -->
-                <div class="col-mm-10 col-12 border rounded p-4" style="background-color: #D4D4D4;">
+                <div class="col-12 border rounded p-4" style="background-color: #D4D4D4;">
                     <!-- 表頭 -->
                     <div class="row">
                         <div class="col-12 col-md-6 py-0">
@@ -78,7 +63,7 @@
                             <!-- 1.領用申請單待簽名冊(receive) -->
                             <div class="row">
                                 <div class="col-12 col-md-8 py-0 text-primary">
-                                    <?php echo "待簽名單共："." 筆";?>
+                                    <?php echo "待簽名單共：".count($notify_lists)." 筆";?>
                                 </div>
                                 <div class="col-12 col-md-4 py-0 text-end">
                                     <button type="button" id="notify_lists_btn" title="訊息收折" class="op_tab_btn" value="notify_lists" onclick="op_tab(this.value)"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></button>
@@ -88,14 +73,56 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>姓名(工號)</th>
-                                            <th>fab(signCode)</th>
-                                            <th>待辦案件(anisCode)</th>
-                                            <th class="text-danger">合計件數</th>
+                                            <th>id / idty / c_at</th>
+                                            <th>_odd</th>
+                                            <th>fab_id / title</th>
+                                            <th>created_cname / emp_id</th>
+                                            <th class="text-danger">pm_emp_id</th>
+                                            <th>課副理</th>
+                                            <th>部經理</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-          
+                                        <?php foreach($notify_lists as $notify_list){ ?>
+                                            <tr>
+                                                <td><?php
+                                                        switch ($notify_list["idty"]){
+                                                            case '1':   $_idty = '立案/簽核中';  break;
+                                                            case '10':  $_idty = '結案';         break;
+                                                            case '6':   $_idty = '暫存';         break;
+                                                            case '3':   $_idty = '取消';         break;
+                                                            default:    $_idty = 'NA';
+                                                        }
+                                                        echo $notify_list["id"]." / ".$_idty ."</br>".$notify_list["c_day"];
+                                                    ?></td>
+                                                <td class="text-start"><?php 
+                                                        $_odd = isset($notify_list['_odd']) ? (array) json_decode($notify_list['_odd']) : [];
+                                                        echo "<span class='inb'>";
+                                                        echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
+                                                        echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
+                                                        echo "</span>";
+                                                    ?></td>
+                                                <td><?php echo $notify_list["fab_id"]." / ". $notify_list["fab_title"]."</br>".$notify_list["sign_code"];?></td>
+
+                                                <td id="<?php echo 'id_'.$notify_list['created_emp_id'];?>" style="text-align: start;">
+                                                    <?php echo $notify_list["created_cname"]." (".$notify_list["created_emp_id"].")";?></td>
+                                                    
+                                                <td><?php
+                                                        $pm_emp_id = explode(',', $notify_list["pm_emp_id"]);
+                                                        $obj = array();
+                                                        for ($i = 0; $i < count($pm_emp_id); $i += 2) {
+                                                            $obj[$pm_emp_id[$i]] = $pm_emp_id[$i + 1];
+                                                        }
+                                                        foreach ($obj as $id => $name) {
+                                                            echo "<snap id=pm_$id>$name&nbsp($id)</snap>\n";
+                                                        }
+                                                    ?></td>
+                                                <?php
+                                                    echo "<td id='{$notify_list["sign_code"]}_signDept'></td>";
+                                                    echo "<td id='{$notify_list["sign_code"]}_up_signDept'></td>";
+                                                ?>
+                                            </tr>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -126,13 +153,6 @@
                             <?php echo $check_ip ? $fa_check:$fa_remove; echo " ".$pc;?>
                         </div>
                     </div>
-                    <!-- 20231108-資料更新時間 -->
-                    <div class="col-12 py-0 px-3 text-end">
-                        <span style="display: inline-block;" >
-                            <button type="button" class="btn btn-outline-success add_btn" onclick="load_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新">
-                                <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
-                        <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?></span>
-                    </div>
                 </div>
             </div>
         <!-- </div> -->
@@ -155,11 +175,10 @@
         var mail_NG      = '<snap class="fa_remove"><i class="fa-solid fa-triangle-exclamation"></i> </snap>';      // 打叉符號
 
         const uri        = '<?=$uri?>';
-        var fun          = '<?=$fun?>';                 // 是否啟動寄送信件給人員
+        var fun          = '<?=$fun?>';                 // 是否啟動寄送信件給待簽人員
         var check_ip     = '<?=$check_ip?>';
-        // var notify_lists = <=json_encode($notify_lists)?>;
-        // var lists_obj    = { notify_lists : notify_lists }
-        var notify_lists    = {}
+        var notify_lists = <?=json_encode($notify_lists)?>;
+        var lists_obj    = { notify_lists : notify_lists }
 
         var receive_url  = '領用路徑：'+uri+'/ppe/receive/';
         var issue_url    = '請購路徑：'+uri+'/ppe/issue/';
@@ -187,12 +206,10 @@
         var Today       = new Date();
         const thisToday = Today.getFullYear() +'/'+ String(Today.getMonth()+1).padStart(2,'0') +'/'+ String(Today.getDate()).padStart(2,'0');  // 20230406_bug-fix: 定義出今天日期，padStart(2,'0'))=未滿2位數補0
         const thisTime  = String(Today.getHours()).padStart(2,'0') +':'+ String(Today.getMinutes()).padStart(2,'0');                           // 20230406_bug-fix: 定義出今天日期，padStart(2,'0'))=未滿2位數補0
-        
-        const uuid = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
 
 </script>
 
-<script src="notify.js?v=<?=time()?>"></script>
+<script src="notify_msg.js?v=<?=time()?>"></script>
 
 
 <?php include("../template/footer.php"); ?>

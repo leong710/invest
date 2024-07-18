@@ -144,44 +144,45 @@
             });
         }
         // 20240314 search user_empid return email
-        function search_fun(search){
-            var comid2 = null;
-            console.log('search_fun...', search);
+        function search_fun(fun, search){
+            var result = null;
+
             if(!search || (search.length < 8)){
-                // alert("查詢工號字數最少 8 個字以上!!");
+                // alert("查詢 工號/部門代號 字數最少 8 個字以上!!");
                 $("body").mLoading("hide");
                 return false;
             } 
 
             $.ajax({
              // url:'http://tneship.cminl.oa/hrdb/api/index.php',           // 正式舊版
-                url:'http://tneship.cminl.oa/api/hrdb/index.php',           // 正式2024新版
+             // url:'http://tneship.cminl.oa/api/hrdb/index.php',           // 正式2024新版
+             url:'http://localhost/api/hrdb/index.php',                  // 正式2024新版
                 method:'post',
-                async: false,                                               // ajax取得數據包後，可以return的重要參數
+                async : false,                                              // ajax取得數據包後，可以return的重要參數
                 dataType:'json',
                 data:{
-                    functionname : 'showStaff',                             // 操作功能
-                    uuid    : '3cd9a6fd-4021-11ef-9173-1c697a98a75f',       // invest
+                    uuid         : '3cd9a6fd-4021-11ef-9173-1c697a98a75f',  // invest
+                    functionname : fun,                                     // 操作功能
                     emp_id       : search                                   // 查詢對象key_word  // 使用開單人工號查詢
                 },
                 success: function(res){
                     var obj_val = res["result"];
                     // 將結果進行渲染
-                    if (obj_val !== '') {
-                        comid2 = obj_val.comid2;
-                        // $('#id_'+search).append(' '+comid2);                // 將欄位帶入數值comid2 = email
-                        return comid2;
+                    if (obj_val != '') {
+
+                        result = (fun == 'showStaff' && obj_val.comid2 != undefined) ? obj_val.comid2 : obj_val;
+                        
+                        return result;
 
                     }else{
-                        // alert("查無工號["+search+"]!!");
-                        console.log("查無工號["+search+"]!!");
+                        console.log( fun +" 查無[ "+ search +" ]!!");
                     }
                 },
                 error(err){
-                    console.log("search error:", err);
+                    console.log( fun +"search error: ", err);
                 }
             })
-            return comid2;
+            return result;
         }
         // 20240314 配合await將swal外移
         function show_swal_fun(push_result){
@@ -463,19 +464,20 @@
             let a_list = lists_obj[list_key];
             for(i=0; i < a_list.length; i++ ){
                 let q_emp_id = a_list[i]['created_emp_id'];
-                let q_email = search_fun(q_emp_id);
+                let q_email = search_fun('showStaff', q_emp_id);
                 if(q_email){
                     $('#'+list_key+' #id_'+q_emp_id).append('</br>'+q_email); 
                     a_list[i]['email'] = q_email;
                 }
             }
         })
+        // console.log(a_list)
         $("body").mLoading("hide");
     })
 
     // fun啟動自動執行
     $(document).ready( function () {
-        checkPopup();
+        // checkPopup();
         // op_tab('user_lists');            // 關閉清單
         $('#result').append('等待發報 : ');
         if(check_ip && fun){
