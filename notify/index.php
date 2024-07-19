@@ -88,9 +88,12 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>姓名(工號)</th>
-                                            <th>fab(signCode)</th>
-                                            <th>待辦案件(anisCode)</th>
+                                            <th>姓名 (工號)</th>
+                                            <th>fab (signCode)</th>
+                                            <th>anisCode (待辦案件)</th>
+                                            <th>dueDay (剩餘天數)</th>
+                                            <th>開單人 (工號)</th>
+                                            <th>狀態</th>
                                             <th class="text-danger">合計件數</th>
                                         </tr>
                                     </thead>
@@ -159,7 +162,9 @@
         var check_ip     = '<?=$check_ip?>';
         // var notify_lists = <=json_encode($notify_lists)?>;
         // var lists_obj    = { notify_lists : notify_lists }
-        var notify_lists    = {}
+        var bpm          = {};
+        var doc_lists    = {};
+        var notifyLists = {};
 
         var receive_url  = '領用路徑：'+uri+'/ppe/receive/';
         var issue_url    = '請購路徑：'+uri+'/ppe/issue/';

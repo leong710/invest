@@ -72,13 +72,18 @@
                                     GROUP BY f.id ";
 
                         }else if($parm_arr[0] == "notify"){
-                            $sql = "SELECT _d.id, _d.anis_no, _d.created_at ,_f.fab_title, _fc.short_name, _d._odd
+                            $sql = "SELECT _d.id, _d.anis_no, _d.idty, _d.created_at ,_f.fab_title, _fc.short_name, _d._odd
                                         , _d.created_cname, _d.created_emp_id, _f.sign_code, _f.pm_emp_id
                                         , DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.due_day')), CURDATE()) AS '_remaining'
                                     FROM `_document` _d
                                     LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no
                                     LEFT JOIN _fab _f ON _d.fab_id = _f.id
                                     WHERE DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.due_day')), CURDATE()) <= 5";
+
+                        }else if($parm_arr[0] == "bpm"){
+                            $sql = "SELECT _u.emp_id, _u.cname
+                                    FROM `_users` _u
+                                    WHERE _u.role = '1'";
                                     
                         }else{  // 0= 沒有歸屬 then 當作錯誤處理+break
                             $result['error'] = 'Load '.$fun.' -- '.$parm_arr[0].' failed...(e)';
