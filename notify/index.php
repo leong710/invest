@@ -65,9 +65,9 @@
                             <h3>待通報清單統計</h3>
                         </div>
                         <div class="col-12 col-md-6 py-0 text-end">
-                            <?php if($sys_role == 0 && $check_ip){ ?>
+                            <?php if($sys_role <= 1 && $check_ip){ ?>
                                 <button type="button" id="upload_myTodo_btn" class="btn btn-sm btn-xs <?php echo !$mailTo_notify ? 'btn-primary':'btn-warning';?>" data-toggle="tooltip" data-placement="bottom" 
-                                    title="send notify" onclick="return confirm('確認發報？') && notify_notify()">傳送&nbspEmail&nbsp<i class="fa-solid fa-paper-plane"></i>&nbsp+&nbspMAPP&nbsp<i class="fa-solid fa-comment-sms"></i></button>
+                                    title="send notify" onclick="return confirm('確認發報？') && notify_process()">傳送&nbspEmail&nbsp<i class="fa-solid fa-paper-plane"></i>&nbsp+&nbspMAPP&nbsp<i class="fa-solid fa-comment-sms"></i></button>
                                     
                             <?php } ?>
                             <button type="button" class="btn btn-secondary rtn_btn" onclick="location.href = '../index.php'"><i class="fa fa-caret-up" aria-hidden="true"></i>&nbsp回首頁</button>
@@ -88,6 +88,7 @@
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th>Action</th>
                                             <th>姓名 (工號)</th>
                                             <th>fab (signCode)</th>
                                             <th>anisCode (待辦案件)</th>
@@ -164,30 +165,7 @@
         // var lists_obj    = { notify_lists : notify_lists }
         var bpm          = {};
         var doc_lists    = {};
-        var notifyLists = {};
-
-        var receive_url  = '領用路徑：'+uri+'/ppe/receive/';
-        var issue_url    = '請購路徑：'+uri+'/ppe/issue/';
-
-        var int_msg1     = '【環安PPE系統】待您處理文件提醒';
-        var int_msg2     = ' 您共有 ';
-        var int_msg3     = ' 件待簽核文件尚未處理';
-        var ret_msg3     = ' 件被退件文件尚未處理';
-        var col_msg3     = ' 件待收發文件尚未處理';
-        var int_msg4     = '，如已處理完畢，請忽略此訊息！\n\n** 請至以下連結查看待處理文件：\n';
-        var srt_msg4     = '，如已處理完畢，請忽略此訊息！\n\n';
-        var int_msg5     = '\n\n溫馨提示：\n    1.登錄過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
-
-        var push_result  = {
-                'mapp' : {
-                    'success' : 0,
-                    'error'   : 0
-                },
-                'email' : {
-                    'success' : 0,
-                    'error'   : 0
-                }
-            }
+        var notifyLists  = {};
 
         var Today       = new Date();
         const thisToday = Today.getFullYear() +'/'+ String(Today.getMonth()+1).padStart(2,'0') +'/'+ String(Today.getDate()).padStart(2,'0');  // 20230406_bug-fix: 定義出今天日期，padStart(2,'0'))=未滿2位數補0
