@@ -112,9 +112,7 @@
                             </div>
                             <div class="col-6 col-md-3 py-0 text-end">
                                 <?php if($sys_role <= 1){ 
-                                    // <a href="../insign_msg/" title="MAPP發報" class="btn btn-success" >待簽清單統計與發報&nbsp<i class="fa-solid fa-comment-sms"></i></a>
-                                    echo " <button type='button' value='../insign_msg' title='Notify發報' class='btn btn-success' onclick='openUrl(this.value)' >待通報清單&nbsp<i class='fa-solid fa-comment-sms'></i></button>";
-                                
+                                    echo " <button type='button' value='../notify' title='Notify發報' class='btn btn-success' onclick='openUrl(this.value)' >待通報清單&nbsp<i class='fa-solid fa-comment-sms'></i></button>";
                                 } ?>
                                 <a href="#access_info" target="_blank" title="連線說明" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#access_info">
                                     <i class="fa fa-info-circle" aria-hidden="true"></i> API連線說明</a>

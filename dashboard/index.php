@@ -109,10 +109,10 @@
                             <b>自動通報條件：職災申報期限 <= 5天</b>
                             <ul>
                                 <li>通報時間：週一～週五 08:00 & 13:00</li>
-                                <li>通報方式：Mapp + eMail通知</li>
+                                <li>通報方式：>3days：eMail；<=3days：Mapp + eMail通知</li>
                                 <li>通知對象：remaining_days<ul>
-                                        <li><=3：窗口、課副理</li>    
-                                        <li><=1：窗口、課副理、部經理、大PM</li>    
+                                        <li>>3：窗口、課副理</li>    
+                                        <li>>=0：窗口、課副理、部經理、大PM</li>    
                                         <li>&nbsp&nbsp<&nbsp0：窗口、課副理、部經理、大PM、處長</li>    
                                         <li>*** 以上表單狀態若是未結案，將一併通知 開單人</li>
                                 </ul></li>
