@@ -378,7 +378,6 @@
                     $result['error'] = 'Load '.$fun.' failed...(no parm)';
                 }
                 break;
-
         };
 
         if(isset($result["error"])){
