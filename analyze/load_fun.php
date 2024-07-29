@@ -273,6 +273,8 @@
                         'created_emp_id'  => $created_emp_id,
                         'short_name'      => $_short_name,
                         'idty'            => $idty,
+                        's2_combo_07'     => $s2_combo_07,
+                        's2_combo_08'     => $s2_combo_08,
                         'created_at_form' => $created_at_form,
                         'created_at_to'   => $created_at_to
                     ];
@@ -318,6 +320,14 @@
                         $idty = implode(",",$idty);
                         $conditions[] = "_d.idty IN ({$idty})";
                     }
+                        if ($s2_combo_07 != 'null') {
+                            $conditions[] = "JSON_UNQUOTE(JSON_EXTRACT(_d._content, '$.s2_combo_07[0]')) = ?";
+                            $stmt_arr[] = $s2_combo_07;
+                        }
+                        if ($s2_combo_08 != 'null') {
+                            $conditions[] = "JSON_UNQUOTE(JSON_EXTRACT(_d._content, '$.s2_combo_08[0]')) = ?";
+                            $stmt_arr[] = $s2_combo_08;
+                        }
                     if ($created_at_form != 'null' && $created_at_to != 'null') {
                         $conditions[] = "DATE(_d.created_at) BETWEEN ? AND ?";
                         $stmt_arr[] = $created_at_form;

@@ -92,7 +92,8 @@
                     $('#htmlTable').value = '';                         // excel預備工作 0.清空接收欄位
 
                 // step3.呼叫load_fun，帶入查詢條件queryItem_obj，完成後callBack post_result進行渲染+鋪設
-                    load_fun('page3', queryItem_obj, post_result);
+                console.log(queryItem_obj);
+                    // load_fun('page3', queryItem_obj, post_result);
             });
 
             // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
@@ -175,13 +176,13 @@
                 Object(item_value.options).forEach((option)=>{
                     if (typeof option.value === 'object') {
                         Object(option.value).forEach((key_value)=>{
-                            int_a += '<option value="'+key_value['label']+'" class="' + option.label + (item_value.correspond != undefined ? ' correspond' : '') + '" ' 
+                            int_a += '<option value="'+key_value['value']+'" class="' + option.label + (item_value.correspond != undefined ? ' correspond' : '') + '" ' 
                                 + ((option.flag !== undefined) ? 'flag="' + option.flag + '"' : '')
                                 + ' >' + option.label + ' ' + key_value['label'] + '</option>' 
                         } )
                         
                     }else {
-                        int_a += '<option value="'+option.label+'" class="' + item_value.name + '" '
+                        int_a += '<option value="'+option.value+'" class="' + item_value.name + '" '
                         + ((option.flag !== undefined) ? 'flag="' + option.flag + '"' : '') + ' id="' + item_value.name + '_' + option.value + '" '
                         + ' >' + option.value + ' ' + option.label + '</option>' 
                     }
