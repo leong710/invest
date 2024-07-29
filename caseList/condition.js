@@ -1,8 +1,4 @@
     
-    $(function () {
-        // 在任何地方啟用工具提示框
-        $('[data-toggle="tooltip"]').tooltip();
-    })
     // 吐司顯示字條 // init toast
     function inside_toast(sinn){
         let toastLiveExample = document.getElementById('liveToast');
@@ -54,9 +50,10 @@
         });
     }
 
-    // 240702 監聽送出[查詢]按鈕
+    // 240702 
     async function eventListener(){
         return new Promise((resolve) => { 
+            // 監聽送出[查詢]按鈕
             document.getElementById('search_btn').addEventListener('click', function() {
 
                 // step0.初始定義
@@ -85,14 +82,22 @@
                             }
                         }
                     });
-                
+
                 // step2.清空result_table裡的內容
                     $('#result_table thead tr').empty();
                     $('#result_table tbody').empty();
                     $('#htmlTable').value = '';                         // excel預備工作 0.清空接收欄位
 
-                // step3.呼叫load_fun，帶入查詢條件queryItem_obj，完成後callBack post_result進行渲染+鋪設
-                    load_fun('page3', queryItem_obj, post_result);
+                // step3.強制檢查idty長度是否為空值，true= 給一個result_obj空陣列，以防止出錯。
+                    if(queryItem_obj['idty[]'].length <= 0){
+                        alert('idty / 結案狀態 is empty!!');
+                        let result_obj = [];
+                        post_result('condition', result_obj)
+
+                    }else{
+                        // step3.false= 呼叫load_fun，帶入查詢條件queryItem_obj，完成後callBack post_result進行渲染+鋪設
+                            load_fun('condition', queryItem_obj, post_result);
+                    }
             });
 
             // 監聽工作起訖日欄位(id=a_work_e)，自動確認是否結束大於開始
@@ -113,6 +118,16 @@
                 let confirm_pet_to = (pet_created_at_to <= currentDate && pet_created_at_to >= pet_created_at_form) ;
                 $("#created_at_to").removeClass("is-valid is-invalid").addClass( confirm_pet_to ? "is-valid" : "is-invalid");
             });
+
+            // 監聽廠區欄位(id=_site_id)，自動對應fab棟別
+            $('#_site_id').change(function() {
+                const site_value = document.getElementById('_site_id').value;
+                document.querySelectorAll("._fab").forEach(element => {
+                    element.hidden = !element.classList.contains(site_value);
+                });
+            });
+
+
             resolve(); // 文件載入成功，resolve
         });
     }
@@ -121,14 +136,11 @@
         return new Promise((resolve) => { 
             const corresponds = document.querySelectorAll(".correspond");
             const targetClass = document.querySelector('#'+target_class);
-                corresponds.forEach((element)=> {
-                    element.hidden = true;
-                });
-                
+                corresponds.forEach(el => el.hidden = true);
+
             targetClass.addEventListener('change', function() {
-                corresponds.forEach((correspondElement) => {
-                    correspondElement.hidden = true;
-                });
+                corresponds.forEach(el => el.hidden = true);
+
                 const selectedOption = this.options[this.selectedIndex];    // 取得所選中的<option>元素
                 const this_flag = selectedOption.getAttribute('flag');      // 用.getAttribute('flag')取得自訂flag屬性
                 document.querySelectorAll("." + this_flag).forEach((selectedElement) => {
@@ -250,7 +262,8 @@
             });
 
             if (!response.ok) {
-                throw new Error('fun load ' + fun + ' failed. Please try again.');
+                $("body").mLoading("hide");
+                throw new Error('fun load：' + fun + ' is failed. Please try again.');
             }
 
             let responseData = await response.json();
@@ -351,7 +364,7 @@
     async function loadData() {
         try {
             // step_1 load_form(s2_combo) THEN bring_form(JSON轉表單) 帶入07事故分類、08災害類型，判斷增加eventListener_correspond(監聽[事故分類]選項對應出[災害類型])
-            await load_fun('combo', 's2_combo', bring_form); 
+            await load_fun('form', 's2_combo', bring_form); 
             await eventListener();                           // step_2 eventListener(監聽送出[查詢]按鈕);
             await eventListener_shortName('_short_name');    // step_3 eventListener(監聽[事件類別](表單類別)-對應選項功能);
 
@@ -360,7 +373,10 @@
         }
     }
         
-    $(document).ready(function(){
+    $(function () {     // (document).ready
+        // 在任何地方啟用工具提示框
+        $('[data-toggle="tooltip"]').tooltip();
+
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         loadData();
     })
