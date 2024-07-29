@@ -313,7 +313,7 @@
                             let _idty = _doc[list_key];
                             switch(_idty){
                                 case '1':   _idty = '立案/簽核中';  break;
-                                case '10':  _idty = '結案';         break;
+                                case '10':  _idty = '完成訪談';         break;
                                 case '6':   _idty = '暫存';         break;
                                 case '3':   _idty = '取消';         break;
                                 default:
