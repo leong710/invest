@@ -187,7 +187,7 @@
                                         </div>&nbsp
                                         <div class="form-check px-3">
                                             <input type="checkbox" name="idty[]" id="idty_10" value="10" class="form-check-input" checked>
-                                            <label for="idty_10" class="form-check-label">結案</label>
+                                            <label for="idty_10" class="form-check-label">完成訪談</label>
                                         </div>&nbsp
                                         <div class="form-check px-3">
                                             <input type="checkbox" name="idty[]" id="idty_6" value="6" class="form-check-input">

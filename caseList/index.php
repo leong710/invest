@@ -15,6 +15,7 @@
         $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
         $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
         $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "All";        // 問卷類別
+        $idty        = (isset($_REQUEST["idty"]))        ? $_REQUEST["idty"]        : "All";        // 問卷狀態
     // tidy sign_code scope 
         $sfab_id_str     = get_coverFab_lists("str");   // get signCode的管理轄區
         $sfab_id_arr     = explode(',', $sfab_id_str);  // 將管理轄區字串轉陣列
@@ -25,6 +26,7 @@
             '_month'        => $_month,
             'short_name'    => $_short_name,
             'sfab_id'       => $sfab_id_str,
+            'idty'          => $idty,
         );
     // get mainData = caseList
         $caseLists       = show_caseList($query_arr);   // get case清單
@@ -35,7 +37,6 @@
 
         $icon_s = '<i class="';
         $icon_e = ' fa-2x"></i>&nbsp&nbsp';
-            
             
 ?>
 
@@ -98,7 +99,7 @@
                     <!-- by各Local儲存點： -->
                     <div class="row">
                         <!-- sort/groupBy function -->
-                        <div class="col-md-9 pb-0 ">
+                        <div class="col-md-12 pb-0 ">
                             <form action="" method="GET">
                                 <div class="input-group">
                                     <span class="input-group-text">篩選</span>
@@ -112,6 +113,7 @@
                                                 echo ($list_year["_year"] == $_year ? "selected" : "" )." >".$list_year["_year"]."y</option>";
                                             } ?>
                                     </select>
+
                                     <select name="_month" id="_month" class="form-select">
                                         <?php 
                                             echo "<option for='_month' value='All' ".(($_month == "All") ? "selected":"" )." >-- 全月份 / All --</option>";
@@ -120,6 +122,7 @@
                                                 echo "<option for='_month' value='{$month_str}' ".(($month_str == $_month ) ? "selected":"" )." >{$month_str}m</option>";
                                             } ?>
                                     </select>
+
                                     <select name="_short_name" id="_short_name" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
                                         <?php 
@@ -142,25 +145,21 @@
                                             } ?>
                                     </select>
 
+                                    <select name="idty" id="idty" class="form-select" >
+                                        <option value="" hidden selected >-- 請選擇 問卷狀態 --</option>
+                                        <?php 
+                                            echo '<option for="idty" value="All" '.($idty == "All" ? "selected":"").' >-- All 所有狀態 --</option>';
+                                            echo '<option for="idty" value="1" '.($idty == "1" ? "selected":"").' >1：立案/簽核中</option>';
+                                            echo '<option for="idty" value="10" '.($idty == "10" ? "selected":"").' >10：完成訪談</option>';
+                                            echo '<option for="idty" value="6" '.($idty == "6" ? "selected":"").' >6：暫存</option>';
+                                            echo '<option for="idty" value="3" '.($idty == "3" ? "selected":"").' >3：取消</option>';
+                                        ?>
+                                    </select>
+
                                     <button type="submit" class="btn btn-outline-secondary search_btn" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
 
                                 </div>
                             </form>
-                        </div>
-
-                        <!-- 表頭按鈕 -->
-                        <div class="col-md-3 pb-0 text-end inb">
-                            <div class="inb">
-                                <button type="button" id="receive_btn" class="btn btn-danger disabled" data-bs-toggle="modal" data-bs-target="#receive"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>&nbsp填寫</button>
-                            </div>
-                            <div class="inb">
-                                <!-- 20231128 下載Excel -->
-                                <form id="myForm" method="post" action="../_Format/download_excel.php">
-                                    <input type="hidden" name="htmlTable" id="htmlTable" value="">
-                                    <button type="submit" name="submit" class="btn btn-success" disabled title="<?php echo isset($_fab["id"]) ? $_fab["fab_title"]." (".$_fab["fab_remark"].")":"";?>" value="stock" onclick="submitDownloadExcel('stock')" >
-                                        <i class="fa fa-download" aria-hidden="true"></i> 匯出</button>
-                                </form>
-                            </div>
                         </div>
                         <!-- Bootstrap Alarm -->
                         <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
@@ -219,7 +218,7 @@
                                                 case '3':  $c_idty .= '.作廢';      break;
                                                 case '4':  $c_idty .= '.編輯';      break;
                                                 case '6':  $c_idty .= '.暫存';      break;
-                                                case '10': $c_idty .= '.結案';      break;
+                                                case '10': $c_idty .= '.完成訪談';  break;
                                                 case '11': $c_idty .= '.環安主管';  break;
                                                 case '12': $c_idty .= '.--';        break;
                                                 case '13': $c_idty .= '.承辦簽核';  break;

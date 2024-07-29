@@ -13,39 +13,32 @@
                 LEFT JOIN _fab _f       ON _l.fab_id   = _f.id 
                 LEFT JOIN _formcase _fc ON _d.dcc_no   = _fc.dcc_no ";
         // tidy query condition：
-            $conditions = [];
-
             if($_year != 'All'){
-                $conditions[] = "year(_d.created_at) = ?";
-                $stmt_arr[] = $_year;
+                $sql .= " WHERE (year(_d.created_at) = ? )";              // ? = $year
+                array_push($stmt_arr, $_year);
             }
             if($_month != 'All'){
-                $conditions[] = "month(_d.created_at) = ?";
-                $stmt_arr[] = $_month;
+                $sql .= ($_year != "All" ? " AND ":" WHERE ") ;
+                $sql .= " (month(_d.created_at) = ? )";                  // ? = $month
+                array_push($stmt_arr, $_month);
             }
             if($fab_id != "All"){                                           // 處理 fab_id != All 進行二階   
+                $sql .= ($_year != "All" || $_month != "All" ? " AND ":" WHERE ") ;
                 if($fab_id == "allMy"){                                     // 處理 fab_id = allMy 我的轄區
-                    $conditions[] = "_d.fab_id IN ({$sfab_id})";
+                    $sql .= " _d.fab_id IN ({$sfab_id}) ";
                 }else{                                                      // 處理 fab_id != allMy 就是單點fab_id
-                    $conditions[] = "_d.fab_id = ?";
-                    $stmt_arr[] = $fab_id;
+                    $sql .= " _d.fab_id = ? ";
+                    array_push($stmt_arr, $fab_id);
                 }
             }                                                               // 處理 fab_id = All 就不用套用，反之進行二階
             if($short_name != "All"){                                        // 處理過濾 short_name != All  
-                $conditions[] = "_fc.short_name = ?";
-                $stmt_arr[] = $short_name;
-            }
-            if($idty != "All"){                                        // 處理過濾 idty != All  
-                $conditions[] = "_d.idty = ?";
-                $stmt_arr[] = $idty;
+                $sql .= ($_year != "All" || $_month != "All" || $fab_id != "All" ? " AND ":" WHERE ") ;
+                $sql .= " _fc.short_name = ? ";                             // 查詢條件 short_name
+                array_push($stmt_arr, $short_name);
             }
 
-            if (!empty($conditions)) {
-                $sql .= ' WHERE ' . implode(' AND ', $conditions);
-                // 後段-堆疊查詢語法：加入排序
-                $sql .= " ORDER BY _d.created_at DESC ";     // ORDER BY _d.created_at DESC
-            }
-
+        // 後段-堆疊查詢語法：加入排序
+            $sql .= " ORDER BY _d.created_at DESC";
         // 決定是否採用 page_div 20230803
             if(isset($start) && isset($per)){
                 $stmt = $pdo -> prepare($sql.' LIMIT '.$start.', '.$per);   // 讀取選取頁的資料=分頁
@@ -53,7 +46,7 @@
                 $stmt = $pdo->prepare($sql);                                // 讀取全部=不分頁
             }
         try {
-             if(!empty($stmt_arr)){
+            if(($_year != 'All') || ($_month != 'All') || (($fab_id != "All") && ($fab_id != "allMy")) || ($short_name != "All")){
                 $stmt->execute($stmt_arr);                          //處理 byUser & byYear
             }else{
                 $stmt->execute();                                   //處理 byAll
