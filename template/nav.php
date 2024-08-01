@@ -30,11 +30,11 @@
                                     <i class="fas fa-warehouse"></i>&nbsp表單應用<span class="badge rounded-pill bg-danger"></span></a>
                                               
                                 <ul class="dropdown-menu" aria-labelledby="navbarDD_2">
-
                                     <li><a class="dropdown-item" href="<?php echo $webroot;?>/caseList/"><i class="fa-solid fa-list-check"></i>&nbsp<b>訪問清單</b></a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/analyze/"><i class="fa-solid fa-chart-column"></i>&nbsp<b>統計(試作版)</b></a></li>
-
+                                    <?php if($sys_role <= 2 ){ ?>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="<?php echo $webroot;?>/analyze/"><i class="fa-solid fa-chart-column"></i>&nbsp<b>統計(試作版)</b></a></li>
+                                    <?php } ?>
                                 </ul>
                             </li>
                         <?php } ?>
@@ -83,7 +83,7 @@
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDD_reg">
                             <?php   
                                 if($sys_auth){  
-                                    if($sys_role <= 2){ ?>
+                                    if($sys_role <= 1){ ?>
                                         <li><a class="dropdown-item" href="<?php echo $webroot;?>/auth/edit.php?user=<?php echo $auth_user;?>"><i class="fa fa-user-circle" aria-hidden="true"></i> 編輯User資訊</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                 <?php } 

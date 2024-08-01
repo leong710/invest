@@ -9,7 +9,7 @@
     $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
 
     // default fab_scope
-        $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";               // All :allMy
+        $fab_scope = ($sys_role <= 1 ) ? "All" : "allMy";               // All :allMy
     // tidy query condition：
         $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
         $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
@@ -91,7 +91,7 @@
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link active"     href="index.php">訪談清單管理</span></a></li>
-                        <li class="nav-item"><a class="nav-link "           href="condition.php">條件化搜尋</span></a></li>
+                        <?php echo ($sys_role <= 2) ? "<li class='nav-item'><a class='nav-link '   href='condition.php'>條件化搜尋</span></a></li>":"";?>
                     </ul>
                 </div>
                 <!-- 內頁 -->
@@ -103,7 +103,6 @@
                             <form action="" method="GET">
                                 <div class="input-group">
                                     <span class="input-group-text">篩選</span>
-
                                     <select name="_year" id="_year" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷年度 --</option>
                                         <?php 
@@ -113,7 +112,6 @@
                                                 echo ($list_year["_year"] == $_year ? "selected" : "" )." >".$list_year["_year"]."y</option>";
                                             } ?>
                                     </select>
-
                                     <select name="_month" id="_month" class="form-select">
                                         <?php 
                                             echo "<option for='_month' value='All' ".(($_month == "All") ? "selected":"" )." >-- 全月份 / All --</option>";
@@ -122,7 +120,6 @@
                                                 echo "<option for='_month' value='{$month_str}' ".(($month_str == $_month ) ? "selected":"" )." >{$month_str}m</option>";
                                             } ?>
                                     </select>
-
                                     <select name="_short_name" id="_short_name" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷類型 --</option>
                                         <?php 
@@ -132,7 +129,6 @@
                                                 echo ($shortName["short_name"] == $_short_name ? "selected" : "" )." >".$shortName["short_name"]."</option>";
                                             } ?>
                                     </select>
-
                                     <select name="_fab_id" id="_fab_id" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷Fab --</option>
                                         <?php 
@@ -144,7 +140,6 @@
                                                 echo ($fab["flag"] == "Off") ? " - (已關閉)":"" ."</option>";
                                             } ?>
                                     </select>
-
                                     <select name="idty" id="idty" class="form-select" >
                                         <option value="" hidden selected >-- 請選擇 問卷狀態 --</option>
                                         <?php 
@@ -155,9 +150,7 @@
                                             echo '<option for="idty" value="3" '.($idty == "3" ? "selected":"").' >3：取消</option>';
                                         ?>
                                     </select>
-
                                     <button type="submit" class="btn btn-outline-secondary search_btn" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
-
                                 </div>
                             </form>
                         </div>
@@ -170,18 +163,13 @@
                                 <th data-toggle="tooltip" data-placement="bottom" title="操作">ANSI單號</th>
                                 <th>案件簡稱</th>
                                 <th>事件名稱</th>
-
                                 <th>棟別</th>
                                 <th>廠處別</th>
                                 <th>事故單位</th>
-
                                 <th>表單狀態</th>
                                 <th>職災申報</th>
                                 <th>立案日 / 人</th>
-                                <!-- <th>最後更新 / 更新人</th> -->
-
                                 <th>結案存檔</th>
-                                <!-- <th data-toggle="tooltip" data-placement="bottom" title="操作">action</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -193,14 +181,12 @@
                                         echo "<button type='button' value='../interView/form.php?action=review&uuid={$caseList["uuid"]}' class='tran_btn' 
                                             onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='檢視問卷'>{$caseList["anis_no"]}</button>";
                                         // 1簽核中  3作廢  10結案
-                                        if((empty($caseList["confirm_sign"]) && !in_array($caseList["idty"], ['1','3','10'])) && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= '1')){ 
+                                        if((empty($caseList["confirm_sign"]) && !in_array($caseList["idty"], ['1','3','10'])) && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= 1)){ 
                                             echo "&nbsp<button type='button' value='../interView/form.php?action=edit&uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                 .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
                                                 "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯問卷'><i class='fa-solid fa-pen-to-square'></i></button>";
                                         } ?>
                                     </td>
-
-
                                     <td><?php echo $icon_s.$caseList['_icon'].$icon_e.$caseList['short_name'];?></td>
                                     <td class="word_bk" title="aid_<?php echo $caseList['id'];?>"><?php echo $caseList['id'].".".$caseList['case_title'];?></td>
 
@@ -209,24 +195,23 @@
                                     <td><?php echo $caseList['a_dept'];?></td>
                                     
                                     <td><?php 
-                                        if(!empty($caseList['idty'])){
-                                            $c_idty = $caseList['idty'];
-                                            switch($caseList['idty']){
-                                                case '0':  $c_idty .= '.啟單';      break;
-                                                case '1':  $c_idty .= '.簽核中';    break;
-                                                case '2':  $c_idty .= '.退件';      break;
-                                                case '3':  $c_idty .= '.作廢';      break;
-                                                case '4':  $c_idty .= '.編輯';      break;
-                                                case '6':  $c_idty .= '.暫存';      break;
-                                                case '10': $c_idty .= '.完成訪談';  break;
-                                                case '11': $c_idty .= '.環安主管';  break;
-                                                case '12': $c_idty .= '.--';        break;
-                                                case '13': $c_idty .= '.承辦簽核';  break;
-                                                default:
-                                                    $c_idty .= 'N/A';
-                                            };
-                                        }
-                                        echo $c_idty;
+                                            if(!empty($caseList['idty'])){
+                                                $c_idty = $caseList['idty'];
+                                                switch($caseList['idty']){
+                                                    case '0':  $c_idty .= '.啟單';      break;
+                                                    case '1':  $c_idty .= '.簽核中';    break;
+                                                    case '2':  $c_idty .= '.退件';      break;
+                                                    case '3':  $c_idty .= '.作廢';      break;
+                                                    case '4':  $c_idty .= '.編輯';      break;
+                                                    case '6':  $c_idty .= '.暫存';      break;
+                                                    case '10': $c_idty .= '.完成訪談';  break;
+                                                    case '11': $c_idty .= '.環安主管';  break;
+                                                    case '12': $c_idty .= '.--';        break;
+                                                    case '13': $c_idty .= '.承辦簽核';  break;
+                                                    default:   $c_idty .= 'N/A';
+                                                };
+                                            }
+                                            echo $c_idty;
                                     ?></td>
                                     <td>
                                         <?php 
@@ -235,7 +220,7 @@
                                             echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
                                             echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
                                             echo "</span>";
-                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= '1' )){
+                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= 1)){
                                                 echo "&nbsp<button type='button' value='../interView/process_odd.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                     .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
                                                     "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯申報日'><i class='fa-solid fa-pen-to-square'></i></button>";
@@ -243,7 +228,6 @@
                                         ?>
                                     </td>
                                     <td><?php echo substr($caseList["created_at"],0,10)."</br>".$caseList['created_cname'];?></td>
-                                    <!-- <td><php echo $caseList["updated_at"]."</br>".$caseList['updated_cname'];?></td> -->
 
                                     <td class="text-end"><?php
                                         if(!empty($caseList["confirm_sign"])) {
@@ -258,21 +242,12 @@
                                                 "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ><i class='fa fa-plus'></i></button>";
                                         }; ?>
                                     </td>
-                                        
-                                    <!-- <td> -->
-                                        <!-- <a href="..\interView\show.php?uuid=<php echo $caseList['uuid'];?>&action=review" class="btn btn-sm btn-xs btn-primary"  -->
-                                            <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="檢視"><i class="fa-regular fa-folder-open"></i></a> -->
-                                        <!-- <a href="..\interView\form.php?uuid=<php echo $caseList['uuid'];?>&action=edit" class="btn btn-sm btn-xs btn-success"  -->
-                                            <!-- target="_blank" data-toggle="tooltip" data-placement="bottom" title="編輯"><i class="fa-solid fa-pen-to-square"></i></a> -->
-                                    <!-- </td> -->
                                 </tr>
-
                             <?php } ?>
                         </tbody>
                     </table>
                 </div>
                 </br>
-
             </div>
         </div>
     </div>
@@ -317,7 +292,6 @@
     })
     
 </script>
-
 <!-- <script src="caseList.js?v=<=time()?>"></script> -->
 
 <?php include("../template/footer.php"); ?>

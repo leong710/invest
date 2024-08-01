@@ -154,7 +154,8 @@
         }
         await $("body").mLoading("hide");
     }
-
-    $(document).ready(function(){
+    $(function () {         // $(document).ready()
+        $('[data-toggle="tooltip"]').tooltip(); // 在任何地方啟用工具提示框
+        
         dashboard_init(false);
     })

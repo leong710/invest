@@ -120,8 +120,8 @@
                             <!-- 20231108-資料更新時間 -->
                             <div class="col-12 py-0 px-3 text-end">
                                 <span style="display: inline-block;" >
-                                    <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新">
-                                        <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                                    <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新" 
+                                        <?php echo ($sys_role <= 1) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
                                 <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?> </span>
                             </div>
                         </div>
@@ -170,7 +170,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap Alarm -->
+<!-- Bootstrap Alarm -->
     <div id="liveAlertPlaceholder" class="col-12 text-center mb-0 pb-0"></div>
     <div id="gotop">
         <i class="fas fa-angle-up fa-2x"></i>
@@ -181,9 +181,7 @@
 <script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 
 <script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip(); // 在任何地方啟用工具提示框
-    })
+
 </script>
 <script src="dashboard.js?v=<?=time()?>"></script>
 

@@ -165,7 +165,7 @@
             <div class="col-12 col-md-2 col-lg-2 px-1 py-0">
                 <div id="session-group" class="list-group">
                     <?php if(in_array($action,["create", "edit"])){ ?>
-                        <button class="list-group-item list-group-item-action text-center" onclick="saveSubmit_modal('6', this.innerHTML)" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 儲存 (Save)</button>
+                        <button class="list-group-item list-group-item-action text-center" onclick="saveSubmit_modal('6', this.innerHTML)" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 暫存 (Save)</button>
                     <?php } ?>
                     <a class="list-group-item list-group-item-action" href="#form_top">Home</a>
                 </div>
@@ -182,11 +182,11 @@
                                 echo $let_btn_s."btn-primary".$let_btn_m."1".$let_btn_e."立案 (Register)</button> ";
                              }
                             if(in_array($action,["create", "edit"])){ 
-                                echo $let_btn_s."btn-success".$let_btn_m."6".$let_btn_e."儲存 (Save)</button> ";
+                                echo $let_btn_s."btn-success".$let_btn_m."6".$let_btn_e."暫存 (Save)</button> ";
                             } ?>
                         </span>
                         <?php if(isset($action) && $action == "review"){
-                            echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp另存PDF</button> ";
+                            echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp列印PDF</button> ";
                             // if(empty($document_row["confirm_sign"]) || $sys_role <= 2){
                                 // echo "<button type='button' class='btn btn-warning' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
                                 // echo "value='../interView/process_pdf.php?uuid={$document_row["uuid"]}' onclick='openUrl(this.value)' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button>";

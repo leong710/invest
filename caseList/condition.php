@@ -237,23 +237,13 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <hr>
                         <!-- Hear：H -->
-                        <div class="col-12 text-center">
+                        <div class="col-12 text-center py-0">
                             <button type="reset" class="btn btn-outline-success">清除</button>
                             <button type="button" class="btn btn-outline-secondary search_btn" value="count" id="search_btn" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa-solid fa-magnifying-glass"></i>&nbsp查詢</button>
                         </div>
                     </form>
-                    <hr>
-                    <table id="caseList" class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-        
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
