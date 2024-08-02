@@ -66,7 +66,7 @@
                         <h3>待通報清單統計</h3>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
-                        <?php if($sys_role <= 1 && $check_ip){ ?>
+                        <?php if($sys_role == 0 && $check_ip){ ?>
                             <button type="button" id="upload_myTodo_btn" class="btn <?php echo !$mailTo_notify ? 'btn-primary':'btn-warning';?>" data-toggle="tooltip" data-placement="bottom" 
                                 title="send notify" onclick="return confirm('確認發報？') && notify_process()">傳送&nbspEmail&nbsp<i class="fa-solid fa-paper-plane"></i>&nbsp+&nbspMAPP&nbsp<i class="fa-solid fa-comment-sms"></i></button>
                                 
@@ -133,8 +133,8 @@
                 <!-- 20231108-資料更新時間 -->
                 <div class="col-12 py-0 px-3 text-end">
                     <span style="display: inline-block;" >
-                        <button type="button" class="btn btn-outline-success add_btn" onclick="load_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新">
-                            <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                        <button type="button" class="btn btn-outline-success add_btn" onclick="load_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新"
+                            <?php echo ($sys_role == 0) ? "":"disabled";?> ><i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
                     <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?></span>
                 </div>
             </div>

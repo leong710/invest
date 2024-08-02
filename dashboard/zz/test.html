@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Button Role Restriction</title>
+        <style>
+            #buttonContainer {
+                position: relative;
+                display: inline-block;
+            }
+
+            #overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.7);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body>
+        <snap>+++ 遮罩範例 +++</snap>
+        <div id="buttonContainer">
+            <button id="myButton" onclick="buttonClicked()">Click Me!</button>
+            <div id="overlay">Permission Denied</div>
+        </div>
+
+        <script>
+            function checkUserRole(role) {
+                var overlay = document.getElementById('overlay');
+                if (role > 2.5) {
+                    overlay.style.display = 'flex';
+                    overlay.style.pointerEvents = 'auto'; // 使遮罩可以攔截點擊事件
+                } else {
+                    overlay.style.display = 'none';
+                    overlay.style.pointerEvents = 'none'; // 使遮罩不攔截點擊事件
+                }
+            }
+
+            function buttonClicked() {
+                alert('Button clicked!');
+            }
+
+            // 示例：假設用戶的角色為3
+            var userRole = 3;
+            checkUserRole(userRole);
+        </script>
+    </body>
+</html>

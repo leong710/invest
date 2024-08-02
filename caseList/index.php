@@ -91,7 +91,7 @@
                 <div class="col-12 pb-0 px-0">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link active"     href="index.php">訪談清單管理</span></a></li>
-                        <?php echo ($sys_role <= 2) ? "<li class='nav-item'><a class='nav-link '   href='condition.php'>條件化搜尋</span></a></li>":"";?>
+                        <?php echo ($sys_role <= 2.5) ? "<li class='nav-item'><a class='nav-link '   href='condition.php'>條件化搜尋</span></a></li>":"";?>
                     </ul>
                 </div>
                 <!-- 內頁 -->
@@ -220,7 +220,7 @@
                                             echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
                                             echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
                                             echo "</span>";
-                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= 1)){
+                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= 2)){
                                                 echo "&nbsp<button type='button' value='../interView/process_odd.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                     .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
                                                     "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯申報日'><i class='fa-solid fa-pen-to-square'></i></button>";

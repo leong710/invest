@@ -535,6 +535,11 @@
                 push_result['email']['error']++; 
                 continue;                                                       // 使用 continue 代替 return false 以便繼續處理其他用戶
 
+            } else if(to_emp_id >= 90000000 && to_emp_id.includes("9000000")){  // 排除管理員+測試帳號
+                push_result['mapp']['success']++
+                push_result['email']['success']++
+                continue; 
+                
             } else {
                 // 宣告儲存Log內的單筆 小-物件log
                 let user_log = { 

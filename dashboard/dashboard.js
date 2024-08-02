@@ -1,10 +1,23 @@
+    // 0.取得sysRole
+    function get_sysRole() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_sysRole.php', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                sys_role = JSON.parse(xhr.responseText);
+                console.log('sys_role...', sys_role);
+            }
+        };
+        xhr.send();
+    }
     // 1-1.仔子功能--生成fom的btn
     function make_formBtn(fc_value){
         const icon_s = '<i class="';
         const icon_e = ' fa-3x"></i>';
         if(fc_value.dcc_no){
-            let int_b = "<button type='button' class='btn btn-outline-primary add_btn form_btn bs-b' value='../interView/form.php?dcc_no="+ fc_value.dcc_no +"' onclick='openUrl(this.value)' >"
-                + "<div class='col-12 p-1 pt-3'>" + icon_s + fc_value._icon + icon_e + "<h5 class='mb-0 mt-1'><b>- " + fc_value.short_name +" -</b><h5></div></button>";
+            let int_b = "<button type='button' class='btn btn-outline-primary add_btn form_btn bs-b' value='../interView/form.php?dcc_no="+ fc_value.dcc_no +"' ";
+                int_b += ((sys_role > 2.5 || !sys_role) ? "disabled":"onclick='openUrl(this.value)'") + " >";
+                int_b += "<div class='col-12 p-1 pt-3'>" + icon_s + fc_value._icon + icon_e + "<h5 class='mb-0 mt-1'><b>- " + fc_value.short_name +" -</b><h5></div></button>";
             return int_b;
         }else{
             return '<snap class="btn btn-outline-secondary">' + fc_value.title + '</br>-- 無效json表單 --</snap>';
@@ -156,6 +169,6 @@
     }
     $(function () {         // $(document).ready()
         $('[data-toggle="tooltip"]').tooltip(); // 在任何地方啟用工具提示框
-        
+        get_sysRole();
         dashboard_init(false);
     })

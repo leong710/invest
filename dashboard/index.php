@@ -73,6 +73,24 @@
         .bg-c-blue {
             background: linear-gradient(45deg,#4099ff,#73b4ff);
         }
+        /* 遮罩 */
+        #btn_list {
+            position: relative;
+            display: inline-block;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
    </style>
 </head>
 
@@ -85,9 +103,9 @@
                     <div class="col-3 col-md-3 px-2 py-0 t-center">
                         <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪問單&nbsp--</span></h2>
                         <div class="col-12 p-0" id="btn_list">
-
+                            <div id="overlay">Permission Denied</div>
+                            <!-- append button here -->
                         </div>
-                        <!-- append button here -->
                     </div>
 
                     <!-- 右上：各廠燈號 -->
@@ -121,7 +139,7 @@
                             <div class="col-12 py-0 px-3 text-end">
                                 <span style="display: inline-block;" >
                                     <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新" 
-                                        <?php echo ($sys_role <= 1) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                                        <?php echo ($sys_role <= 1 && !empty($sys_role)) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
                                 <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?> </span>
                             </div>
                         </div>
@@ -181,7 +199,7 @@
 <script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 
 <script>
-
+    var sys_role = 3;
 </script>
 <script src="dashboard.js?v=<?=time()?>"></script>
 
