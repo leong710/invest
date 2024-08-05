@@ -5,7 +5,7 @@
     require_once("function.php");
     require_once("function_dept.php");
     require_once("service_window_api.php");             // service window
-    // accessDenied($sys_id);
+    accessDeniedAdmin($sys_id);
     
     // 新增C
     if(isset($_REQUEST["site_submit"])){  store_site($_REQUEST); }

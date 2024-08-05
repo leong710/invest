@@ -341,7 +341,11 @@
                     // s5. 建立bpm大pm名單
                         Object(bpm).forEach((bpm_i)=>{
                             const bpm_emp_id = bpm_i.emp_id
-                            addToNotifyList(bpm_emp_id, bpm_i.cname, bpm_i.email, action);
+                            if(bpm_emp_id >= 90000000 && bpm_emp_id.includes("9000000")){  // 排除管理員+測試帳號
+                                return; 
+                            }else{
+                                addToNotifyList(bpm_emp_id, bpm_i.cname, bpm_i.email, action);
+                            }
                         })
                 } 
 

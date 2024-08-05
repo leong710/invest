@@ -3,6 +3,7 @@
     require_once("../sso.php");
     require_once("../user_info.php");
     require_once("../caseList/function.php");
+    accessDenied($sys_id);
 
     // default fab_scope
     $fab_scope = ($sys_role <=1 ) ? "All" : "allMy";               // All :allMy
