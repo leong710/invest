@@ -173,7 +173,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             <?php foreach($caseLists as $caseList){ ?>
                                 <tr>
                                     <td>
@@ -220,7 +219,7 @@
                                             echo !empty($_odd["due_day"]) ? "截止日：".$_odd["due_day"]."</br>申報日：" : "";
                                             echo !empty($_odd["od_day"])  ? $_odd["od_day"] : (!empty($_odd["due_day"]) ? "--" : "");
                                             echo "</span>";
-                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && ($caseList["created_emp_id"] == $auth_emp_id)) || $sys_role <= 2)){
+                                            if(!empty($_odd["due_day"]) && ((empty($_odd["od_day"]) && in_array($caseList["fab_id"], $sfab_id_arr) && $sys_role <= 2) ||  $sys_role <= 1)){
                                                 echo "&nbsp<button type='button' value='../interView/process_odd.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                     .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
                                                     "' onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='編輯申報日'><i class='fa-solid fa-pen-to-square'></i></button>";
