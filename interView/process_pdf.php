@@ -54,7 +54,7 @@
             </div>
             <div class="col-12 col-md-6 py-0 text-end">
                 <snap id="submit_action">
-                    <?php if($sys_role <= 2){ ?>
+                    <?php if($sys_role <= 1 || (($document_row["created_emp_id"] == $auth_emp_id) && ($sys_role <= 2.5)) || (in_array($auth_emp_id, $document_row["pm_emp_id"])) ){ ?>
                         <button type="button" class="btn btn-primary" id="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> 送出 (Submit)</button>
                     <?php } ?>
                 </snap>

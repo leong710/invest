@@ -13,7 +13,8 @@
     // tidy query condition：
         $_fab_id     = (isset($_REQUEST["_fab_id"]))     ? $_REQUEST["_fab_id"]     : $fab_scope;   // 問卷fab
         $_year       = (isset($_REQUEST["_year"]))       ? $_REQUEST["_year"]       : date('Y');    // 問卷年度
-        $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
+        // $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : date('m');    // 問卷月份
+        $_month      = (isset($_REQUEST["_month"]))      ? $_REQUEST["_month"]      : "All";        // 問卷月份
         $_short_name = (isset($_REQUEST["_short_name"])) ? $_REQUEST["_short_name"] : "All";        // 問卷類別
         $idty        = (isset($_REQUEST["idty"]))        ? $_REQUEST["idty"]        : "All";        // 問卷狀態
     // tidy sign_code scope 
@@ -144,7 +145,7 @@
                                         <option value="" hidden selected >-- 請選擇 問卷狀態 --</option>
                                         <?php 
                                             echo '<option for="idty" value="All" '.($idty == "All" ? "selected":"").' >-- All 所有狀態 --</option>';
-                                            echo '<option for="idty" value="1" '.($idty == "1" ? "selected":"").' >1：立案/簽核中</option>';
+                                            echo '<option for="idty" value="1" '.($idty == "1" ? "selected":"").' >1：立案/等待上傳中</option>';
                                             echo '<option for="idty" value="10" '.($idty == "10" ? "selected":"").' >10：完成訪談</option>';
                                             echo '<option for="idty" value="6" '.($idty == "6" ? "selected":"").' >6：暫存</option>';
                                             echo '<option for="idty" value="3" '.($idty == "3" ? "selected":"").' >3：取消</option>';
@@ -177,9 +178,9 @@
                                 <tr>
                                     <td>
                                         <?php 
-                                        echo "<button type='button' value='../interView/form.php?action=review&uuid={$caseList["uuid"]}' class='tran_btn' 
-                                            onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='檢視問卷'>{$caseList["anis_no"]}</button>";
-                                        // 1簽核中  3作廢  10結案
+                                        echo ($sys_role <= 2.5) ? "<button type='button' value='../interView/form.php?action=review&uuid={$caseList["uuid"]}' class='tran_btn' 
+                                            onclick='openUrl(this.value)' data-toggle='tooltip' data-placement='bottom' title='檢視問卷'>{$caseList["anis_no"]}</button>":$caseList["anis_no"];
+                                        // 1等待上傳中  3作廢  10結案
                                         if((empty($caseList["confirm_sign"]) && !in_array($caseList["idty"], ['1','3','10'])) && ($caseList["created_emp_id"] == $auth_emp_id) || ($sys_role <= 1)){ 
                                             echo "&nbsp<button type='button' value='../interView/form.php?action=edit&uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "
                                                 .(($caseList["created_emp_id"] == $auth_emp_id) ? "btn-success" : "btn-outline-success add_btn" ).
@@ -198,7 +199,7 @@
                                                 $c_idty = $caseList['idty'];
                                                 switch($caseList['idty']){
                                                     case '0':  $c_idty .= '.啟單';      break;
-                                                    case '1':  $c_idty .= '.簽核中';    break;
+                                                    case '1':  $c_idty .= '.等待上傳中';    break;
                                                     case '2':  $c_idty .= '.退件';      break;
                                                     case '3':  $c_idty .= '.作廢';      break;
                                                     case '4':  $c_idty .= '.編輯';      break;
@@ -206,7 +207,7 @@
                                                     case '10': $c_idty .= '.完成訪談';  break;
                                                     case '11': $c_idty .= '.環安主管';  break;
                                                     case '12': $c_idty .= '.--';        break;
-                                                    case '13': $c_idty .= '.承辦簽核';  break;
+                                                    case '13': $c_idty .= '.承辦處理';  break;
                                                     default:   $c_idty .= 'N/A';
                                                 };
                                             }
@@ -231,9 +232,8 @@
                                     <td class="text-end"><?php
                                         if(!empty($caseList["confirm_sign"])) {
                                             $pdf_path = "{$caseList["case_year"]}/{$caseList["anis_no"]}/";
-                                            echo "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' ";
-                                            echo "value='../doc_files/{$pdf_path}{$caseList["confirm_sign"]}' ";
-                                            echo " onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>"; 
+                                            echo ($sys_role <= 2.5) ? "<button type='button' class='btn text-danger add_btn' data-toggle='tooltip' data-placement='bottom' title='{$caseList["confirm_sign"]}' 
+                                             value='../doc_files/{$pdf_path}{$caseList["confirm_sign"]}' onclick='openUrl(this.value)' ><i class='fa-solid fa-file-pdf fa-2x'></i></button>":"<i class='text-danger fa-solid fa-file-pdf fa-2x'></i>"; 
                                         };
                                         if((empty($caseList["confirm_sign"]) && $caseList["idty"] === "1" && $caseList["idty"] !== "3" && $caseList["created_emp_id"] == $auth_emp_id) || $sys_role <= 1){
                                             echo "<button type='button' value='../interView/process_pdf.php?uuid={$caseList["uuid"]}' class='btn btn-sm btn-xs "

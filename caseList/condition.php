@@ -86,10 +86,10 @@
             }
         }
 
-        table tbody tr td{
+        /* table tbody tr td{ */
             /* text-align: right; */
             /* padding: 1em; */
-        }
+        /* } */
         /* inline */
         .inb {
             display: inline-block;

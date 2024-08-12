@@ -4,7 +4,9 @@
     require_once("../user_info.php");
     require_once("service_window.php");             // service window
     $sw_arr = (array) json_decode($sw_json);        // service window 物件轉陣列
-
+    if(!isset($_SESSION)){                          // 確認session是否啟動
+		session_start();
+	}
     //    accessDenied($sys_id);
     if(!empty($_SESSION["AUTH"]["pass"]) && empty($_SESSION[$sys_id])){
         accessDenied_sys($sys_id);

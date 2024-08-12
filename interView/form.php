@@ -309,21 +309,21 @@
                                         <!-- 第一排的功能 : 顯示已加入名單+input -->
                                         <div class="col-12 py-0">
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">事故當事者(或代理人)</span>
+                                                <span class="input-group-text" style="width:25%;">事故當事者(或代理人)<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
                                                 <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表</span>
+                                                <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
                                                 <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
-                                                <span class="input-group-text" style="width:25%;">環安人員</span>
+                                                <span class="input-group-text" style="width:25%;">環安人員<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_s_select" name="meeting_man_s">
                                                 <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
                                                 <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
