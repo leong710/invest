@@ -135,7 +135,7 @@
                             <div class="col-12 py-0 px-3 text-end">
                                 <span style="display: inline-block;" >
                                     <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新" 
-                                        <?php echo ($sys_role <= 1 && !empty($sys_role)) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                                        <?php echo ($sys_role <= 1 && isset($sys_role)) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
                                 <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?> </span>
                             </div>
                         </div>

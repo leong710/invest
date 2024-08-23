@@ -217,7 +217,8 @@
 </body>
 <script src="../../libs/aos/aos.js"></script>               <!-- goTop滾動畫面jquery.min.js+aos.js 3/4-->
 <script src="../../libs/aos/aos_init.js"></script>          <!-- goTop滾動畫面script.js 4/4-->
-<script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>     <!-- 簽名板外掛 -->
+<!-- 簽名板外掛 -->
+<!-- <script src="../../libs/signature_pad/signature_pad.umd.min.js"></script>      -->
 <script src="../../libs/openUrl/openUrl.js"></script>       <!-- 彈出子畫面 -->
 <!-- <script src="../../libs/moment/moment.min.js"></script> -->
 
