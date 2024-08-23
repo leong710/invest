@@ -12,9 +12,6 @@
         accessDenied_sys($sys_id);
     }
 
-    // 複製本頁網址藥用
-    // $up_href = (isset($_SERVER["HTTP_REFERER"])) ? $_SERVER["HTTP_REFERER"] : 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];   // 回上頁 // 回本頁
-
     $reloadTime = (file_exists("reloadTime.txt")) ? file_get_contents("reloadTime.txt") : "";       // 從文件加载reloadTime内容
         
 ?>
@@ -45,8 +42,6 @@
         .form_btn {
             width:  100%;
             background: white;
-            /* width:  367px; */
-            /* height: 110px; */
         }
         .bs-b {
             box-shadow: 0 5px 15px -2px rgba(3 , 65 , 134 , .7);
@@ -65,7 +60,6 @@
         /* inline */
         .inb {
             display: inline-block;
-            /* margin-right: 10px; */
         }
         .inf {
             display: inline-flex;

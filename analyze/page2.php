@@ -36,10 +36,6 @@
         body {
             position: relative;
         }
-        /* #emp_id, #excelFile{    
-            margin-bottom: 0px;
-            text-align: center;
-        } */
         .a_pic {
             width: 150px; 
             height: auto; 
@@ -53,10 +49,6 @@
         .signature {
             box-shadow: 0px 0px 8px rgba(0,0,0,.5);
         }
-        /* 使用 CSS 將 canvas 的寬度設置為 100% */
-        /* canvas {
-            width: 100%;
-        } */
         @keyframes fadeIn {
             from { opacity: 0;}
             to { opacity: 1;}
@@ -113,10 +105,6 @@
             width: 100%;
             border-top: 1px solid #000;
             margin-top: 10px;
-        }
-        table tbody tr td{
-            /* text-align: left; */
-            /* padding: 1.5em; */
         }
     </style>
 </head>

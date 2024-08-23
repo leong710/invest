@@ -19,9 +19,6 @@
     $showAllUsers = showAllUsers("all");
 
     $depts = show_dept();
-    // $sites = show_site();
-    // $fabs = show_fab();
-    
 
 ?>
 <?php include("../template/header.php"); ?>

@@ -77,10 +77,6 @@
         body {
             position: relative;
         }
-        /* #emp_id, #excelFile{    
-            margin-bottom: 0px;
-            text-align: center;
-        } */
         .a_pic {
             width: 150px; 
             height: auto; 
@@ -94,10 +90,6 @@
         .signature {
             box-shadow: 0px 0px 8px rgba(0,0,0,.5);
         }
-        /* 使用 CSS 將 canvas 的寬度設置為 100% */
-        /* canvas {
-            width: 100%;
-        } */
         @keyframes fadeIn {
             from { opacity: 0;}
             to { opacity: 1;}
@@ -187,10 +179,6 @@
                         </span>
                         <?php if(isset($action) && $action == "review"){
                             echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp列印PDF</button> ";
-                            // if(empty($document_row["confirm_sign"]) || $sys_role <= 2){
-                                // echo "<button type='button' class='btn btn-warning' data-toggle='tooltip' data-placement='bottom' title='上傳結案PDF' ";
-                                // echo "value='../interView/process_pdf.php?uuid={$document_row["uuid"]}' onclick='openUrl(this.value)' > <i class='fa-solid fa-file-arrow-up'></i>&nbsp上傳PDF</button>";
-                            // }
                         }?>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
                     </div>

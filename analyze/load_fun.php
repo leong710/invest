@@ -109,17 +109,8 @@
                         }else{
                             $stmt->execute();                                   //處理 byAll
                         }
-
                         // $caseList = ($get_dccNo) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);        // get_dccNo  取一筆for dcc_no / 取全部
                         $caseList = ($get_dccNo) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);        // get_dccNo  取一筆for dcc_no / 取全部
-
-                        // // 把特定json轉物件
-                        //     $re_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');
-                        //     foreach ($re_json_keys as $jkey) {
-                        //         // $_document[$jkey] = json_decode($_document[$jkey]);
-                        //         $_document[$jkey] = isset($_document[$jkey]) ? json_decode($_document[$jkey]) : '';
-                        //     }
-
                         // 製作返回文件
                         $result = [
                             'result_obj' => $caseList,

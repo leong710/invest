@@ -38,13 +38,6 @@
             swal(swal_json['fun'] ,'未知的錯誤!' ,'warning');                                                   // 手動關閉  
 
         }
-        // history.back();  // location.href = this.url;
-            // swal( TITLE , CONTENT , ACTION ).then(()=>{window.close();});           // 手動關閉畫面
-            // swal( TITLE , CONTENT , ACTION ).then(()=>{history.back()});            // 手動關閉畫面+回上頁
-            // swal( TITLE , CONTENT , ACTION ).then(()=>{closeWindow(true)});         // 手動關閉畫面 +true=更新、+false=不更新
-            // swal( TITLE , CONTENT , ACTION , {buttons: false, timer:3000});         // 3秒自動關閉
-            // swal( TITLE , CONTENT , ACTION , {buttons: false, timer:3000}).then(()=>{ location.href = url });   // 3秒自動關閉畫面+回指定頁面
-            // swal( TITLE , CONTENT , ACTION , {buttons: false, timer:3000}).then(()=>{ closeWindow() });         // 3秒自動關閉畫面+false=不更新
     }
 
     // doc _odd的 update 函数       

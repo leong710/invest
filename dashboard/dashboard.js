@@ -5,7 +5,6 @@
         xhr.onload = function () {
             if (xhr.status === 200) {
                 sys_role = JSON.parse(xhr.responseText);
-                console.log('sys_role...', sys_role);
             }
         };
         xhr.send();
@@ -70,8 +69,6 @@
 
     // 0-1.確認是否超過3小時；true=_db/更新時間；false=_json          // 呼叫來源：dashboard_init
     function check3hourse(action){
-        // let currentDate = new Date().toLocaleString('zh-TW', { hour12: false });                      // 取得今天日期時間
-        // let reloadTime  = new Date(reload_time.innerText).toLocaleString('zh-TW', { hour12: false }); // 取得reloadTime時間
         let currentDate = new Date();                               // 取得今天日期時間
         let reloadTime  = new Date(reload_time.innerText);          // 取得reloadTime時間
 
@@ -92,30 +89,6 @@
     }
 
 // // // 
-    // 0-0.多功能擷取fun 舊版使用XMLHttpRequest()
-        // async function old_load_fun(fun, parm, myCallback) {        // parm = 參數
-        //     return new Promise((resolve, reject) => {
-        //         let formData = new FormData();
-        //         formData.append('fun', fun);
-        //         formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
-        //         let xhr = new XMLHttpRequest();
-        //         xhr.open('POST', 'load_fun.php', true);
-        //         xhr.onload = function () {
-        //             if (xhr.status === 200) {
-        //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
-        //                 let result_obj = response['result_obj'];        // 擷取主要物件
-        //                 resolve(myCallback(result_obj))                 // resolve(true) = 表單載入成功，then 呼叫--myCallback
-        //                                                                 // myCallback：form = bring_form() 、document = edit_show() 、locals = ? 還沒寫好
-        //             } else {
-        //                 let err_msg = 'fun load '+fun+' failed. Please try again.';
-        //                 // alert(err_msg);
-        //                 reject(err_msg); // 載入失敗，reject
-        //             }
-        //         };
-        //         xhr.send(formData);
-        //     });
-        // }
-    
     // 0-0.多功能擷取fun 新版改用fetch
     async function load_fun(fun, parm, myCallback) { // parm = 參數
         try {

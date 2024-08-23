@@ -412,8 +412,8 @@
                 dataType:'json',
                 data:{
                     uuid    : uuid,                                         // invest
-                    // eid     : to_emp_id,                                  // 傳送對象
-                    eid     : '10008048',                                   // 傳送對象
+                    eid     : to_emp_id,                                    // 傳送對象
+                    // eid     : '10008048',                                   // 傳送對象
                     message : mg_msg                                        // 傳送訊息
                 },
                 success: function(res){
@@ -440,8 +440,8 @@
                 data:{
                     uuid    : uuid,                                         // invest
                     sysName : 'invest',                                     // 貫名
-                    // to      : to_email,                                  // 傳送對象
-                    to      : 'leong.chen@innolux.com',                     // 傳送對象
+                    to      : to_email,                                     // 傳送對象
+                    // to      : 'leong.chen@innolux.com',                     // 傳送對象
                     subject : int_msg1_title,                               // 信件標題
                     body    : mg_msg                                        // 訊息內容
                 },

@@ -32,16 +32,6 @@
                 if(isset($_short_name)){
                     $pdo = pdo();
                     $stmt_arr = array();    // 初始查詢陣列
-
-                        // $site_id         = !empty($_site_id)        ? $_site_id         : null ;
-                        // $fab_id          = !empty($_fab_id)         ? $_fab_id          : null ;
-                        // $anis_no         = !empty($_anis_no)        ? $_anis_no         : null ;
-                        // $created_emp_id  = !empty($_created_emp_id) ? $_created_emp_id  : null ;
-                        // $short_name      = !empty($_short_name)     ? $_short_name      : null ;
-                        // $idty            = !empty($_idty)           ? $_idty            : null ;
-                        // $created_at_form = !empty($created_at_form) ? $created_at_form  : null ;
-                        // $created_at_to   = !empty($created_at_to)   ? $created_at_to    : null ;
-
                     $variables = [
                         'site_id'         => $_site_id,
                         'fab_id'          => $_fab_id,

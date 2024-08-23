@@ -56,37 +56,6 @@
             resolve(); // 文件載入成功，resolve
         });
     }
-    // //主功能1.抓資料 舊版使用XMLHttpRequest()
-        // async function old_load_fun(fun, parm, myCallback) {                // parm = 參數
-        //     // console.log('fun: load_fun...', fun, parm, myCallback);
-        //     return new Promise((resolve, reject) => {
-        //         let formData = new FormData();
-        //         let fun_temp = (parm['_get_dccNo'] !== undefined && parm['_get_dccNo'] === true ) ? 'caseList' : fun;
-        //         formData.append('fun', fun_temp);
-        //         // 主要for doc多參數
-        //             if (typeof parm === 'object') {
-        //                 for (const [_key, _value] of Object.entries(parm)){
-        //                     formData.append(_key, _value);              // 後端依照fun進行parm參數的採用
-        //                 } 
-        //             }else {
-        //                 formData.append('parm', parm);                  // 後端依照fun進行parm參數的採用
-        //             }
-        //         let xhr = new XMLHttpRequest();
-        //         xhr.open('POST', 'load_fun.php', true);
-        //         xhr.onload = function () {
-        //             if (xhr.status === 200) {
-        //                 let response = JSON.parse(xhr.responseText);    // 接收回傳
-        //                 let result_obj = response['result_obj'];        // 擷取主要物件
-        //                 resolve(myCallback(fun, result_obj));           // resolve(true) = 表單載入成功，then 呼叫--myCallback
-
-        //             } else {
-        //                 alert('fun load_'+fun+' failed. Please try again.');
-        //                 reject('fun load_'+fun+' failed. Please try again.'); // 載入失敗，reject
-        //             }
-        //         };
-        //         xhr.send(formData);
-        //     });
-        // }
     // 0-0.多功能擷取fun 新版改用fetch
     async function load_fun(fun, parm, myCallback) {        // parm = 參數
         try {
@@ -174,14 +143,6 @@
                         $('#main table tbody tr[id="'+ doc_key +'"]').append('<td>'+ innerText +'</td>');
                     // 建立統計資料
                     if(doc_key.match("_combo_")){
-                        // if(doc_keys[doc_key]['value'] == undefined){
-                        //     doc_keys[doc_key]['value'] = {};
-                        // }
-                        // if(doc_keys[doc_key]['value'][value] == undefined){
-                        //     doc_keys[doc_key]['value'][value] = 1;
-                        // }else{
-                        //     doc_keys[doc_key]['value'][value]++;
-                        // }
                         if (!doc_keys[doc_key]['value']) {
                             doc_keys[doc_key]['value'] = {};
                         }
@@ -198,14 +159,6 @@
                         // console.log(obj);
                         let innerText = '<td>'+obj['fab_title']+' / '+obj['local_title']+'</td><td>'+obj['short_name']+'</td><td>'+obj['case_count']+'</td>';
                         $('#main table tbody').append('<tr>'+ innerText +'</tr>');
-                    // // 建立統計資料
-                    // if(doc_key.match("_combo_")){
-
-                    //     if (!doc_keys[doc_key]['value']) {
-                    //         doc_keys[doc_key]['value'] = {};
-                    //     }
-                    //     doc_keys[doc_key]['value'][value] = (doc_keys[doc_key]['value'][value] || 0) + 1;
-                    // }
                 })
 
                 break;
@@ -235,18 +188,6 @@
         $('#main table thead tr').append('<th>'+'- 統計 -'+'</th>');
         Object.keys(gain_obj).forEach((doc_key)=>{
             let key_value = gain_obj[doc_key]['value'];
-            // if(key_value !== undefined){
-                //     if (typeof key_value === 'object') {
-                //         innerText = '';
-                //         for (const [o_key, o_value] of Object.entries(key_value)){
-                //             innerText += (innerText == '') ? o_key + ' : ' + o_value : '</br>' + o_key + ' : ' + o_value;
-                //         } 
-                //     }else {
-                //         innerText = (value !== undefined) ? value : '- NA -'; 
-                //     }
-                // }else{
-                //     innerText = '';
-                // }
             let innerText = '';
             if (key_value) {
                 if (typeof key_value === 'object') {
@@ -262,12 +203,10 @@
 // 20240502 -- (document).ready(()=> await 依序執行step 1 2 3
     async function loadData(fun_value, query_obj) {                 // 由eventListener的click發出，帶fun_value='caseList'，query_obj=查詢條件
         try {
-
             switch(fun_value){
                 case 'count':
                     query_obj['_get_dccNo'] = false;
                     await load_fun(fun_value, query_obj, gain_bigData);
-
                     break;
                 default:
                     query_obj['_get_dccNo'] = true;
@@ -278,7 +217,6 @@
                     
                     await analyze(doc_keys);
             }
-
         } catch (error) {
             console.error(error);
         }
@@ -286,7 +224,6 @@
 
 
     $(document).ready(function(){
-
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         // loadData();
         eventListener()
