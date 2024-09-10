@@ -796,7 +796,7 @@
                     "label": "其他",
                     "type" : "text",
                     "name" : "s7a_text_other",
-                    "required": true
+                    "required": false
                 }
             ]
         },

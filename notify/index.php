@@ -14,7 +14,6 @@
 
     $sys_role  = (isset($_SESSION[$sys_id]["role"])) ? $_SESSION[$sys_id]["role"] : false;             // 取出$_session引用
     $fun       = (!empty($_REQUEST['fun'])) ? $_REQUEST['fun'] : false ;                               // 先抓操作功能'notify_insign'= MAPP待簽發報 // 確認有帶數值才執行
-    // $notify_lists    = notify_list();                                                                  // 載入所有待簽名單
 
     $reloadTime = (file_exists("reloadTime.txt")) ? file_get_contents("reloadTime.txt") : "";       // 從文件加载reloadTime内容
 
