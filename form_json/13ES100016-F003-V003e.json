@@ -291,7 +291,7 @@
                 },
                 {
                     "label": "事故者自述",
-                    "info" : "self_description",
+                    "info" : "self_description/事故者自述",
                     "type" : "file_pdf",
                     "name" : "a_self_desc",
                     "class": " p-2 ",
@@ -300,7 +300,7 @@
                 },
                 {
                     "label": "目擊者自述",
-                    "info" : "others_description",
+                    "info" : "others_description/目擊者自述",
                     "type" : "file_pdf",
                     "name" : "a_others_desc",
                     "class": " p-2 ",

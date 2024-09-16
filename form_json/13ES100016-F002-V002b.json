@@ -212,7 +212,7 @@
                     "type" : "file",
                     "name" : "a_pic",
                     "class": "",
-                    "required": false
+                    "required": true
                 }
             ]
         },
@@ -519,7 +519,7 @@
                         { "label" : "有（領有駕駛車種之駕駛執照）" , "value" : "有" },
                         { "label" : "無" , "value" : "無" }
                     ],
-                    
+                    "negative": "無",
                     "required": true
                 },
                 {

@@ -95,9 +95,9 @@
         <div class="row justify-content-center">
             <div class="col-mm-10 col-12 rounded p-4 " style="background-color: rgba(255, 255, 255, .7);">
                 <div class="row">
-                    <!-- 左上：訪問單 -->
+                    <!-- 左上：訪談單 -->
                     <div class="col-3 col-md-3 px-2 py-0 t-center">
-                        <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪問單&nbsp--</span></h2>
+                        <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪談單&nbsp--</span></h2>
                         <div class="col-12 p-0" id="btn_list">
                             <div id="overlay">Permission Denied</div>
                             <!-- append button here -->

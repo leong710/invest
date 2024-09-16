@@ -376,7 +376,7 @@
                         </div>
                     </form>
                     <!-- 240709 row_json -->
-                    <snap name="row_json" id="row_json" class="t-left block" style="font-size: 10px;"></snap>
+                    <snap name="row_json" id="row_json" class="t-left unblock" style="font-size: 10px;"></snap>
                     <!-- 尾段logs訊息 -->
                     <div class="row rounded bg-light my-2 unblock" id="logs_div">
                         <div class="col-6 col-md-6 pb-0">
@@ -430,8 +430,8 @@
                     </div>
                 </div>
                 <div class="row" style="font-size: 12px;">
-                    <div class="col-6 col-md-6 py-0">
-                        <?php echo !empty($document_row["dcc_no"]) ? $document_row["dcc_no"]:""; ?>
+                    <div class="col-6 col-md-6 py-0 block">
+                        <!-- <php echo !empty($document_row["dcc_no"]) ? $document_row["dcc_no"]:""; // dcc文件編號 ?> -->
                     </div>
                     <div class="col-6 col-md-6 py-0 text-end">
                         universalForm v0

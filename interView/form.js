@@ -872,12 +872,12 @@
         let form_item     = form_json.form_item;            // 抓item項目for form item
         // step_0.前置工作、生成表頭
         if(form_json.form_title){ $('#form_title').empty().append(form_json.form_title);  }     // 文件標題
-        if(form_json.dcc_no){     $('#dcc_no_head').empty().append(form_json.dcc_no); }         // DCC編號
-        if(form_json.version){    $('#dcc_no_head').append('-' + form_json.version); }          // 文件版本
-        let dcc_no_input = document.querySelector('#dcc_no');                                   // 
-        if(dcc_no_input && form_json.dcc_no && form_json.version){ 
-            dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;
-        }
+        // if(form_json.dcc_no){     $('#dcc_no_head').empty().append(form_json.dcc_no); }         // DCC編號   // 240916停用顯示dccNo
+        // if(form_json.version){    $('#dcc_no_head').append('-' + form_json.version); }          // 文件版本  // 240916停用顯示dccNo
+        // let dcc_no_input = document.querySelector('#dcc_no');                                   // 240916停用顯示dccNo
+        // if(dcc_no_input && form_json.dcc_no && form_json.version){                              // 240916停用顯示dccNo
+        //     dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;
+        // }
         // let form_doc = document.getElementById('item_list');                                    // 定義動態表單id位置
         if(form_item){                                                                          // confirm form_item is't empty
             // console.log('step_1-2 make_question(key_1, value_1.class, item_value) -- ');

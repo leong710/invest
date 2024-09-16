@@ -73,7 +73,7 @@
             <ul class="navbar-nav me-auto   my-2 my-lg-0 navbar-nav-scroll">
                 <?php if($sys_auth){ ?>
                     <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="#"><i class="fa-regular fa-square-plus"></i>&nbsp外層Link</a></li> -->
-                    <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="<php echo $webroot;?>/interView/"><i class="fa fa-edit"></i>&nbsp填寫訪問單</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="<php echo $webroot;?>/interView/"><i class="fa fa-edit"></i>&nbsp填寫訪談單</a></li> -->
                     <!-- 下拉式選單 -->
                     <?php if($sys_role >= 0){ 
                         if($sys_role <= 2.5 ){ ?>
@@ -82,7 +82,7 @@
                                     <i class="fas fa-warehouse"></i>&nbsp表單應用<span class="badge rounded-pill bg-danger"></span></a>
                                               
                                 <ul class="dropdown-menu" aria-labelledby="navbarDD_2">
-                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/caseList/"><i class="fa-solid fa-list-check"></i>&nbsp<b>訪問清單</b></a></li>
+                                    <li><a class="dropdown-item" href="<?php echo $webroot;?>/caseList/"><i class="fa-solid fa-list-check"></i>&nbsp<b>訪談清單</b></a></li>
                                     <?php if($sys_role <= 2 ){ ?>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="<?php echo $webroot;?>/analyze/"><i class="fa-solid fa-chart-column"></i>&nbsp<b>統計(試作版)</b></a></li>

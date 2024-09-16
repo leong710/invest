@@ -467,7 +467,7 @@
             var invest_url   = '事故訪談系統：'+ uri +'/invest/dashboard/';
             var int_msg1     = '【tnESH事故訪談系統】待您處理文件提醒';
             var int_msg2     = '您共有 ';
-            var int_msg3     = ' 件訪問單尚未完成申報';
+            var int_msg3     = ' 件訪談單尚未完成申報';
             var int_msg4     = '，如已處理完畢，請忽略此訊息！\n\n** 請至以下連結查看待處理文件：\n';
             var srt_msg4     = '，如已處理完畢，請忽略此訊息！\n\n';
             var int_msg5     = '\n\n溫馨提示：\n    1.登錄過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
