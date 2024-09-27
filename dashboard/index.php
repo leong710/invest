@@ -177,7 +177,7 @@
 
                     <!-- 中下：聯絡窗口 -->
                     <div class="col-12 p-3 text-center">
-                        <span class="badge bg-info mb-3 p-2 title"><h4 class="mb-0">&nbsp;<i class="fa-solid fa-circle-info"></i>&nbsp;各廠聯絡窗口&nbsp;</h4></span>
+                        <span class="badge bg-info mb-3 p-2 title"><i class="fa-solid fa-circle-info"></i>&nbsp;各廠聯絡窗口</span>
                         <table id="service_window" class="table table-striped table-hover bs-b">
                             <thead>
                                 <tr>
