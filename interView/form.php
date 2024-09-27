@@ -165,32 +165,31 @@
             <div class="col-12 col-md-10 col-lg-10 border rounded" style="background-color: #D4D4D4;" id="form_top">
                 <!-- 表頭1 -->
                 <div class="row px-1">
-                    <div class="col-6 col-md-6 py-0" id="home_title">
+                    <div class="col-12" id="home_title">
                         <h3><i class="fa-solid fa-list-check"></i>&nbsp<b><snap id="form_title">通用表單Form</snap></b><?php echo empty($action) ? "":" - ".$action;echo isset($document_row["idty"]) ? " - ".$document_row["idty"]:"";?></h3>
                     </div>
-                    <div class="col-6 col-md-6 py-0 text-end head_btn">
+                </div>
+                <div class="row px-1">
+                    <div class="col-12 col-md-5 py-1">
+                        訪談單號：<?php echo ($action == 'create' || !isset($document_row['id'])) ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
+                        開單日期：<?php echo ($action == 'create' || !isset($document_row['created_at'])) ? "(以送出時間為主)":$document_row['created_at']; ?></br>
+                        填單人員：<?php echo ($action == 'create' || !isset($document_row['id'])) ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
+                    </div>
+                    <div class="col-12 col-md-7 py-1 text-end head_btn"  >
+
                         <span id="submit_btn">
                             <?php if(!$init_error){ 
-                                echo $let_btn_s."btn-primary".$let_btn_m."1".$let_btn_e."立案 (Register)</button> ";
-                             }
-                            if(in_array($action,["create", "edit"])){ 
-                                echo $let_btn_s."btn-success".$let_btn_m."6".$let_btn_e."暫存 (Save)</button> ";
-                            } ?>
+                                    echo $let_btn_s."btn-primary".$let_btn_m."1".$let_btn_e."立案 (Register)</button> ";
+                                }
+                                if(in_array($action,["create", "edit"])){ 
+                                    echo $let_btn_s."btn-success".$let_btn_m."6".$let_btn_e."暫存 (Save)</button> ";
+                                } ?>
                         </span>
                         <?php if(isset($action) && $action == "review"){
                             echo "<button type='button' class='btn btn-info ' id='download_pdf' > <i class='fa-solid fa-print'></i>&nbsp列印PDF</button> ";
                         }?>
                         <button type="button" class="btn btn-secondary" onclick="return confirm('確認返回？') && closeWindow()"><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp回上頁</button>
-                    </div>
-                </div>
-                <div class="row px-1">
-                    <div class="col-12 col-md-6 py-1">
-                        訪談單號：<?php echo ($action == 'create' || !isset($document_row['id'])) ? "(尚未給號)": "aid_".$document_row['id']; ?></br>
-                        開單日期：<?php echo ($action == 'create' || !isset($document_row['created_at'])) ? date('Y-m-d H:i')."&nbsp(以送出時間為主)":$document_row['created_at']; ?></br>
-                        填單人員：<?php echo ($action == 'create' || !isset($document_row['id'])) ? $auth_emp_id." / ".$auth_cname : $document_row["created_emp_id"]." / ".$document_row["created_cname"] ;?>
-                    </div>
-                    <div class="col-12 col-md-6 py-1 text-end head_btn"  >
-                        <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>
+
                         <span id="pdf_name" class="unblock">
                             <?php echo isset($document_row["fab_title"]) ? $document_row["fab_title"]:""; echo isset($document_row["short_name"]) ? "_".$document_row["short_name"]:"";?></span>
                         <span id="delete_btn">
@@ -430,10 +429,11 @@
                     </div>
                 </div>
                 <div class="row" style="font-size: 12px;">
-                    <div class="col-6 col-md-6 py-0 block">
+                    <div class="col-10 col-md-10 py-0">
                         <!-- <php echo !empty($document_row["dcc_no"]) ? $document_row["dcc_no"]:""; // dcc文件編號 ?> -->
+                        <span id="dcc_no_head"><?php echo ($init_error) ? '<snap class="text-danger">*** '.$init_error.' ***</snap>' :'';?></span></br>
                     </div>
-                    <div class="col-6 col-md-6 py-0 text-end">
+                    <div class="col-2 col-md-2 py-0 text-end">
                         universalForm v0
                     </div>
                 </div>

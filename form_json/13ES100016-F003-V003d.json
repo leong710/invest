@@ -1,5 +1,6 @@
 {
-    "form_title" : "南廠區廠內事故訪談表(人傷事故)",
+    "form_title" : "南廠區廠內事故訪談表",
+    "use_for"    : "人傷事故",
     "version"    : "V003d",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
@@ -9,7 +10,7 @@
             "class" : "col-6 col-md-6 p-2 ",
             "item"  : [
                 {
-                    "label": "工號",
+                    "label": "工號 (外部人員請填身分證字號)",
                     "type" : "text",
                     "name" : "emp_id",
                     "required": true
@@ -173,7 +174,7 @@
                         { "label" : "其他"   , "value" : {
                                                     "label": "其他",
                                                     "type" : "text",
-                                                    "name" : "s8_combo_7",
+                                                    "name" : "s2_combo_03",
                                                     "value": "Other"
                                                     }}
                     ],

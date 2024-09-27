@@ -1,5 +1,6 @@
 {
     "form_title" : "南廠區交通事故訪談表",
+    "use_for"    : "廠外交通事故",
     "version"    : "V002b",
     "dcc_no"     : "13ES100016-F002",
     "form_item"  : {
@@ -174,7 +175,7 @@
                         { "label" : "其他"   , "value" : {
                                                     "label": "其他",
                                                     "type" : "text",
-                                                    "name" : "s8_combo_7",
+                                                    "name" : "s2_combo_03",
                                                     "value": "Other"
                                                     }}
                     ],
@@ -212,6 +213,7 @@
                     "type" : "file",
                     "name" : "a_pic",
                     "class": "",
+                    "accept"  : ".jpg,.png,.gif,.bmp",
                     "required": true
                 }
             ]

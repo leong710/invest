@@ -67,7 +67,7 @@
             width: 100%; /* 让父容器占满整个单元格 */
         }
         .bg-c-blue {
-            background: linear-gradient(45deg,#4099ff,#73b4ff);
+            background: linear-gradient(45deg, #4099ff, #73b4ff);
         }
         /* 遮罩 */
         #btn_list {
@@ -87,6 +87,33 @@
             align-items: center;
             pointer-events: none;
         }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+        .container button {
+            position: absolute;
+            right: 0;
+        }
+        .title {
+            flex-grow: 1;
+            align-items: center;
+            text-align: center;
+            /* display: flex; */
+            /* justify-content: start; */
+            font-size: 22px;
+            /* font-family: 'Nunito', sans-serif; */
+            font-weight: 200;
+            /* height: 100vh; */
+            margin: 0;
+            /* 文字陰影效果 */
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 5px rgba(0,0,0,.5);
+            /* color: #636b6f; */
+        }
    </style>
 </head>
 
@@ -97,7 +124,10 @@
                 <div class="row">
                     <!-- 左上：訪談單 -->
                     <div class="col-3 col-md-3 px-2 py-0 t-center">
-                        <h2><span class="badge bg-primary w-100">--&nbsp<i class="fa fa-edit"></i>&nbsp填寫訪談單&nbsp--</span></h2>
+                        <div class="container badge bg-primary py-2">
+                            <span class="w-100 title"><i class="fa fa-edit"></i>&nbsp;填寫訪談單</span>
+                        </div>
+
                         <div class="col-12 p-0" id="btn_list">
                             <div id="overlay">Permission Denied</div>
                             <!-- append button here -->
@@ -107,7 +137,11 @@
                     <!-- 右上：各廠燈號 -->
                     <div class="col-9 col-md-9 px-2 py-0 mb-2 ">
                         <!-- 廠區燈號欄 -->
-                        <h2><span class="badge bg-c-blue w-100">--&nbsp各廠管控燈號&nbsp--</span></h2>
+                        <div class="container badge bg-c-blue py-2">
+                            <span class=" w-100 title">--&nbsp;各廠管控燈號&nbsp;--</span>
+                            <button type="button" class="btn btn-outline-secondary add_btn" value="invest_guideBook.pdf" onclick="openUrl(this.value)"  
+                                    data-toggle="tooltip" data-placement="bottom" title="事故訪談系統操作手冊"><i class="fa-solid fa-bars"></i></button>&nbsp;
+                        </div>
                         <div class="col-12 bg-white rounded p-0" id="highLight">
                             <!-- append site here -->
                         </div>
@@ -115,9 +149,9 @@
                         <div class="col-12 bg-white border rounded p-3 my-2 bs-b" id="remark">
                             <b>燈號說明：</b></br>
                             <span class="t-center">
-                                <span class="badge rounded-pill bg-danger">紅燈</span> 職災申報逾期；
-                                <span class="badge rounded-pill bg-warning text-dark">黃燈</span> 未結案案件(含暫存、未完成職災申報) >= 1件；
-                                <span class="badge rounded-pill bg-success">綠燈</span> 沒有未結案案件(含暫存、未完成職災申報)；
+                                <span class="badge rounded-pill bg-danger">&nbsp;紅燈&nbsp;</span> 職災申報逾期；
+                                <span class="badge rounded-pill bg-warning text-dark">&nbsp;黃燈&nbsp;</span> 未結案案件(含暫存、未完成職災申報) >= 1件；
+                                <span class="badge rounded-pill bg-success">&nbsp;綠燈&nbsp;</span> 沒有未結案案件(含暫存、未完成職災申報)；
                             </span>
                             <hr>
                             <b>自動通報條件：職災申報期限 <= 5天</b>
@@ -127,7 +161,7 @@
                                 <li>通知對象：remaining_days<ul>
                                         <li>>3：窗口、課副理</li>    
                                         <li>>=0：窗口、課副理、部經理、大PM</li>    
-                                        <li>&nbsp&nbsp<&nbsp0：窗口、課副理、部經理、大PM、處長</li>    
+                                        <li>&nbsp;&nbsp;<&nbsp;0：窗口、課副理、部經理、大PM、處長</li>    
                                         <li>*** 以上表單狀態若是未結案，將一併通知 開單人</li>
                                 </ul></li>
                             </ul>
@@ -135,15 +169,15 @@
                             <div class="col-12 py-0 px-3 text-end">
                                 <span style="display: inline-block;" >
                                     <button type="button" class="btn btn-outline-success add_btn" onclick="dashboard_init(true)" data-toggle="tooltip" data-placement="bottom" title="強制更新" 
-                                        <?php echo ($sys_role <= 1 && isset($sys_role)) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbspLast reload time：</span>
+                                        <?php echo ($sys_role <= 1 && isset($sys_role)) ? "":"disabled";?> > <i class="fa-solid fa-rotate"></i></button>&nbsp;Last reload time：</span>
                                 <span style="display: inline-block;" id="reload_time" title="" ><?php echo $reloadTime;?> </span>
                             </div>
                         </div>
                     </div>
 
                     <!-- 中下：聯絡窗口 -->
-                    <div class="col-12 my-3 p-3 text-center">
-                        <h4><span class="badge bg-info"><i class="fa-solid fa-circle-info"></i>&nbsp各廠聯絡窗口</span></h4>
+                    <div class="col-12 p-3 text-center">
+                        <span class="badge bg-info mb-3 p-2 title"><h4 class="mb-0">&nbsp;<i class="fa-solid fa-circle-info"></i>&nbsp;各廠聯絡窗口&nbsp;</h4></span>
                         <table id="service_window" class="table table-striped table-hover bs-b">
                             <thead>
                                 <tr>

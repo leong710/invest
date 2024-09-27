@@ -1,7 +1,5 @@
 
     $(function () {
-        // 在任何地方啟用工具提示框
-        $('[data-toggle="tooltip"]').tooltip();
         // 20230817 禁用Enter鍵表單自動提交 
         document.onkeydown = function(event) { 
             var target, code, tag; 
@@ -871,13 +869,20 @@
     function bring_form(form_json){
         let form_item     = form_json.form_item;            // 抓item項目for form item
         // step_0.前置工作、生成表頭
-        if(form_json.form_title){ $('#form_title').empty().append(form_json.form_title);  }     // 文件標題
+        if(form_json.form_title){                           // 240926改版顯示文件標題
+            const doc_title = form_json.form_title +'('+ form_json.use_for +')';
+            $('#form_title').empty().append(doc_title);  
+        }
         // if(form_json.dcc_no){     $('#dcc_no_head').empty().append(form_json.dcc_no); }         // DCC編號   // 240916停用顯示dccNo
         // if(form_json.version){    $('#dcc_no_head').append('-' + form_json.version); }          // 文件版本  // 240916停用顯示dccNo
-        // let dcc_no_input = document.querySelector('#dcc_no');                                   // 240916停用顯示dccNo
-        // if(dcc_no_input && form_json.dcc_no && form_json.version){                              // 240916停用顯示dccNo
-        //     dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;
-        // }
+        if(form_json.form_title && form_json.dcc_no){                                           // 240926啟用顯示dccNo在頁尾
+            const doc_msg = '※ 此訪談表單已包含『'+ form_json.form_title +'-'+ form_json.dcc_no +'』完整之調查事項。';
+            $('#dcc_no_head').empty().append(doc_msg);
+        }
+        let dcc_no_input = document.querySelector('#dcc_no');                                   
+        if(dcc_no_input && form_json.dcc_no && form_json.version){                              
+            dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;                        // 填上dcc表單no
+        }
         // let form_doc = document.getElementById('item_list');                                    // 定義動態表單id位置
         if(form_item){                                                                          // confirm form_item is't empty
             // console.log('step_1-2 make_question(key_1, value_1.class, item_value) -- ');
@@ -899,7 +904,8 @@
     
                     $('#item_list').append(int_1);
                     // 20240531 增加 session_group
-                    let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ key_1 + '">'+ key_1 + '</a>';
+                    // let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ key_1 + '">'+ key_1 + '</a>';
+                    let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ value_1.label + '">'+ key_1 +'</a>';
                     $('#session-group').append(int_2);
                 }
                 // step_2.生成問項...將每一筆繞出來
@@ -1194,6 +1200,8 @@
         }
         $("body").mLoading("hide");
 
+        $('[data-toggle="tooltip"]').tooltip();     // 在任何地方啟用工具提示框
+
     }
 
     // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw123456p.cminl.oa
@@ -1220,5 +1228,5 @@
 
         // 20240502 -- 調用 loadData 函數來載入數據 await 依序執行step 1 2 3
         loadData();
-
+        
     })
