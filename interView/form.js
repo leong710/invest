@@ -95,6 +95,7 @@
     // fun_1.search Key_word
     function search_fun(){
         mloading("show");                                           // 啟用mLoading
+
         const uuid = '39aad298-a041-11ed-8ed4-2cfda183ef4f';        // hrdb
         let search = $('#key_word').val().trim();                   // search keyword取自user欄位
         let request = {
@@ -110,6 +111,7 @@
             success: function(res){
                 let res_r = res["result"];
                 postList(res_r);                                    // 將結果轉給postList進行渲染
+                $("body").mLoading("hide");                                 // 關閉mLoading
             },
             error (err){
                 console.log("search error:", err);
@@ -117,8 +119,6 @@
                 alert("查詢錯誤!!");
             }
         })
-
-        $("body").mLoading("hide");                                 // 關閉mLoading
     }
     // fun_2.渲染功能
     function postList(res_r){
@@ -234,6 +234,34 @@
             _select.value = window[this_parent_id];
         }
     });
+
+    // fun_5.加外人  241017
+    function addOutSidePeople(){
+        // meeting_man_target = "meeting_man_a";               // 搜尋meeting_man_target
+        const osp_cname = document.getElementById('osp_cname');
+        const osp_emp_id = document.getElementById('osp_emp_id');
+        // 除錯：防止空值
+            let check_osp = !osp_cname.value ? "未輸入 姓名" : "";
+            if(!osp_emp_id.value){
+                check_osp += (!osp_cname.value ? "、" : "未輸入 ") + "身分證字號 or 護照號碼";
+            }
+            if(check_osp){
+                alert(check_osp);
+                return;
+            }
+        // 打包
+        val = JSON.stringify({
+            "cname"  : osp_cname.value.trim(),
+            "emp_id" : osp_emp_id.value.trim()
+        })
+        tagsInput_me(val);              // 呼叫渲染功能
+        searchUser_modal.hide();        // 關閉modal
+    }
+    // fun_6.清除外人
+    function resetOSP(){
+        document.getElementById('osp_cname').value = ''; 
+        document.getElementById('osp_emp_id').value = '';
+    }
 // // searchUser function 
 
     // Option其他選項遮蔽：On、Off
@@ -417,12 +445,17 @@
                 s_btn.addEventListener('mousedown',function(){
                     // 標籤
                     let modal_title
+                    $('#outSidePeople').removeClass('unblock');                    // 取消遮蔽簽名欄
                     if(this.id == 'meeting_man_a'){
                         modal_title = '事故當事者(或其委任代理人)'
+
                     }else if(this.id == 'meeting_man_o'){
                         modal_title = '其他與會人員'
+
                     }else if(this.id == 'meeting_man_s'){
                         modal_title = '環安人員'
+                        $('#outSidePeople' ).addClass('unblock');         // 遮蔽功能
+
                     }else if(this.id == 'emp_id_btn'){
                         modal_title = '事故者基本資料'
                     }

@@ -20,7 +20,6 @@
         if(isset($_SESSION["AUTH"]) && !empty($_SESSION["AUTH"]["pass"])){                              // 確認是否完成AUTH/pass => True
             if(!empty($_SESSION[$sys_id])){                                  // 如果sys_id已經建立，就返回
                 return;
-                
             }else{                                                          // sys_id還沒建立，就導入
                 $user = $_SESSION["AUTH"]["user"];
                 $pdo = pdo();
@@ -37,8 +36,12 @@
 
                     }else{                                                  // 權限被禁用
                         echo "<script>alert('{$sys_local_row["cname"]} Local帳號停用，請洽管理員')</script>";
+                        session_destroy();
+                        header("refresh:0;url={$url}{$sys_id}");
+                        exit;
                     }
                 }else{                                                      // 沒有sys_id的人員權限資料
+                    // 不開放外部註冊
                     // echo "<script>alert('{$user} local無資料，請洽管理員')</script>";
                     // header("location:../auth/register.php?user=$user");     // 沒有local資料，帶入註冊頁面
 
@@ -46,9 +49,9 @@
                     $user = strtoupper($_SESSION["AUTH"]["user"]);  // strtoupper(大寫)
                     $pdo = pdo_hrdb();
                     $sql = "SELECT s.*
-                            FROM [hrDB].[dbo].[STAFF] s
-                            INNER JOIN [hrDB].[dbo].[DEPT] d ON s.dept_no = d.sign_code
-                            WHERE s.[user] = ? ";
+                            FROM `hrDB`.`STAFF` s
+                            INNER JOIN `hrDB`.`DEPT` d ON s.dept_no = d.sign_code
+                            WHERE s.`user` = ? ";
                     $stmt = $pdo -> prepare($sql);
                     $stmt -> execute([$user]);
                     $esh_mb = $stmt -> fetch(PDO::FETCH_ASSOC);

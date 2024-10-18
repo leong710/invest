@@ -49,23 +49,29 @@
             // $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
             // foreach ($to_json_keys as $jkey) { $$jkey = json_encode($$jkey); }
 
-                    $data = [
-                        '_odd'          => $_odd,                       // 職災申報
-                        '_focus'        => $_focus,                     // 關注：備用
-                        '_content'      => $_content,                   // 問項內容
-                        'meeting_man_a' => $meeting_man_a,              // 事故人員
-                        'meeting_man_o' => $meeting_man_o,              // 其他與會
-                        'meeting_man_s' => $meeting_man_s               // 環安人員
-                    ];
+                    // $data = [
+                    //     '_odd'          => $_odd,                       // 職災申報
+                    //     '_focus'        => $_focus,                     // 關注：備用
+                    //     '_content'      => $_content,                   // 問項內容
+                    //     'meeting_man_a' => $meeting_man_a,              // 事故人員
+                    //     'meeting_man_o' => $meeting_man_o,              // 其他與會
+                    //     'meeting_man_s' => $meeting_man_s               // 環安人員
+                    // ];
 
-                    foreach ($data as $key => $value) { $data[$key] = json_encode($value); }
+                    // foreach ($data as $key => $value) { $data[$key] = json_encode($value); }
                     
-                    $_odd          = $data['_odd'];
-                    $_focus        = $data['_focus'];
-                    $_content      = $data['_content'];
-                    $meeting_man_a = $data['meeting_man_a'];
-                    $meeting_man_o = $data['meeting_man_o'];
-                    $meeting_man_s = $data['meeting_man_s'];
+                    // $_odd          = $data['_odd'];
+                    // $_focus        = $data['_focus'];
+                    // $_content      = $data['_content'];
+                    // $meeting_man_a = $data['meeting_man_a'];
+                    // $meeting_man_o = $data['meeting_man_o'];
+                    // $meeting_man_s = $data['meeting_man_s'];
+                    $_odd          = json_encode($_odd);
+                    $_focus        = json_encode($_focus);
+                    $_content      = json_encode($_content);
+                    $meeting_man_a = json_encode($meeting_man_a , JSON_UNESCAPED_UNICODE );
+                    $meeting_man_o = json_encode($meeting_man_o , JSON_UNESCAPED_UNICODE );
+                    $meeting_man_s = json_encode($meeting_man_s , JSON_UNESCAPED_UNICODE );
 
         // 例外處理單元：e
 
@@ -247,7 +253,7 @@
 
                     // 確認修改訊息，有需要添加SQL修改項目
                     $sql .= $check_key."=?, ";
-                    array_push($stmt_arr, json_encode($new_item));                                 // , JSON_UNESCAPED_UNICODE--中文不編碼
+                    array_push($stmt_arr, json_encode($new_item , JSON_UNESCAPED_UNICODE));                                 // , JSON_UNESCAPED_UNICODE--中文不編碼
                 }
                 // 確認修改訊息，有值就是需要添加SQL修改項目
                 if(!empty($edit_item)){

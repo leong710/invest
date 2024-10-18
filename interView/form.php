@@ -299,21 +299,24 @@
                                                 <span class="input-group-text" style="width:25%;">事故當事者(或代理人)<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_a_select" name="meeting_man_a">
                                                 <span type="text" id="meeting_man_a_show" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <!-- <button type="button" class="btn btn-outline-danger" id="meeting_man_a_osp" data-bs-target="#outSidePeople" data-bs-toggle="modal" 
+                                                    data-toggle="tooltip" data-placement="bottom" title="外部人員">&nbsp<i class="fa-solid fa-user-plus"></i>&nbsp</button> -->
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_a" data-bs-target="#searchUser" data-bs-toggle="modal" 
+                                                    data-toggle="tooltip" data-placement="bottom" title="公司內部人員">&nbsp<i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
                                                 <span class="input-group-text" style="width:25%;">其他與會人員/勞工代表<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_o_select" name="meeting_man_o">
                                                 <span type="text" id="meeting_man_o_show" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_o" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp</button>
                                             </div>
     
                                             <div class="input-group py-1">
                                                 <span class="input-group-text" style="width:25%;">環安人員<sup class="text-danger"> * </sup></span>
                                                 <input type="hidden" id="meeting_man_s_select" name="meeting_man_s">
                                                 <span type="text" id="meeting_man_s_show" class="form-control mb-0" ></span>
-                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa fa-plus"></i>&nbsp</button>
+                                                <button type="button" class="btn btn-outline-secondary search_btn" id="meeting_man_s" data-bs-target="#searchUser" data-bs-toggle="modal" >&nbsp<i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp</button>
                                             </div>
 
                                             <div class="input-group py-1">
@@ -466,15 +469,21 @@
                         <div class="row">
                             <div class="col-12 border rounded p-3 " id="selectScomp_no">
                                 <div class="row justify-content-center">
-                                    <!-- 第一排的功能 : 顯示已加入名單+input -->
-                                    <div class="col-12 px-4 py-0">
-                                        <div id="selectScomp_noItem"></div>
-                                        <input type="hidden" class="form-control" name="scomp_no[]" id="scomp_no" placeholder="已加入的">
+                                    <!-- 第一排的功能 : 手動添加功能 -->
+                                    <div class="col-12 px-3 py-0" id="outSidePeople">
+                                        <div class="input-group">
+                                            <span class="input-group-text">添加外部人員</span>
+                                            <input type="text" class="form-control text-center mb-0" id="osp_cname" required placeholder="-- 姓名 --" >
+                                            <input type="text" class="form-control text-center mb-0" id="osp_emp_id" required placeholder="-- 身分證字號 or 護照號碼 --" >
+                                            <button type="button" class="btn btn-outline-success" onclick="resetOSP()">清除</button>
+                                            <button type="button" class="btn btn-outline-primary" onclick="addOutSidePeople()"><i class="fa-solid fa-user-plus"></i>加入</button>
+                                        </div>
+                                        <hr>
                                     </div>
                                     <!-- 第二排的功能 : 搜尋功能 -->
-                                    <div class="col-12 col-md-8 px-4">
+                                    <div class="col-12 px-3 pt-0">
                                         <div class="input-group search">
-                                            <span class="input-group-text">查詢</span>
+                                            <span class="input-group-text">查詢內部人員</span>
                                             <input type="text" class="form-control text-center mb-0" id="key_word" required placeholder="-- 工號 / 姓名 查詢 --" >
                                             <button type="button" class="btn btn-outline-success" onclick="resetMain()">清除</button>
                                             <button type="button" class="btn btn-outline-primary" onclick="search_fun()"><i class="fa-solid fa-magnifying-glass"></i> 搜尋</button>

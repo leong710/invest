@@ -20,7 +20,7 @@
     switch($_REQUEST["action"]){
 
         case "create":                                  // 開新.新增    $idty => 1(送出); 6(暫存);
-            $action_fun = "submit_document";
+            $action_fun = "store_document";
             $swal_json  =  store_document($_REQUEST); 
             break;
 
