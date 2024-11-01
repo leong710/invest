@@ -42,8 +42,8 @@
             $_focus['a_self_desc']      = !empty($a_self_desc)      ? $a_self_desc   : null;
             $_focus['a_others_desc']    = !empty($a_others_desc)    ? $a_others_desc : null;
 
-            // 20240611 確認申報日期
-            $_odd = confirm_odd($_content);
+            // 20240611 確認申報日期        // 20241101 增加確認是否是需要進行職災申報的表單 oddFormCheck
+            $_odd = oddFormCheck($dcc_no) ? confirm_odd($_content) : [];
 
             // 把特定物件轉json
             // $to_json_keys = array('_focus','_content','meeting_man_a','meeting_man_o','meeting_man_s');  // 'meeting_man_d' 是字串
@@ -310,8 +310,8 @@
             $new_content = array_diff_key($new_content,  array_flip($check_desc)); 
 
             unset($new_content["_odd"]);                                                            // _odd從記錄中移除 for $_content
-            // 20240611 確認申報日期 -- 呼叫通報判斷fun
-            $new_document["_odd"] = !empty($row_document["_odd"]) ? $row_document["_odd"] : confirm_odd($new_content);
+            // 20240611 確認申報日期 -- 呼叫通報判斷fun        // 20241101 增加確認是否是需要進行職災申報的表單 oddFormCheck
+            $new_document["_odd"] = !empty($row_document["_odd"]) ? $row_document["_odd"] : (oddFormCheck($dcc_no) ? confirm_odd($new_content) : []);
 
             $check_3 = [
                     "_odd"    => [
@@ -804,4 +804,18 @@
             // $result["od"] = "";
         }
         return $result;
+    }
+
+    // 20241101 增加確認是否是需要進行職災申報的表單
+    function oddFormCheck($dcc_no){
+        // load 需要職災申報的表單json
+        $oddCase_file = "../formcase/oddCase.json";
+        if(file_exists($oddCase_file)){
+            $oddCase_json = file_get_contents($oddCase_file);              // 从 JSON 文件加载内容
+            $oddCase_arr = (array) json_decode($oddCase_json, true);     // 解析 JSON 数据并将其存储在 $form_a_json 变量中 // 如果您想将JSON解析为关联数组，请传入 true，否则将解析为对象
+        }else{
+            $oddCase_arr = [];
+        }
+
+        return in_array($dcc_no, $oddCase_arr);
     }
