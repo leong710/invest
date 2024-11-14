@@ -263,26 +263,26 @@
                                         <!-- line 1 -->
                                         <div class="col-6 col-md-6 py-0">
                                             <div class="form-floating">
-                                                <input type="text" name="case_title" id="case_title" class="form-control" placeholder="事件名稱：" require >
+                                                <input type="text" name="case_title" id="case_title" class="form-control" placeholder="事件名稱：" required >
                                                 <label for="case_title" class="form-label">case_title/事件名稱：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6 py-0">
                                             <div class="form-floating">
-                                                <input type="text" name="a_dept" id="a_dept" class="form-control" placeholder="事故單位：" require >
+                                                <input type="text" name="a_dept" id="a_dept" class="form-control" placeholder="事故單位：" required >
                                                 <label for="a_dept" class="form-label">a_dept/事故單位：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
                                         <!-- line 2 -->
                                         <div class="col-6 col-md-6 pb-0">
                                             <div class="form-floating">
-                                                <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="" require>
+                                                <input type="datetime-local" name="meeting_time" id="meeting_time" class="form-control" value="" required>
                                                 <label for="meeting_time" class="form-label">meeting_time/會議時間：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-6 pb-0">
                                             <div class="form-floating">
-                                                <input type="text" name="meeting_local" id="meeting_local" class="form-control" placeholder="會議地點：" require >
+                                                <input type="text" name="meeting_local" id="meeting_local" class="form-control" placeholder="會議地點：" required >
                                                 <label for="meeting_local" class="form-label">meeting_local/會議地點：<sup class="text-danger"> * </sup></label>
                                             </div>
                                         </div>
