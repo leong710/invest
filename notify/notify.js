@@ -1,4 +1,15 @@
- 
+const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
+    // 241209 確認是否是測試帳號
+    const debugMode = { 
+        'test'     : (fun == 'debug') ? true : false,           // true  = 啟動測試 
+        'mapp'     : false,                                      // false = 放棄執行
+        'email'    : false,                                      // false = 放棄執行
+        'toLog'    : true,                                      // false = 放棄執行
+        'title'    : '!!! Now is DEBUGMODE !!!',
+        'to_empId' : '10008048',
+        'to_email' : 'leong.chen@innolux.com'
+    };
+
 // // 子功能--A
     // fun_1 tab_table的顯示關閉功能
     function op_tab(tab_value){
@@ -12,18 +23,19 @@
     }
     // fun_2 倒數 n秒自動關閉視窗功能
     function CountDown(seconds) {
-        let i = seconds;                        // 15次==15秒
+        let delayTime = 1000;                   // 1000=1秒
+        let i = seconds;                        // 參數值，15==15秒
         const loop = () => {
             if (i >= 0) {
                 document.getElementById("myMessage").innerHTML = "視窗關閉倒數 "+ i +" 秒";
-                setTimeout(loop, 1000);
+                i--;
+                setTimeout(loop, delayTime);
             } else {
                 // callback();                  // 要執行的程式
                 document.getElementById("myMessage").innerHTML = "視窗關閉！";
                 window.open('', '_self', '');
                 window.close();
             }
-            i--;
         };
         loop();
     }
@@ -44,6 +56,30 @@
             loop();
         }).then(() => window[callback]());  // 在延遲完成後執行 callback
     }
+    // fun.0-2：吐司顯示字條 +堆疊
+    function inside_toast(sinn){
+        // 創建一個新的 toast 元素
+        var newToast = document.createElement('div');
+            newToast.className = 'toast align-items-center bg-warning';
+            newToast.setAttribute('role', 'alert');
+            newToast.setAttribute('aria-live', 'assertive');
+            newToast.setAttribute('aria-atomic', 'true');
+            newToast.setAttribute('autohide', 'true');
+            newToast.setAttribute('delay', '1000');
+            // 設置 toast 的內部 HTML
+            newToast.innerHTML = `<div class="d-flex"><div class="toast-body">${sinn}</div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+        // 將新 toast 添加到容器中
+        document.getElementById('toastContainer').appendChild(newToast);
+        // 初始化並顯示 toast
+        var toast = new bootstrap.Toast(newToast);
+        toast.show();
+        // 選擇性地，在 toast 隱藏後將其從 DOM 中移除
+        newToast.addEventListener('hidden.bs.toast', function () {
+            newToast.remove();
+        });
+    }
+
     // 20240529 確認自己是否為彈出視窗 !! 只在完整url中可運行 = tw123456p.cminl.oa
     function checkPopup() {
         var urlParams = new URLSearchParams(window.location.search);
@@ -111,6 +147,9 @@
     }
     // 20231213 寫入log記錄檔~
     function toLog(logs_msg){
+        if(!debugMode.toLog){
+            return true;
+        }
         return new Promise((resolve, reject) => {
             $.ajax({
                 url      : '../autolog/log.php',
@@ -169,10 +208,11 @@
         let result = null;
 
         if(!search || (search.length < 8)){
-            $("body").mLoading("hide");
             let reject_msg = "查詢 工號/部門代號 字數最少 8 個字!! 請確認："+search;
             console.log(reject_msg);
-            return reject_msg;                                          // 失敗時拒絕 Promise
+            alert(reject_msg);
+            $("body").mLoading("hide");
+            return false;                                               // 失敗時拒絕 Promise
         } 
 
         $.ajax({
@@ -226,6 +266,10 @@
         } catch (error) {
             throw error;                                 // 載入失敗，reject
         }
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     // 將bpm的email找出來
@@ -401,7 +445,7 @@
 // // 主技能--發報用 be await
     // 20240314 將訊息推送到TN PPC(mapp)給對的人~
     function push_mapp(to_emp_id, mg_msg) {
-        if(fun == 'debug'){
+        if(!debugMode.mapp){
             return true;
         }
         return new Promise((resolve, reject) => {
@@ -412,11 +456,11 @@
                 dataType:'json',
                 data:{
                     uuid    : uuid,                                         // invest
-                    // eid     : to_emp_id,                                    // 傳送對象
-                    eid     : '10008048',                                   // 傳送對象
+                    eid     : to_emp_id,                                    // 傳送對象
                     message : mg_msg                                        // 傳送訊息
                 },
                 success: function(res){
+                    // console.log("push_mapp -- success",res);
                     resolve(true);                                          // 成功時解析為 true 
                 },
                 error: function(res){
@@ -428,7 +472,7 @@
     }
     // 20240314 將訊息郵件發送給對的人~
     function sendmail(to_email, int_msg1_title, mg_msg){
-        if(fun == 'debug'){
+        if(!debugMode.email){
             return true;
         }
         return new Promise((resolve, reject) => {
@@ -440,12 +484,12 @@
                 data:{
                     uuid    : uuid,                                         // invest
                     sysName : 'invest',                                     // 貫名
-                    // to      : to_email,                                     // 傳送對象
-                    to      : 'leong.chen@innolux.com',                     // 傳送對象
+                    to      : to_email,                                     // 傳送對象
                     subject : int_msg1_title,                               // 信件標題
                     body    : mg_msg                                        // 訊息內容
                 },
                 success: function(res){
+                    // console.log("push_mapp -- success",res);
                     resolve(true);                                          // 成功時解析為 true 
                 },
                 error: function(res){
@@ -489,125 +533,128 @@
 
                 // _fun1.製作主要信息
                 function make_msg(_value_obj){
-                    // _fun1.step0. init 
-                        let i         = 0;                                          // 計算anis_no陣列下的anis件數
-                        let nok       = 0;                                          // 未結案
-                        let emergency = 0;                                          // 小於等於 0天的急件
-                        const { anis_no } = _value_obj;                             // 取出ANIS_NO這一個陣列
-                        var anis_msg = '';                                          // 初始化ANIS訊息值
-                    // _fun1.step1. 分拆出ANIS訊息 &#9
-                        for (const [anis_k, anis_v] of Object.entries(anis_no)){     
-                            const { fab_title, short_name, due_date, remaining_day, idty } = anis_v;
-                            // anis信息組合
-                            anis_msg += (i > 0 ? '\r\n\r\n':'') +'事故廠區/類別：'+ fab_title +' / '+ short_name +'\nANIS單號：'+ anis_k
-                                    + '\n申報截止日：'+ due_date +'\n剩餘天數：'+ remaining_day + '天' +'\n表單狀態：'+ (idty == '10_結案' ? '未申報' : '未申報 / 未完成訪談' );
-                            i++;
-                            nok += (idty !='10_結案') ? 1 : 0 ;             // 未結案統計
-                            emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
-                        }
-                    // _fun1.step2. 組合訊息文字
-                        var base_anis_msg =  int_msg2 + i + int_msg3 + (nok !=0 ? ' (其中 '+ nok + ' 件尚未完成訪談)' : '')+'\n\n'+ anis_msg;
-                        var mg_msg = int_msg1 +"\r\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url + int_msg5;
-                        // 定義每一封mail title
-                        var int_msg1_title = int_msg1 + " (未完成申報共"+ i +"件"+ (nok !=0 ? '，其中'+ nok +'件尚未完成訪談)' : ')');
-                    // _fun1.step3. 訊息打包 
-                        var mg_arr = {
-                            title     : int_msg1_title,                     // 信件title
-                            anis_msg  : base_anis_msg,                      // 核心訊息
-                            mg_msg    : mg_msg,                             // 組合信件
-                            emergency : emergency                           // 急件統計
-                        }
-                    return mg_arr;
+                    return new Promise((resolve) => {
+                        // _fun1.step0. init 
+                            let i         = 0;                                          // 計算anis_no陣列下的anis件數
+                            let nok       = 0;                                          // 未結案
+                            let emergency = 0;                                          // 小於等於 0天的急件
+                            const { anis_no } = _value_obj;                             // 取出ANIS_NO這一個陣列
+                            var anis_msg = '';                                          // 初始化ANIS訊息值
+                        // _fun1.step1. 分拆出ANIS訊息 &#9
+                            for (const [anis_k, anis_v] of Object.entries(anis_no)){     
+                                const { fab_title, short_name, due_date, remaining_day, idty } = anis_v;
+                                // anis信息組合
+                                anis_msg += (i > 0 ? '\r\n\r\n':'') +'事故廠區/類別：'+ fab_title +' / '+ short_name +'\nANIS單號：'+ anis_k
+                                        + '\n申報截止日：'+ due_date +'\n剩餘天數：'+ remaining_day + '天' +'\n表單狀態：'+ (idty == '10_結案' ? '未申報' : '未申報 / 未完成訪談' );
+                                i++;
+                                nok += (idty !='10_結案') ? 1 : 0 ;             // 未結案統計
+                                emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
+                            }
+                        // _fun1.step2. 組合訊息文字
+                            var base_anis_msg =  int_msg2 + i + int_msg3 + (nok !=0 ? ' (其中 '+ nok + ' 件尚未完成訪談)' : '')+'\n\n'+ anis_msg;
+                            var mg_msg = int_msg1 +"\r\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url + int_msg5;
+                            // 定義每一封mail title
+                            var int_msg1_title = int_msg1 + " (未完成申報共"+ i +"件"+ (nok !=0 ? '，其中'+ nok +'件尚未完成訪談)' : ')');
+                        // _fun1.step3. 訊息打包 
+                            var mg_arr = {
+                                title     : int_msg1_title,                     // 信件title
+                                anis_msg  : base_anis_msg,                      // 核心訊息
+                                mg_msg    : mg_msg,                             // 組合信件
+                                emergency : emergency                           // 急件統計
+                            }
+                        resolve(mg_arr);     // 當搜尋完成後，回傳結果
+                    });
                 }
 
             var promises = [];                                                  // 存储所有异步操作的 Promise
 
         // step1. 將notifyLists逐筆進行分拆作業
         for (const [_key, _value] of Object.entries(notifyLists)){              // 表頭1.外層
+            await sleep(1000);                                                  // 先等待時間
+            console.log(`發送請求給: ${_key}`);
             // step.1-0 init
             const to_cname  = String(_value.cname).trim();
             const to_email  = String(_value.email).trim();                      // 定義 to_email + 去空白
             const to_emp_id = String(_key).trim();                              // 定義 to_emp_id + 去空白
             const to_action = _value.action;
 
-            // step.1-1 確認工號是否有誤
-            if(to_emp_id.length < 8){
-                // alert("工號字數有誤 !!");                                    // 避免無人職守時被alert中斷，所以取消改console.log
-                // $("body").mLoading("hide");
-                console.log("工號字數有誤：", user_emp_id);
-                push_result['mapp']['error']++; 
-                push_result['email']['error']++; 
-                continue;                                                       // 使用 continue 代替 return false 以便繼續處理其他用戶
+            // 宣告儲存Log內的單筆 小-物件log
+            let user_log = { 
+                emp_id          : to_emp_id,
+                cname           : to_cname,
+                email           : to_email,
+                thisTime        : thisTime                                      // 小-物件log 紀錄thisTime
+            };
 
-            } else if(to_emp_id >= 90000000 && to_emp_id.includes("9000000")){  // 排除管理員+測試帳號
-                push_result['mapp']['success']++
-                push_result['email']['success']++
-                continue; 
-                
-            } else {
-                // 宣告儲存Log內的單筆 小-物件log
-                let user_log = { 
-                    emp_id          : to_emp_id,
-                    cname           : to_cname,
-                    email           : to_email,
-                    thisTime        : thisTime                                      // 小-物件log 紀錄thisTime
-                };
+            // step.1-2 調用_fun make_msg 帶入個人單筆紀錄進行訊息製作
+            mail_msg_arr = await make_msg(_value);                                
+            // var logs_source = mail_msg_arr.anis_msg.replace(int_msg1, "");      // 20240514...縮減log文字內容
+            // user_log['mg_msg']   = logs_source;                                 // 小-物件log 紀錄mg_msg訊息 // 20240514...縮減log文字內容
+            user_log['mg_msg']    = mail_msg_arr.anis_msg;                         // 小-物件log 紀錄mg_msg訊息
+            user_log['emergency'] = mail_msg_arr.emergency;                        // 小-物件log 紀錄emergency訊息
+            
+            // step.2 執行通知 --
+            // *** 2-1 發送mail     // *** call fun.step_1 將訊息推送到TN PPC(mail)給對的人~
+            const mail_result_check = async () => {
+                // --- 確認email是否有誤
+                if(!to_email || (to_email.length < 12)){
+                    // alert("email字數有誤 !!");                            // 避免無人職守時被alert中斷，所以取消改console.log
+                    console.log("email 有誤：", to_emp_id, to_email);
+                    push_result['mapp']['error']++; 
+                    push_result['email']['error']++; 
+                    return false;
+                }
+                return (to_action.includes('email') && to_email) ? await sendmail((debugMode.test ? debugMode.to_email : to_email), mail_msg_arr.title, mail_msg_arr.mg_msg) : false;
+            };
+            // *** 2-2 發送mapp     // *** call fun.step_1 將訊息推送到TN PPC(mapp)給對的人~
+            const mapp_result_check = async () => {
+                // --- 確認工號是否有誤
+                if(!to_emp_id || (to_emp_id.length < 8) || (to_emp_id >= 90000000 && to_emp_id.includes("9000000"))){
+                    // alert("工號字數有誤 !!");                            // 避免無人職守時被alert中斷，所以取消改console.log
+                    console.log("工號 有誤：", to_emp_id);
+                    push_result['mapp']['error']++; 
+                    push_result['email']['error']++; 
+                    return false;
+                }
+                return (to_action.includes('mapp') && to_emp_id) ? await push_mapp((debugMode.test ? debugMode.to_empId : to_emp_id), mail_msg_arr.mg_msg) : false;
+            };
 
-                // step.1-2 調用_fun make_msg 帶入個人單筆紀錄進行訊息製作
-                mail_msg_arr = make_msg(_value);                                
-                // var logs_source = mail_msg_arr.anis_msg.replace(int_msg1, "");      // 20240514...縮減log文字內容
-                // user_log['mg_msg']   = logs_source;                                 // 小-物件log 紀錄mg_msg訊息 // 20240514...縮減log文字內容
-                user_log['mg_msg']    = mail_msg_arr.anis_msg;                         // 小-物件log 紀錄mg_msg訊息
-                user_log['emergency'] = mail_msg_arr.emergency;                        // 小-物件log 紀錄emergency訊息
-                
-                // step.2 執行通知 --
-                // *** 2-1 發送mail     // *** call fun.step_1 將訊息推送到TN PPC(mail)給對的人~
-                    const mail_result_check = async () => {
-                        let mail_result_check = (to_action.includes('email') && to_email) ? await sendmail(to_email, mail_msg_arr.title, mail_msg_arr.mg_msg) : false;
-                        return mail_result_check;
-                    };
-                // *** 2-2 發送mapp     // *** call fun.step_1 將訊息推送到TN PPC(mapp)給對的人~
-                    const mapp_result_check = async () => {
-                        let mapp_result_check = (to_action.includes('mapp') && to_emp_id) ? await push_mapp(to_emp_id, mail_msg_arr.mg_msg) : false;
-                        return mapp_result_check;
-                    };
+            // step.3 等待每個異步操作Promise...
+            promises.push(
+                // 等待mapp_result_check() 和mail_result_check()都完成后再執行自定義工作...table渲染完成icon、執行訊息渲染
+                Promise.all([mapp_result_check(), mail_result_check()])
+                .then(results => {
+                    const [mappResult, mailResult] = results;
+                    var console_log = '';                                   // 初始化下方執行訊息
+                    // 處理 mapp/mail 结果 // 標記結果顯示OK或NG，並顯示執行訊息
+                    // mail處理
+                        if(to_action.includes('email') && to_email){
+                            user_log.mail_res = mailResult ? 'OK' : 'NG';
+                            mailResult ? push_result['email']['success']++ : push_result['email']['error']++; 
+                            let id_mail = document.getElementById(to_emp_id +'_email');
+                            let fa_icon_mail = window['mail_' + user_log.mail_res];
+                            id_mail.innerHTML = fa_icon_mail;
+                            console_log = to_cname + " (" + to_emp_id + ")" + ' ...  sendMail：' + fa_icon_mail + user_log.mail_res;
+                        }
+                    // mapp處理
+                        if(to_action.includes('mapp') && to_emp_id){
+                            user_log.mapp_res = mappResult ? 'OK' : 'NG';
+                            mappResult ? push_result['mapp']['success']++ : push_result['mapp']['error']++; 
+                            let id_mapp = document.getElementById(to_emp_id +'_mapp');
+                            let fa_icon_mapp = window['mapp_' + user_log.mapp_res];
+                            id_mapp.innerHTML = fa_icon_mapp;
+                            console_log += '  /  pushMapp：' + fa_icon_mapp + user_log.mapp_res;
+                        }
+                    // 其他自定義操作
+                    $('#result').append(console_log + '</br>');                  // 自定義代碼执行 -- 執行訊息渲染 
 
-                // step.3 等待每個異步操作Promise...
-                promises.push(
-                    // 等待mapp_result_check() 和mail_result_check()都完成后再執行自定義工作...table渲染完成icon、執行訊息渲染
-                    Promise.all([mapp_result_check(), mail_result_check()])
-                    .then(results => {
-                        const [mappResult, mailResult] = results;
-                        var console_log = '';                                   // 初始化下方執行訊息
-                        // 處理 mapp/mail 结果 // 標記結果顯示OK或NG，並顯示執行訊息
-                        // mail處理
-                            if(to_action.includes('email') && to_email){
-                                user_log.mail_res = mailResult ? 'OK' : 'NG';
-                                mailResult ? push_result['email']['success']++ : push_result['email']['error']++; 
-                                let id_mail = document.getElementById(to_emp_id +'_email');
-                                let fa_icon_mail = window['mail_' + user_log.mail_res];
-                                id_mail.innerHTML = fa_icon_mail;
-                                console_log = to_cname + " (" + to_emp_id + ")" + ' ...  sendMail：' + fa_icon_mail + user_log.mail_res;
-                            }
-                        // mapp處理
-                            if(to_action.includes('mapp') && to_emp_id){
-                                user_log.mapp_res = mappResult ? 'OK' : 'NG';
-                                mappResult ? push_result['mapp']['success']++ : push_result['mapp']['error']++; 
-                                let id_mapp = document.getElementById(to_emp_id +'_mapp');
-                                let fa_icon_mapp = window['mapp_' + user_log.mapp_res];
-                                id_mapp.innerHTML = fa_icon_mapp;
-                                console_log += '  /  pushMapp：' + fa_icon_mapp + user_log.mapp_res;
-                            }
-                        // 其他自定義操作
-                        $('#result').append(console_log + '</br>');                  // 自定義代碼执行 -- 執行訊息渲染 
-                        user_logs.push(user_log);                                    // 將log單筆小物件 塞入 logs大陣列中
-                        completedUsers++;                                            // 增加已完成发送操作的用户数量
-                    })
-                    .catch(error => {
-                        console.log('Error:', error);
-                    })
-                );
-            }
+                    user_logs.push(user_log);                                    // 將log單筆小物件 塞入 logs大陣列中
+                    completedUsers++;                                            // 增加已完成发送操作的用户数量
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                })
+            );
         }
         // step.4 等待所有異步操作完成后再向下執行...
         await Promise.all(promises);
@@ -630,7 +677,7 @@
                 }
             }
 
-            // $("body").mLoading("hide");                                                         // 關閉mLoading圖示
+        // $("body").mLoading("hide");                                                         // 關閉mLoading圖示
         return;
     }
 
@@ -650,6 +697,7 @@
             if(check_ip && fun){
                 switch (fun) {
                     case 'debug':                               // debug mode，mapp&mail=>return true
+                        break;
                     case 'notify_process':                      // notify_process待簽發報auto_run
                         await delayedLoop(3, 'notify_process'); // delayedLoop延遲3秒後執行 notify_process：整理訊息、發送、顯示發送結果。
                         CountDown(15);                          // 倒數 15秒自動關閉視窗~
@@ -663,13 +711,19 @@
             $("body").mLoading("hide");
 
         } catch (error) {
-            console.error(error);
+            console.error('發生錯誤:', error);
         }
     }
     
     // document.ready啟動自動執行fun
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip();             // 在任何地方啟用工具提示框
         checkPopup();                                       // 確認自己是否為彈出視窗 
+        $('[data-toggle="tooltip"]').tooltip();             // 在任何地方啟用工具提示框
+        if(debugMode.test){
+            const dm = document.getElementById("dabugTitle");
+            dm.innerHTML = debugMode.title;
+            inside_toast(debugMode.title)
+            console.log(debugMode.title);
+        }
         load_init(false);
     })

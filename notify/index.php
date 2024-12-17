@@ -63,6 +63,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 py-0">
                         <h3>待通報清單統計</h3>
+                        <span id="dabugTitle" style="color:red;"><b></b></span>
                     </div>
                     <div class="col-12 col-md-6 py-0 text-end">
                         <?php if($sys_role == 0 && $check_ip){ ?>
@@ -143,6 +144,8 @@
     <div id="gotop">
         <i class="fas fa-angle-up fa-2x"></i>
     </div>
+    <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+
 </body>
 
 <script src="../../libs/aos/aos.js"></script>
@@ -151,18 +154,17 @@
 <script src="../../libs/openUrl/openUrl.js?v=<?=time();?>"></script>           <!-- 彈出子畫面 -->
 <script>
     // init
-    const uri       = '<?=$uri?>';
-    const fun       = '<?=$fun?>';                                  // 是否自動啟動寄送信件給人員
-    const check_ip  = '<?=$check_ip?>';
-
     var fa_OK     = '<?=$fa_check?>';                               // 打勾符號
     var fa_NG     = '<?=$fa_remove?>';                              // 打叉符號
     var mail_OK   = '<snap class="fa_check"><i class="fa-solid fa-paper-plane"></i> </snap>';               // 寄信符號
     var mail_NG   = '<snap class="fa_remove"><i class="fa-solid fa-triangle-exclamation"></i></snap>';      // 警告符號
     var mapp_OK   = '<snap class="fa_check"><i class="fa-solid fa-comment-sms"></i> </snap>';               // 簡訊符號
     var mapp_NG   = '<snap class="fa_remove"><i class="fa-solid fa-triangle-exclamation"></i></snap>';      // 警告符號
+
+    const uri       = '<?=$uri?>';
+    const fun       = '<?=$fun?>';                                  // 是否自動啟動寄送信件給人員
+    const check_ip  = '<?=$check_ip?>';
     
-    const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     const Today     = new Date();
     const thisToday = Today.getFullYear() +'/'+ String(Today.getMonth()+1).padStart(2,'0') +'/'+ String(Today.getDate()).padStart(2,'0');  // 20230406_bug-fix: 定義出今天日期，padStart(2,'0'))=未滿2位數補0
     const thisTime  = String(Today.getHours()).padStart(2,'0') +':'+ String(Today.getMinutes()).padStart(2,'0');                           // 20230406_bug-fix: 定義出今天日期，padStart(2,'0'))=未滿2位數補0
