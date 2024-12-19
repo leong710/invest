@@ -2,8 +2,8 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // 241209 確認是否是測試帳號
     const debugMode = { 
         'test'     : (fun == 'debug') ? true : false,           // true  = 啟動測試 
-        'mapp'     : false,                                      // false = 放棄執行
-        'email'    : false,                                      // false = 放棄執行
+        'mapp'     : true,                                      // false = 放棄執行
+        'email'    : true,                                      // false = 放棄執行
         'toLog'    : true,                                      // false = 放棄執行
         'title'    : '!!! Now is DEBUGMODE !!!',
         'to_empId' : '10008048',
@@ -446,6 +446,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // 20240314 將訊息推送到TN PPC(mapp)給對的人~
     function push_mapp(to_emp_id, mg_msg) {
         if(!debugMode.mapp){
+            console.log(to_emp_id, mg_msg);
             return true;
         }
         return new Promise((resolve, reject) => {
@@ -455,9 +456,11 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 async: false,                                               // ajax取得數據包後，可以return的重要參數
                 dataType:'json',
                 data:{
-                    uuid    : uuid,                                         // invest
-                    eid     : to_emp_id,                                    // 傳送對象
-                    message : mg_msg                                        // 傳送訊息
+                    uuid         : uuid,                                    // invest
+                    kind         : 'broadChat',                             // 訊息頻道
+                    ask          : 'to',                                    // 個人
+                    ACCOUNT_LIST : to_emp_id,                               // 傳送對象
+                    TEXT_CONTENT : mg_msg,                                  // 傳送訊息
                 },
                 success: function(res){
                     // console.log("push_mapp -- success",res);
@@ -473,6 +476,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // 20240314 將訊息郵件發送給對的人~
     function sendmail(to_email, int_msg1_title, mg_msg){
         if(!debugMode.email){
+            console.log(to_email, int_msg1_title, mg_msg);
             return true;
         }
         return new Promise((resolve, reject) => {
@@ -724,6 +728,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             dm.innerHTML = debugMode.title;
             inside_toast(debugMode.title)
             console.log(debugMode.title);
+            console.table(debugMode);
         }
         load_init(false);
     })
