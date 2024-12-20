@@ -467,7 +467,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     resolve(true);                                          // 成功時解析為 true 
                 },
                 error: function(res){
-                    console.log("push_mapp -- error：",res);
+                    console.error("push_mapp -- error：",res);
                     reject(false);                                          // 失敗時拒絕 Promise
                 }
             });
@@ -497,7 +497,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     resolve(true);                                          // 成功時解析為 true 
                 },
                 error: function(res){
-                    console.log("send_mail -- error：",res);
+                    console.error("send_mail -- error：",res);
                     reject(false);                                          // 失敗時拒絕 Promise
                 }
             });
@@ -574,8 +574,8 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
 
         // step1. 將notifyLists逐筆進行分拆作業
         for (const [_key, _value] of Object.entries(notifyLists)){              // 表頭1.外層
-            await sleep(1000);                                                  // 先等待時間
             console.log(`發送請求給: ${_key}`);
+            await sleep(1000);                                                  // 先等待時間
             // step.1-0 init
             const to_cname  = String(_value.cname).trim();
             const to_email  = String(_value.email).trim();                      // 定義 to_email + 去空白
