@@ -6,7 +6,7 @@
         $pdo = pdo_hrdb();
         $sql = "SELECT DISTINCT dp.* , d1.OSSTEXT AS up_sign_dept , u.cname AS dept_sir
                   FROM DEPT dp
-                  LEFT JOIN HCM_VW_DEPT08 d1 ON dp.up_dep = d1.OSDEPNO
+                  LEFT JOIN HCM_VW_DEPT01 d1 ON dp.up_dep = d1.OSDEPNO
                   LEFT JOIN STAFF u ON dp.emp_id = u.emp_id 
                   ORDER BY dp.sign_code ASC ";
         $stmt = $pdo->prepare($sql);
@@ -24,8 +24,8 @@
         // $sql = "SELECT DISTINCT * FROM tnesh_mb  WHERE idty > 1 AND role <> '' ORDER BY sign_code,id DESC ";
         $sql = "SELECT u.*
                 FROM [STAFF] u
-                LEFT JOIN [HCM_VW_DEPT08] d ON u.dept_no = d.OSHORT
-                where d.ODEPNO_30 = '9T040500' AND u.zjobcode2txt = 'M' ";
+                LEFT JOIN [HCM_VW_DEPT01] d ON u.dept_no = d.OSHORT
+                where d.ODEPNO_30 = '9L090500' AND u.zjobcode2txt = 'M' ";
         $stmt = $pdo->prepare($sql);
         try {
             $stmt->execute();
