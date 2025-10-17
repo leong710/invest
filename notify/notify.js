@@ -512,13 +512,14 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         $('#result').empty();                                                   // 清空執行訊息欄位
         
         // step0.init
-            var invest_url   = '事故訪談系統：'+ uri +'/invest/dashboard/';
+            var invest_url   = '\n事故訪談系統：'+ uri +'/invest/dashboard/';
+            var invest_url_mail = `<a href="${uri}"/invest/dashboard/" target="_blank">事故訪談系統</a>`;
             var int_msg1     = '【tnESH事故訪談系統】待您處理文件提醒';
             var int_msg2     = '您共有 ';
             var int_msg3     = ' 件訪談單尚未完成申報';
-            var int_msg4     = '，如已處理完畢，請忽略此訊息！\n\n** 請至以下連結查看待處理文件：\n';
-            var srt_msg4     = '，如已處理完畢，請忽略此訊息！\n\n';
-            var int_msg5     = '\n\n溫馨提示：\n    1.登錄過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
+            var int_msg4     = '** 請至以下連結查看待處理文件： ';
+            var srt_msg4     = ' ，如已處理完畢，請忽略此訊息！\n';
+            var int_msg5     = '溫馨提示：登入過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
     
             var push_result  = {                                                // count push time to show_swal_fun
                 'mapp' : {
@@ -548,7 +549,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                             for (const [anis_k, anis_v] of Object.entries(anis_no)){     
                                 const { fab_title, short_name, due_date, remaining_day, idty } = anis_v;
                                 // anis信息組合
-                                anis_msg += (i > 0 ? '\r\n\r\n':'') +'事故廠區/類別：'+ fab_title +' / '+ short_name +'\nANIS單號：'+ anis_k
+                                anis_msg += (i > 0 ? '\n\n':'') +'事故廠區/類別：'+ fab_title +' / '+ short_name +'\nANIS單號：'+ anis_k
                                         + '\n申報截止日：'+ due_date +'\n剩餘天數：'+ remaining_day + '天' +'\n表單狀態：'+ (idty == '10_結案' ? '未申報' : '未申報 / 未完成訪談' );
                                 i++;
                                 nok += (idty !='10_結案') ? 1 : 0 ;             // 未結案統計
@@ -556,7 +557,8 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                             }
                         // _fun1.step2. 組合訊息文字
                             var base_anis_msg =  int_msg2 + i + int_msg3 + (nok !=0 ? ' (其中 '+ nok + ' 件尚未完成訪談)' : '')+'\n\n'+ anis_msg;
-                            var mg_msg = int_msg1 +"\r\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url + int_msg5;
+                            var mg_msg = int_msg1 +"\n\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url + srt_msg4 + int_msg5;
+                            var mail_msg = int_msg1 +"\n\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url_mail + srt_msg4 + int_msg5;
                             // 定義每一封mail title
                             var int_msg1_title = int_msg1 + " (未完成申報共"+ i +"件"+ (nok !=0 ? '，其中'+ nok +'件尚未完成訪談)' : ')');
                         // _fun1.step3. 訊息打包 
@@ -564,6 +566,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                                 title     : int_msg1_title,                     // 信件title
                                 anis_msg  : base_anis_msg,                      // 核心訊息
                                 mg_msg    : mg_msg,                             // 組合信件
+                                mail_msg  : mail_msg,                           // 組合信件
                                 emergency : emergency                           // 急件統計
                             }
                         resolve(mg_arr);     // 當搜尋完成後，回傳結果
@@ -603,12 +606,13 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 // --- 確認email是否有誤
                 if(!to_email || (to_email.length < 12)){
                     // alert("email字數有誤 !!");                            // 避免無人職守時被alert中斷，所以取消改console.log
-                    console.log("email 有誤：", to_emp_id, to_email);
+                    console.error("email 有誤：", to_emp_id, to_email);
                     push_result['mapp']['error']++; 
                     push_result['email']['error']++; 
                     return false;
                 }
-                return (to_action.includes('email') && to_email) ? await sendmail((debugMode.test ? debugMode.to_email : to_email), mail_msg_arr.title, mail_msg_arr.mg_msg) : false;
+                const mail_msg = mail_msg_arr.mail_msg.replace(/(\r\n|\n)/g, '<br>');   // 251017 切換成mail格式
+                return (to_action.includes('email') && to_email) ? await sendmail((debugMode.test ? debugMode.to_email : to_email), mail_msg_arr.title, mail_msg) : false;
             };
             // *** 2-2 發送mapp     // *** call fun.step_1 將訊息推送到TN PPC(mapp)給對的人~
             const mapp_result_check = async () => {
