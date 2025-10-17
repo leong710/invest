@@ -512,15 +512,15 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         $('#result').empty();                                                   // 清空執行訊息欄位
         
         // step0.init
-            var invest_url   = '\n事故訪談系統：'+ uri +'/invest/dashboard/';
-            var invest_url_mail = `<a href="${uri}"/invest/dashboard/" target="_blank">事故訪談系統</a>`;
+            var invest_url   = `\n事故訪談系統：${uri}/invest/`;
+            var invest_url_mail = `<a href="${uri}/invest/" target="_blank">事故訪談系統</a>`;
             var int_msg1     = '【tnESH事故訪談系統】待您處理文件提醒';
             var int_msg2     = '您共有 ';
             var int_msg3     = ' 件訪談單尚未完成申報';
             var int_msg4     = '** 請至以下連結查看待處理文件： ';
             var srt_msg4     = ' ，如已處理完畢，請忽略此訊息！\n';
             var int_msg5     = '溫馨提示：登入過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
-    
+
             var push_result  = {                                                // count push time to show_swal_fun
                 'mapp' : {
                     'success' : 0,
