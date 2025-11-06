@@ -294,7 +294,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 // s2.再找site-pm窗口
                     lists_obj[list_key].spm = [];                                   // 建立初始陣列
                     let pm_emp_id = lists_obj[list_key].pm_emp_id;                  // 取出窗口名單
-                    let pm_emp_id_arr = pm_emp_id.split(',');                       // 分拆成陣列
+                    let pm_emp_id_arr = (pm_emp_id !== '' && pm_emp_id !== null) ? pm_emp_id.split(',') : [];   // 分拆成陣列
                     for (let i = 0; i < pm_emp_id_arr.length; i += 2) {             // 依序處理...
                         let spm_emp_id = pm_emp_id_arr[i];                          // 依i序 取出窗口工號
                         let spm_email = search_fun('showStaff', spm_emp_id);        // 查詢 showStaff
@@ -726,7 +726,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // document.ready啟動自動執行fun
     $(function () {
         checkPopup();                                       // 確認自己是否為彈出視窗 
-        $('[data-toggle="tooltip"]').tooltip();             // 在任何地方啟用工具提示框
+        
         if(debugMode.test){
             const dm = document.getElementById("dabugTitle");
             dm.innerHTML = debugMode.title;
@@ -734,5 +734,8 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             console.log(debugMode.title);
             console.table(debugMode);
         }
+
         load_init(false);
+
+        $('[data-toggle="tooltip"]').tooltip();             // 在任何地方啟用工具提示框
     })
