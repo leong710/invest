@@ -66,9 +66,9 @@
                     // $meeting_man_a = $data['meeting_man_a'];
                     // $meeting_man_o = $data['meeting_man_o'];
                     // $meeting_man_s = $data['meeting_man_s'];
-                    $_odd          = json_encode($_odd);
-                    $_focus        = json_encode($_focus);
-                    $_content      = json_encode($_content);
+                    $_odd          = json_encode($_odd          , JSON_UNESCAPED_UNICODE );
+                    $_focus        = json_encode($_focus        , JSON_UNESCAPED_UNICODE );
+                    $_content      = json_encode($_content      , JSON_UNESCAPED_UNICODE );
                     $meeting_man_a = json_encode($meeting_man_a , JSON_UNESCAPED_UNICODE );
                     $meeting_man_o = json_encode($meeting_man_o , JSON_UNESCAPED_UNICODE );
                     $meeting_man_s = json_encode($meeting_man_s , JSON_UNESCAPED_UNICODE );
@@ -299,7 +299,7 @@
             if(!empty($check_desc_edit)){
                 // 確認修改訊息，有需要添加SQL修改項目
                 $sql .= "_focus=?, ";
-                array_push($stmt_arr, json_encode($_focus));                            // , JSON_UNESCAPED_UNICODE--中文不編碼
+                array_push($stmt_arr, json_encode($_focus, JSON_UNESCAPED_UNICODE));                            // , JSON_UNESCAPED_UNICODE--中文不編碼
             }
                     
             // step4-3.*** 這裡要重新拆內容，以符合save暫存的比對需求
@@ -311,7 +311,8 @@
 
             unset($new_content["_odd"]);                                                            // _odd從記錄中移除 for $_content
             // 20240611 確認申報日期 -- 呼叫通報判斷fun        // 20241101 增加確認是否是需要進行職災申報的表單 oddFormCheck
-            $new_document["_odd"] = !empty($row_document["_odd"]) ? $row_document["_odd"] : (oddFormCheck($dcc_no) ? confirm_odd($new_content) : []);
+            // $new_document["_odd"] = !empty($row_document["_odd"]) ? $row_document["_odd"] : (oddFormCheck($dcc_no) ? confirm_odd($new_content) : []); // logic err
+            $new_document["_odd"] = confirm_odd($new_content);  // 251106 fix it
 
             $check_3 = [
                     "_odd"    => [
@@ -350,14 +351,14 @@
 
                     if(in_array(gettype($row_item), ['array', 'object'])){                          // 針對combo項目進行判別
                         $row_item_type = gettype($row_item);                                        // 取得row_type
-                        $row_item = !is_null($row_item) ? json_encode($row_item) : null;     
+                        $row_item = !is_null($row_item) ? json_encode($row_item, JSON_UNESCAPED_UNICODE) : null;     
 
                     }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $row_item)) {         // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
                         $row_item = convertDateTimeFormat($row_item);                               // 转换日期时间格式
                     }
                     if(in_array(gettype($new_item), ['array', 'object'])){                          // 針對combo項目進行判別
                         $new_item_type = gettype($new_item);                                        // 取得new_type
-                        $new_item = !is_null($new_item) ? json_encode($new_item) : null;
+                        $new_item = !is_null($new_item) ? json_encode($new_item, JSON_UNESCAPED_UNICODE) : null;
 
                     }else if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $new_item)) {         // 检查值是否符合日期时间格式 'Y-m-d\TH:i'
                         $new_item = convertDateTimeFormat($new_item);                               // 转换日期时间格式
@@ -385,7 +386,7 @@
                 // 確認修改訊息，有值就是需要添加SQL修改項目
                 if(!empty($edited_log[$check_key])){
                     $sql .= $check_key."=?, ";
-                    array_push($stmt_arr, json_encode($row_obj));
+                    array_push($stmt_arr, json_encode($row_obj, JSON_UNESCAPED_UNICODE));
                 }
             }
 
@@ -664,7 +665,7 @@
                         "remark"    => $log_remark);
 
         array_push($logs_arr, $app);
-        $logs = json_encode($logs_arr);
+        $logs = json_encode($logs_arr, JSON_UNESCAPED_UNICODE);
         return $logs;        
     }
     // 製作記錄JSON_EditLog檔   202404
@@ -683,7 +684,7 @@
                         'update_document'   => $update_document
                     );
         array_push($editions_arr, $app);
-        return json_encode($editions_arr);       
+        return json_encode($editions_arr, JSON_UNESCAPED_UNICODE);       
     }
             // 讀取所有JSON_Log記錄 20230804
             function showLogs($request){
@@ -717,7 +718,7 @@
                 // unset($logs_arr[$log_id]);  // 他會產生index導致原本的表亂掉
                 array_splice($logs_arr, $log_id, 1);  // 用這個不會產生index
 
-                $logs = json_encode($logs_arr);
+                $logs = json_encode($logs_arr, JSON_UNESCAPED_UNICODE);
                 $sql = "UPDATE _receive 
                         SET logs = ? 
                         WHERE uuid = ?";

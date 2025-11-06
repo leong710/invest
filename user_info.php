@@ -12,3 +12,11 @@
     $sys_role       = (isset($_SESSION[$sys_id]["role"]))     ? $_SESSION[$sys_id]["role"]     : false ;
     $sys_auth       = (isset($_SESSION[$sys_id]))             ? true                           : false ; 
 
+    function pp($parm){
+        if(!empty($parm)){
+            echo "<span class='text-white'><pre>";
+                print_r($parm);
+                    // echo "<hr>";
+            echo "</pre></span>";
+        }
+    }
