@@ -280,6 +280,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 bpm_obj[bpm_key].email = search_fun('showStaff', emp_id);           // 查詢 showStaff
             })
             bpm = bpm_obj;
+            if(debugMode.test) console.log('step1_bpm', bpm);
             resolve(true);                                                          // 成功時解析為 true 
         });
     }
@@ -291,6 +292,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     let created_emp_id = lists_obj[list_key].created_emp_id;        // 取出開單人工號
                     let created_email = search_fun('showStaff', created_emp_id);    // 查詢 showStaff
                     lists_obj[list_key].created_email = created_email;              // 帶入lists_obj
+
                 // s2.再找site-pm窗口
                     lists_obj[list_key].spm = [];                                   // 建立初始陣列
                     let pm_emp_id = lists_obj[list_key].pm_emp_id;                  // 取出窗口名單
@@ -315,6 +317,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     lists_obj[list_key].bpm = bpm;                                  // 帶入bpm陣列
             })
             doc_lists = lists_obj;                                                  // lists_obj傾倒回主清單陣列doc_lists
+            if(debugMode.test) console.log('step2_doc_lists', doc_lists);
             resolve(true);                                                          // 成功時解析為 true 
         });
     }
@@ -323,15 +326,21 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         return new Promise((resolve) => {
             Object(lists_obj).forEach((list_i)=>{                        // 依序處理...
                 const {
-                    _remaining, anis_no, _odd : { due_day }, short_name, fab_title, sign_code,
+                    _remaining, anis_no, _odd : { due_day , od_day = null }, short_name, fab_title, sign_code,
                     created_cname, created_emp_id, created_email, idty, spm, signDept, bpm
                 } = list_i;
     
                 const idty_value = {
-                    '1' : '立案/簽核中',
-                    '10': '完成訪談',
+                    '0' : '啟單',
+                    '1' : '等待上傳中',
+                    '2' : '退件',
+                    '3' : '取消',
+                    '4' : '編輯',
                     '6' : '暫存',
-                    '3' : '取消'
+                    '10': '完成訪談',
+                    '11': '環安主管',
+                    '12': '--',
+                    '13': '承辦處理',
                 }[idty] || 'NA';
     
                 const anis_no_arr = {
@@ -339,8 +348,9 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     short_name      : short_name,
                     sign_code       : sign_code,
                     due_date        : due_day,
+                    od_date         : od_day,
                     remaining_day   : _remaining,
-                    idty            : idty + '_' + idty_value,
+                    idty            : idty + '_' + idty_value + ( od_day === null ? '(尚未申報)' : ''),
                     created_cname   : created_cname,
                     created_emp_id  : created_emp_id
                 };
@@ -358,7 +368,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     notifyLists[i_emp_id].action = i_action;
                 };
 
-                const action = ( _remaining > 3) ? ['email'] : ['email', 'mapp'];
+                const action = ( _remaining > 3) ? ['email'] : ['email', 'mapp'];      // 判斷通知方式
 
                 // console.log(anis_no, _remaining , '1.窗口、課副理 (未結案+開單人) => email');
                 // s1. 建立spm窗口名單
@@ -372,12 +382,13 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     addToNotifyList(signDept_emp_id, signDept.cname, signDept.email, action);
 
                 // s3. 未結案+開單人
-                    if(idty !== '10'){
+                    if(idty !== '10' || od_day === null){
                         addToNotifyList(created_emp_id, created_cname, created_email, action);
                     }
 
-                if ( _remaining <= 3 && _remaining >= 0 ){
-                    // console.log(anis_no, _remaining , '2.窗口、課副理、部經理、大PM (未結案+開單人) => email + mapp')
+                // if ( _remaining <= 3 && _remaining >= 0 ){
+                if ( _remaining <= 3 ){
+                    // console.log(anis_no, _remaining , '2.窗口、課副理、部經理、大PM (未結案+開單人) => email + mapp');
                     // s4. 部經理
                         const signDept_up_emp_id   = signDept.up_emp_id;
                         addToNotifyList(signDept_up_emp_id, signDept.up_cname, signDept.up_email, action);
@@ -394,12 +405,13 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 } 
 
                 if ( _remaining < 0 ){
-                    // console.log(anis_no, _remaining , '3.窗口、課副理、部經理、大PM、處長 (未結案+開單人) => email + mapp')
+                    // console.log(anis_no, _remaining , '3.窗口、課副理、部經理、大PM、處長 (未結案+開單人) => email + mapp');
                     // s6. 處長
                         const signDept_uup_emp_id   = signDept.uup_emp_id;
                         addToNotifyList(signDept_uup_emp_id, signDept.uup_cname, signDept.uup_email, action);
                 }
             })
+            if(debugMode.test) console.log('step3_notifyLists', notifyLists);
             resolve(myCallback(notifyLists));                            // 成功時執行myCallback，並解析為 true 
         });
     }
@@ -422,15 +434,15 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 let a5 = '';
                 let i  = 0;
                 Object.keys(anis_no_obj).forEach((anis_no_key)=>{
-                    a1 += (i>0 ? '</br>':'') + '<span>'+ anis_no_obj[anis_no_key].fab_title +' ('+ anis_no_obj[anis_no_key].sign_code +')</span>';
-                    a2 += (i>0 ? '</br>':'') + '<span>'+ anis_no_key +' ('+ anis_no_obj[anis_no_key].short_name +')</span>';
-                    a3 += (i>0 ? '</br>':'') + '<span>'+ anis_no_obj[anis_no_key].due_date +' ('+ anis_no_obj[anis_no_key].remaining_day +')</span>';
-                    a4 += (i>0 ? '</br>':'') + '<span>'+ anis_no_obj[anis_no_key].created_cname +' ('+ anis_no_obj[anis_no_key].created_emp_id +')</span>';
-                    a5 += (i>0 ? '</br>':'') + '<span>'+ anis_no_obj[anis_no_key].idty +'</span>';
+                    a1 += (i>0 ? '</br>':'') + `<span>${anis_no_obj[anis_no_key].fab_title} (${anis_no_obj[anis_no_key].sign_code})</span>`;
+                    a2 += (i>0 ? '</br>':'') + `<span>${anis_no_key} (${anis_no_obj[anis_no_key].short_name})</span>`;
+                    a3 += (i>0 ? '</br>':'') + `<span>${anis_no_obj[anis_no_key].due_date} (${anis_no_obj[anis_no_key].remaining_day})</span>`;
+                    a4 += (i>0 ? '</br>':'') + `<span>${anis_no_obj[anis_no_key].created_cname} (${anis_no_obj[anis_no_key].created_emp_id})</span>`;
+                    a5 += (i>0 ? '</br>':'') + `<span>${anis_no_obj[anis_no_key].idty}</span>`;
                     i++;
                 })
-                const inner_Text = '<tr>'+'<td>'+ a0 +'</td>'+'<td>'+ lists_obj[lists_i].cname +'('+ lists_i +')</td>'
-                                    +'<td class="text-start">'+a1+'</td>'+'<td class="text-start">'+a2+'</td>'+'<td>'+a3+'</td>'+'<td>'+a4+'</td>'+'<td class="text-start">'+a5+'</td>'+'<td>'+i+'</td>'+'</tr>'
+                const inner_Text = `<tr><td>${a0}</td><td>${lists_obj[lists_i].cname}(${lists_i})</td>
+                                    <td class="text-start">${a1}</td><td class="text-start">${a2}</td><td>${a3}</td><td>${a4}</td><td class="text-start">${a5}</td><td>${i}</td></tr>`;
                 
                 notifyLists[lists_i].case_count = i;                // 將件數到回notifyLists主檔
                 $("#notify_lists table tbody").append(inner_Text);  // 渲染畫面
@@ -516,7 +528,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             var invest_url_mail = `<a href="${uri}/invest/" target="_blank">事故訪談系統</a>`;
             var int_msg1     = '【tnESH事故訪談系統】待您處理文件提醒';
             var int_msg2     = '您共有 ';
-            var int_msg3     = ' 件訪談單尚未完成申報';
+            var int_msg3     = ' 件訪談單尚未完成結案';
             var int_msg4     = '** 請至以下連結查看待處理文件： ';
             var srt_msg4     = ' ，如已處理完畢，請忽略此訊息！\n';
             var int_msg5     = '溫馨提示：登入過程中如出現提示輸入帳號密碼，請以cminl\\NT帳號格式\n';
@@ -538,31 +550,59 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
 
                 // _fun1.製作主要信息
                 function make_msg(_value_obj){
+                    if(debugMode.test) console.log('make_msg__value_obj', _value_obj);
+
                     return new Promise((resolve) => {
                         // _fun1.step0. init 
                             let i         = 0;                                          // 計算anis_no陣列下的anis件數
-                            let nok       = 0;                                          // 未結案
+                            let nok       = 0;                                          // 未完成訪談
+                            let nood      = 0;                                          // 未完成申報
                             let emergency = 0;                                          // 小於等於 0天的急件
                             const { anis_no } = _value_obj;                             // 取出ANIS_NO這一個陣列
-                            var anis_msg = '';                                          // 初始化ANIS訊息值
+                            let anis_msg = '';                                          // 初始化ANIS訊息值
                         // _fun1.step1. 分拆出ANIS訊息 &#9
                             for (const [anis_k, anis_v] of Object.entries(anis_no)){     
                                 const { fab_title, short_name, due_date, remaining_day, idty } = anis_v;
+
+                                let idtyMsg = "";
+                                if (!idty.includes('10_完成訪談')) {
+                                    idtyMsg = "未完成訪談";
+                                    // nok += (idty !='10_完成訪談') ? 1 : 0 ;             // 未結案統計
+                                    nok++;
+                                }
+                                if (idty.includes('尚未申報')) {
+                                    idtyMsg += (idtyMsg == "") ? "" : " / ";
+                                    idtyMsg += "未申報";
+                                    nood++;
+                                }
+                                idtyMsg += (idtyMsg == "") ? " NA (idty error) " : "";
+
                                 // anis信息組合
-                                anis_msg += (i > 0 ? '\n\n':'') +'事故廠區/類別：'+ fab_title +' / '+ short_name +'\nANIS單號：'+ anis_k
-                                        + '\n申報截止日：'+ due_date +'\n剩餘天數：'+ remaining_day + '天' +'\n表單狀態：'+ (idty == '10_結案' ? '未申報' : '未申報 / 未完成訪談' );
+                                anis_msg += (i > 0 ? '\n\n':'') +`事故廠區/類別：${fab_title} / ${short_name} \nANIS單號： ${anis_k} \n申報截止日： ${due_date} \n剩餘天數： ${remaining_day} 天\n表單狀態： ${idtyMsg}`;
                                 i++;
-                                nok += (idty !='10_結案') ? 1 : 0 ;             // 未結案統計
                                 emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
                             }
                         // _fun1.step2. 組合訊息文字
-                            var base_anis_msg =  int_msg2 + i + int_msg3 + (nok !=0 ? ' (其中 '+ nok + ' 件尚未完成訪談)' : '')+'\n\n'+ anis_msg;
-                            var mg_msg = int_msg1 +"\n\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url + srt_msg4 + int_msg5;
-                            var mail_msg = int_msg1 +"\n\n"+ base_anis_msg +'\n\n'+ int_msg4 + invest_url_mail + srt_msg4 + int_msg5;
+                            let countMsg = "";  // 統計訊息
+                            if (nok !== 0) {
+                                countMsg += `(${nok} 件尚未完成訪談`;
+                            }
+                            if (nood !== 0) {
+                                if(countMsg == ""){
+                                    countMsg = "(";
+                                }else{
+                                    countMsg += "、";
+                                }
+                                countMsg += `${nood} 件未完成申報)`;
+                            }
+                            let base_anis_msg =  `${int_msg2}${i}${int_msg3} ${countMsg}\n\n${anis_msg}`;  // 組合訊息2元素 
+
+                            let mg_msg   = `${int_msg1}\n\n${base_anis_msg}\n\n${int_msg4}${invest_url}${srt_msg4}${int_msg5}`;         // 組合mapp訊息
+                            let mail_msg = `${int_msg1}\n\n${base_anis_msg}\n\n${int_msg4}${invest_url_mail}${srt_msg4}${int_msg5}`;    // 組合mail訊息
                             // 定義每一封mail title
-                            var int_msg1_title = int_msg1 + " (未完成申報共"+ i +"件"+ (nok !=0 ? '，其中'+ nok +'件尚未完成訪談)' : ')');
+                            let int_msg1_title = `${int_msg1}--未完結案共${i}件 ${countMsg}`;
                         // _fun1.step3. 訊息打包 
-                            var mg_arr = {
+                            let mg_arr = {
                                 title     : int_msg1_title,                     // 信件title
                                 anis_msg  : base_anis_msg,                      // 核心訊息
                                 mg_msg    : mg_msg,                             // 組合信件
@@ -619,7 +659,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                 // --- 確認工號是否有誤
                 if(!to_emp_id || (to_emp_id.length < 8) || (to_emp_id >= 90000000 && to_emp_id.includes("9000000"))){
                     // alert("工號字數有誤 !!");                            // 避免無人職守時被alert中斷，所以取消改console.log
-                    console.log("工號 有誤：", to_emp_id);
+                    console.error("工號 有誤：", to_emp_id);
                     push_result['mapp']['error']++; 
                     push_result['email']['error']++; 
                     return false;

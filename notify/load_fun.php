@@ -79,11 +79,11 @@
                                     LEFT JOIN _formcase _fc ON _d.dcc_no = _fc.dcc_no
                                     LEFT JOIN _fab _f ON _d.fab_id = _f.id
                                     WHERE (DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.due_day')), CURDATE()) <= 5) AND
-                                            (
-                                                (JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.od_day')) = '')
+                                            (  (JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.od_day')) = '')
                                             OR (JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.od_day')) = 'null') 
                                             OR (JSON_UNQUOTE(JSON_EXTRACT(_d._odd, '$.od_day')) IS NULL)
-                                            )
+                                            -- OR _d.idty <> '10'
+                                            ) 
                                     ";
 
                         }else if($parm_arr[0] == "bpm"){
