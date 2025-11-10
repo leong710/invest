@@ -38,35 +38,39 @@
                         }else if($parm_arr[0] == "_fab"){
                             $sql = "SELECT _f.id, _f.site_id, _f.fab_title, _f.fab_remark FROM _fab _f WHERE _f.flag <> 'Off' ORDER BY _f.id ASC";
                         }else if($parm_arr[0] == "highlight"){
-                            $sql = "SELECT f.id, f.fab_title, DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) AS '_remaining', 
+                            $sql = "SELECT f.id, f.fab_title,
                                         CASE
                                             WHEN COUNT(CASE 
-                                                        WHEN d.idty IN (1, 6, 10) 
-                                                            AND (d._odd <> '[]' AND JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) = '')
+                                                        WHEN d.idty IN (1, 6, 10) AND d._odd <> '[]' 
+                                                            AND (JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IS NULL 
+                                                                OR JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IN ('', 'null')) 
                                                         THEN 1 
                                                         END) = 0 
-                                                THEN 'success'      -- Green
+                                                THEN 'success'  -- 綠燈
                                             WHEN COUNT(CASE 
-                                                        WHEN d.idty IN (1, 6, 10) 
-                                                            AND (d._odd <> '[]' AND JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) = '' 
-                                                                AND DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) > 1 
-                                                                -- AND DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) <= 5 
-                                                                )
-                                                            THEN 1 
-                                                        END) > 0 
-                                                THEN 'warning'      -- Yellow
-                                            WHEN COUNT(CASE 
-                                                        WHEN d._odd <> '[]' AND JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) = '' 
-                                                            AND DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) <= 1 
+                                                        WHEN d.idty IN (1, 6, 10) AND d._odd <> '[]' 
+                                                            AND (JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IS NULL 
+                                                                OR JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IN ('', 'null'))
+                                                            AND DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) > 1 
                                                         THEN 1 
-                                                    END) > 0 
+                                                        END) > 0 
+                                                THEN 'warning'  -- 黃燈
+                                            WHEN COUNT(CASE 
+                                                        WHEN d._odd <> '[]' 
+                                                            AND (JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IS NULL 
+                                                                OR JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.od_day')) IN ('', 'null'))
+                                                            AND DATEDIFF(JSON_UNQUOTE(JSON_EXTRACT(d._odd, '$.due_day')), CURDATE()) <= 1
+                                                        THEN 1 
+                                                        END) > 0 
                                                 THEN 'danger'       -- Red
-                                            ELSE 'secondary'
+                                            -- ELSE 'secondary'
+                                            ELSE 'success'
                                         END AS 'light'
                                     FROM _fab f
                                     LEFT JOIN _document d ON f.id = d.fab_id
                                     WHERE f.flag = 'On'
-                                    GROUP BY f.id ";
+                                    GROUP BY f.id
+                                    ";
                         }else{  // 0= 沒有歸屬 then 當作錯誤處理+break
                             $result['error'] = 'Load '.$fun.' -- '.$parm_arr[0].' failed...(e)';
                             break;
