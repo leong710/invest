@@ -1,7 +1,7 @@
 {
     "form_title" : "南廠區廠內事故訪談表",
     "use_for"    : "人傷事故",
-    "version"    : "V003d",
+    "version"    : "V003d2",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
         "Section_1" : {
@@ -122,6 +122,18 @@
                     "label": "事故地點位置",
                     "type": "text",
                     "name" : "a_location",
+                    "required": true
+                },
+                {
+                    "label": "責任區域負責單位",
+                    "type" : "text",
+                    "name" : "a_areaInCharge",
+                    "required": true
+                },
+                {
+                    "label": "責任區域負責人",
+                    "type" : "text",
+                    "name" : "a_personInCharge",
                     "required": true
                 },
                 {

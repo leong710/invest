@@ -778,9 +778,10 @@
     function confirm_odd($_content){
         // $_content = (array) json_decode($_content);                                  // 倒進來的是無編碼...所以不需要解碼
         $s4_combo_03 = isset($_content["s4_combo_03"]) ? $_content["s4_combo_03"] : []; // 取得損限工問項答案
+        $s8_combo_01 = isset($_content["s8_combo_01"]) ? $_content["s8_combo_01"] : []; // 公傷判定(由環安人員填寫) // 251203-PM說暫緩判斷；已於260105加上
         $result = [];
 
-        if(in_array("損工", $s4_combo_03)){
+        if(in_array("損工", $s4_combo_03) && ($s8_combo_01[0] == "是")){                // 260105--加上判斷'是'工傷 才需要_odd申報
             $a_day = isset($_content["a_day"]) ? $_content["a_day"] : null;             // 事故發生日
             if($a_day !== null){
                 // $datetime_obj = DateTime::createFromFormat("Y-m-d\TH:i", $a_day);    // 创建 DateTime 对象，并指定原始时间格式

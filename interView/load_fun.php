@@ -6,7 +6,7 @@
                 require_once("../pdo.php");
                 $pdo = pdo();
                 extract($_REQUEST);
-                $sql = "SELECT * FROM _formcase WHERE flag <> 'Off' ORDER BY id ASC";
+                $sql = "SELECT * FROM _formcase WHERE flag <> 'Off' ORDER BY dcc_no ASC";
                 $stmt = $pdo->prepare($sql);
                 try {
                     $stmt->execute();
@@ -85,7 +85,7 @@
                                 'success'    => 'Load '.$fun.' success.'
                             ];
                     }else{
-                        $result['error'] = 'Load '.$fun.' failed...(file not exist)';
+                        $result['error'] = "Load {$fun} failed...({$form_doc} file not exist)";
                     }
                     
                 } else {

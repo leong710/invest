@@ -55,7 +55,6 @@
     }
     // 4.子功能--鋪設fab燈號
     function bring_light(highlight){
-        // console.log(highlight);
         if(highlight){   
             for (const [key_4, value_4] of Object.entries(highlight)) {
                 target_btn = document.getElementById('btn_fab_'+value_4['id']);

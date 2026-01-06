@@ -4,7 +4,7 @@
     "version"    : "V002b",
     "dcc_no"     : "13ES100016-F002",
     "form_item"  : {
-        "Section_1" : {
+        "section_1" : {
             "label" : "人員基本資料",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -103,11 +103,17 @@
                         { "label" : "70~未滿75" , "value" : "70u-75d" }
                     ],
                     "required": true
+                },
+                {
+                    "label": "new連絡電話",
+                    "type": "text",
+                    "name" : "phone",
+                    "required": true
                 }
             ]
         },
 
-        "Section_2" : {
+        "section_2" : {
             "label" : "事故摘要",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -194,7 +200,7 @@
             ]
         },
 
-        "Section_3" : {
+        "section_3" : {
             "label" : "事故敘述",
             "info"  : "",
             "class" : "col-12 py-0",
@@ -219,7 +225,7 @@
             ]
         },
 
-        "Section_4" : {
+        "section_4" : {
             "label": "傷害程度",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -287,11 +293,27 @@
                     "type" : "textarea",
                     "name" : "s4_text_a",
                     "required": true
+                },
+                {
+                    "label": "new住院狀態(訪談當下)",
+                    "type" : "radio",
+                    "name" : "s4_combo_04",
+                    "options" : [
+                        { "label" : "已出院" , "value" : {
+                                                                "label": "（請說明出院時間）",
+                                                                "type" : "text",
+                                                                "name" : "s4_combo_04",
+                                                                "value": "已出院"
+                                                            } },
+                        { "label" : "住院中"                , "value" : "住院中" }
+                    ],
+                    "negative": "已出院",
+                    "required": true
                 }
             ]
         },
 
-        "Section_5" : {
+        "section_5" : {
             "label": "綜合問項",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -370,6 +392,22 @@
                     "required": true
                 },
                 {
+                    "label": "new有無違反交通法規",
+                    "type" : "radio",
+                    "name" : "s5_combo_07",
+                    "options" : [
+                        { "label" : "有" , "value" : {
+                                                                "label": "（請於備註說明）",
+                                                                "type" : "text",
+                                                                "name" : "s5_combo_07",
+                                                                "value": "有"
+                                                            } },
+                        { "label" : "無"                , "value" : "無" }
+                    ],
+                    "negative": "有",
+                    "required": true
+                },
+                {
                     "label": "舉證資料(無須影印)",
                     "type" : "checkbox",
                     "name" : "s5_combo_06",
@@ -402,7 +440,7 @@
             ]
         },
 
-        "Section_5A" : {
+        "section_5A" : {
             "label" : "綜合問項 - 個人行為",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -460,7 +498,7 @@
             ]
         },
 
-        "Section_5B" : {
+        "section_5B" : {
             "label" : "綜合問項 - 身心狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -508,7 +546,7 @@
             ]
         },
 
-        "Section_6" : {
+        "section_6" : {
             "label" : "綜合問項",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -626,7 +664,7 @@
             ]
         },
 
-        "Section_6A" : {
+        "section_6A" : {
             "label" : "綜合問項 - 天候因素條件",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -680,7 +718,7 @@
             ]
         },
 
-        "Section_6B" : {
+        "section_6B" : {
             "label" : "綜合問項 - 照明狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -728,7 +766,7 @@
             ]
         },
 
-        "Section_8" : {
+        "section_8" : {
             "label": "事故分析",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",

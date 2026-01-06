@@ -104,7 +104,7 @@
             search       : search                                   // 查詢對象key_word
         }
         $.ajax({
-            url: 'http://tneship.cminl.oa/api/hrdb/index.php',      // 正式2024新版
+            url: 'https://tneship.cminl.oa/api/hrdb/index.php',      // 正式2026新版
             method: 'post',
             dataType: 'json',
             data: request,
@@ -437,6 +437,27 @@
         });
     };
 
+    // 260105 列印時，強制關閉disabled灰階文字
+    function addDisabledReviewToDisabledElements() {
+        // 儲存原本是 disable 的元素，方便還原
+        let disabledElements = [];
+        // 當列印開始前
+        window.addEventListener('beforeprint', () => {
+            // 取得所有 disabled 的 input
+            disabledElements = Array.from(document.querySelectorAll('body input[disabled]'));
+            disabledElements.forEach(el => {
+                el.removeAttribute('disabled'); // 暫時解鎖
+            });
+        });
+        // 列印完成後
+        window.addEventListener('afterprint', () => {
+            disabledElements.forEach(el => {
+                el.setAttribute('disabled', 'disabled'); // 恢復 disabled 狀態
+            });
+            disabledElements = [];
+        });
+    }
+
     async function eventListener(){
         return new Promise((resolve) => { 
             // 定義+監聽按鈕for與會人員...search btn id
@@ -478,8 +499,11 @@
                             negative_arr = negative_opts.filter(opt => opt.checked).map(opt => opt.id);
                         // }
                         // 根据 negative_arr 数组的长度设置 get_negatives 的状态
+                        let isChecked = negative_arr.length > 0;
+                        console.table('負向選項清單：')
+                        console.table(negative_arr)
+                        // if(isChecked) alert("負向選項清單鎖定中："+JSON.stringify(negative_arr));
                         get_negatives.forEach((get_n) => {
-                            let isChecked = negative_arr.length > 0;
                             get_n.checked = isChecked;
                             $('#'+get_n.id+'_o').toggleClass('unblock', !isChecked).prop("disabled", !isChecked);
                         });
@@ -533,10 +557,10 @@
                         $("#rload").val("估算約：" + years + " 年 " + months + " 個月 " + days + " 天");
                         $("#rload").removeClass("is-invalid").addClass("is-valid");
                     } else {
-                        $("#rload").val('(填完session_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
+                        $("#rload").val('(填完section_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
                     }
                 } else {
-                    $("#rload").val('(填完session_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
+                    $("#rload").val('(填完section_2 事故時間，此欄自動更新)').removeClass("is-valid").addClass("is-invalid");
                 }
             });
             // 監聽與驗證anis_no是否合規
@@ -567,14 +591,19 @@
             // 列印PDF時，渲染簽名欄+遮蔽部分欄位...
             $('#download_pdf').on('click', function() {
 
-                $('#logs_div, #editions_div, .head_btn, #show_odd_div' ).addClass('unblock');         // 遮蔽頂部按鈕
+                alert("*** 溫馨提醒：為了讓文件列印時可以更清晰，建議您取消印表機的「背景圖形」選項 !!")
+                $('#logs_div, #editions_div, .head_btn, #show_odd_div, #phone' ).addClass('unblock');         // 遮蔽頂部按鈕 // 260105_遮蔽電話
+                $('#phone').parent().parent().addClass('unblock'); // 260105_遮蔽電話 其父項的父項
+                // 260105 執行函數：列印時，強制關閉disabled灰階文字
+                addDisabledReviewToDisabledElements();
+
                 $('#confirm_sign').empty().removeClass('unblock');                    // 清除簽名欄內容+取消遮蔽簽名欄
                 // 訂製簽名欄訊息
                 let d1 ='<div class="col-12 border rounded bg-white mt-2">';
-                let confirm_text = '<div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">●&nbsp以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>';
+                let confirm_text = '<div class="confirm_text px-2 pt-0 pb-1" style="font-size: 12px;">●&nbsp;以上各項均由當事人依照事實填具，且同意工傷判定之結果，如有不實，願負民事、刑事責任，並歸還溢領之勞保給付及工傷假天數，特此具結。</div>';
                 let dx = '<div class="border rounded bg-light p-3"><div class="confirm_sign_div"><h3>&nbspX</h3></div><div class="pt-2 pb-0">';
                 let d2 = '<div class="col-6 col-md-6 py-0">';
-                let confirm_word = d1 + confirm_text + dx + '當事人' + '</div></div></div>';
+                let confirm_word = d1 + confirm_text + dx + '當事人(或其委任代理人)' + '</div></div></div>';
                 confirm_word += d1 + '<div class="row">' + d2 + dx + '環安人員' + '</div></div></div>' + d2 + dx + '勞工代表' + '</div></div></div>' + '</div></div>';
                 // 渲染簽名欄內容
                 // document.getElementById("confirm_sign").innerHTML = confirm_word;
@@ -590,6 +619,24 @@
                 // 當有變更時，對該input加上指定的class
                 $(this).removeClass('autoinput');
             });
+            // 251231 監聽表單內 是否住院 變更事件--連動new住院狀態(訪談當下)
+            $('#s4_combo_01_否, #s4_combo_01_是').change(function() {
+                const targetElement_na  = document.getElementById('s4_combo_04_NA/免住院');
+                const targetElement_out = document.getElementById('s4_combo_04_已出院');
+                const targetElement_in  = document.getElementById('s4_combo_04_住院中');
+                if(this.value === "是"){
+                    if(targetElement_na)  targetElement_na.checked = false;
+                    if(targetElement_na)  targetElement_na.disabled = true;
+                    if(targetElement_out) targetElement_out.disabled = false;
+                    if(targetElement_in)  targetElement_in.disabled = false;
+                }else{
+                    if(targetElement_na)  targetElement_na.checked = true;
+                    if(targetElement_na)  targetElement_na.disabled = false;
+                    if(targetElement_out) targetElement_out.disabled = true;
+                    if(targetElement_in)  targetElement_in.disabled = true;
+                }
+            });
+
             // 監聽表單內 autoinput 變更事件
             document.querySelectorAll('[name="s1_combo_NATIO[]"], [name="s1_combo_GESCH[]"]').forEach((element) => {
                 element.addEventListener('change', function() {
@@ -715,7 +762,7 @@
 
 // // step_1 表單生成 function 
     // 動態表單主fun -- JSON轉表單；依據不同的key_type進行切換型別 HARD CODED
-    function make_question(session_key, key_class, item_a) {        // 接收參數：session, class, 單一問項
+    function make_question(section_key, key_class, item_a) {        // 接收參數：section, class, 單一問項
         let int_a = '';
         let dcff = '<div class="form-floating">';
         // 共用部分的操作1 label標籤
@@ -731,7 +778,8 @@
         function infoPart() {
             let info_temp = '';
             if(typeof item_a.info !== 'object'){
-                info_temp += ' >>> ' + item_a.info;
+                // info_temp += ' >>> ' + item_a.info;
+                info_temp += ' <i class="fa-solid fa-circle-info"></i> ' + item_a.info;
             }else{
                 for (const [key_1, value_1] of Object.entries(item_a.info)) {
                     if(info_temp){
@@ -840,8 +888,8 @@
                 }) 
                 int_a += '</select>'+'</div>';
                 break;
-            case 'file':       // session_3 事故位置簡圖
-            case 'file_pdf':       // session_3 目擊者+事故者自述
+            case 'file':       // section_3 事故位置簡圖
+            case 'file_pdf':       // section_3 目擊者+事故者自述
                 int_a = check_action ? '<div class="row"><div class="col-12 ' : '<div class="row"><div class="col-6 col-md-6  ';         // create = 半開；review = 全開    py-1 px-2
                 int_a += ' a_pic" id="preview_'+item_a.name+'"> -- preView -- </div><input type="hidden" name="' +item_a.name+'" id="'+item_a.name+'" '+(item_a.required ? 'required':'')+'>';
                 if(!check_action){
@@ -873,14 +921,14 @@
         }
         // 有info就呼叫fun崁入
         int_a += (item_a.info) ? infoPart() : '';
-        // 外層session包裝 // 將表單元素添加到特定的容器中
+        // 外層section包裝 // 將表單元素添加到特定的容器中
         if(key_class && item_a.type != 'signature'){
             int_a = '<div class="'+ key_class +'">' + int_a + '</div>';
         }else if(item_a.type == 'signature'){
             int_a = '<div class="col-12 p-2">' + int_a + '</div>';
         }
         // 渲染form
-        $('#' + session_key +' .accordion-body').append(int_a);     
+        $('#' + section_key +' .accordion-body').append(int_a);     
         
 
         if(item_a.correspond !== undefined){                // 240613 判斷是否需要啟動對應選項 for 災害類型
@@ -912,7 +960,7 @@
             const doc_msg = '※ 此訪談表單已包含『'+ form_json.form_title +'-'+ form_json.dcc_no +'』完整之調查事項。';
             $('#dcc_no_head').empty().append(doc_msg);
         }
-        let dcc_no_input = document.querySelector('#dcc_no');                                   
+        let dcc_no_input = document.querySelector('#dcc_no');       
         if(dcc_no_input && form_json.dcc_no && form_json.version){                              
             dcc_no_input.value = form_json.dcc_no+'-'+form_json.version;                        // 填上dcc表單no
         }
@@ -920,9 +968,9 @@
         if(form_item){                                                                          // confirm form_item is't empty
             // console.log('step_1-2 make_question(key_1, value_1.class, item_value) -- ');
             for (const [key_1, value_1] of Object.entries(form_item)) {
-                // step_1.生成session_title
+                // step_1.生成section_title
                 let match;
-                const regex = new RegExp('session', 'gi');
+                const regex = new RegExp('section', 'gi');
                 if ((match = regex.exec(key_1)) !== null) {
                     let int_1 = '<div class="accordion-item">';                 // 使用手風琴模組
                     if (value_1.label.length != 0) {
@@ -936,10 +984,10 @@
                         +'</div></div></div>'
     
                     $('#item_list').append(int_1);
-                    // 20240531 增加 session_group
+                    // 20240531 增加 section_group
                     // let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ key_1 + '">'+ key_1 + '</a>';
                     let int_2 = '<a class="list-group-item list-group-item-action" href="#'+ key_1 + '_head" data-toggle="tooltip" data-placement="right" title="'+ value_1.label + '">'+ key_1 +'</a>';
-                    $('#session-group').append(int_2);
+                    $('#section-group').append(int_2);
                 }
                 // step_2.生成問項...將每一筆繞出來
                 Object(value_1.item).forEach((item_value)=>{
@@ -1095,6 +1143,15 @@
                 }
             })
 
+        // 260105 內容限制：電話
+            if((document_row.created_emp_id != auth_emp_id) || sys_role > '2'){
+                let password_items = ['phone'];
+                password_items.forEach((itemId) => {
+                    $(`#${itemId}`).prop('type', 'password');
+                    console.log(`遮蔽：${itemId}`)
+                });
+            }
+
         // 240709 修正上傳路徑
         let currentYear = new Date().getFullYear(); // 获取当前年份
         let row_obj = {};
@@ -1170,7 +1227,6 @@
 // // 20240430 -- step_3 依cherk_action = true/false 啟閉表單特定元素
     async function setFormDisabled(cherk_action) {
         // console.log('step_3 setFormDisabled(cherk_action)：', cherk_action);
-        // return true;
         return new Promise((resolve) => {  
             // 获取表单元素
             const mainForm = document.getElementById('mainForm');  
@@ -1219,7 +1275,7 @@
     async function loadData() {
         try {
                 mloading(); 
-                // await load_fun('locals','', init_locals);   // step_0 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
+                // await load_fun('locals','', init_locals);   // step_0 load_form(dcc_no);          // 20240501 -- 改由後端取得 form_a 內容
                 await load_fun('form', dcc_no, bring_form); // step_1 load_form(dcc_no);             // 20240501 -- 改由後端取得 form_a 內容
                 await signature_canva();                    // step_1-1 signature_canva();           // 
                 await eventListener();                      // step_1-2 eventListener();             // 

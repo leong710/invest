@@ -4,7 +4,7 @@
     "version"    : "V003e",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
-        "session_1" : {
+        "Section_1" : {
             "label" : "人員基本資料",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -106,7 +106,7 @@
                 }
             ]
         },
-        "session_2" : {
+        "Section_2" : {
             "label" : "事故摘要",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -277,7 +277,7 @@
             ]
         },
 
-        "session_3" : {
+        "Section_3" : {
             "label" : "事故敘述",
             "info"  : "",
             "class" : " p-2 ",
@@ -320,7 +320,7 @@
             ]
         },
 
-        "session_8" : {
+        "Section_8" : {
             "label": "事故分析",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",

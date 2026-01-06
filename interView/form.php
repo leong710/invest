@@ -100,7 +100,7 @@
             transition: opacity 1s;
             animation: none;
         }
-        #session-group {
+        #section-group {
             position: sticky;
             top: 0;
             z-index: 1;
@@ -113,6 +113,7 @@
             overflow: hidden;               /* 確保溢出的文字被截斷並顯示省 */
             text-overflow: ellipsis;
         }
+        /* 列印時強制套用css參數 */
         @media print {
             body * {
                 visibility: hidden;
@@ -126,6 +127,22 @@
                 top  : 0;
                 width: 100%;
             }
+            /* 1. 確保 .tag 所有人員的內容可以完整呈現 */
+            .tag {
+                background: none !important;
+                background-color: none !important;
+                color: darkblue !important;
+                border: .5px solid darkblue !important;
+                box-shadow: none !important;
+                -webkit-box-shadow: none !important;
+                text-shadow: none !important;
+            }
+            /* 2. 確保 .form-floating 的 label 顏色是黑色 */
+            .form-floating .form-label {
+                color: black !important;
+                opacity: 1 !important;
+            }
+
             /* 設置紙張大小為 A4 */
             @page {
                 size  : A3;
@@ -150,12 +167,12 @@
     </style>
 </head>
 
-<body data-bs-spy="scroll" data-bs-target="#session-group">
+<body data-bs-spy="scroll" data-bs-target="#section-group">
     <div class="col-12">
         <div class="row justify-content-center">
-            <!-- session-group -->
+            <!-- section-group -->
             <div class="col-12 col-md-2 col-lg-2 px-1 py-0">
-                <div id="session-group" class="list-group">
+                <div id="section-group" class="list-group">
                     <?php if(in_array($action,["create", "edit"])){ ?>
                         <button class="list-group-item list-group-item-action text-center" onclick="saveSubmit_modal('6', this.innerHTML)" data-bs-toggle="modal" data-bs-target="#saveSubmit"> <i class="fa-solid fa-floppy-disk"></i> 暫存 (Save)</button>
                     <?php } ?>
@@ -210,7 +227,7 @@
                 </div>
     
                 <!-- container -->
-                <div class="col-12 px-1 py-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#session-group" data-bs-offset="0" tabindex="0" >
+                <div class="col-12 px-1 py-1 scrollspy-example" data-bs-spy="scroll" data-bs-target="#section-group" data-bs-offset="0" tabindex="0" >
                     <!-- 內頁 -->
                     <form action="process.php" method="post" enctype="multipart/form-data" onsubmit="this.cname.disabled=false,this._odd.disabled=false" id="mainForm">
                         <div class="row rounded bg-light py-1" id="form_container">
@@ -504,9 +521,7 @@
             </div>
         </div>
 
-        <div id="gotop">
-            <i class="fas fa-angle-up fa-2x"></i>
-        </div>
+        <div id="gotop"><i class="fas fa-angle-up fa-2x"></i></div>
 
 </body>
 
@@ -529,7 +544,8 @@
     var meeting_man_target;                         // 指向目標
     var negative_arr  = [];                         // 監聽負向選項
     var searchUser_modal = new bootstrap.Modal(document.getElementById('searchUser'), { keyboard: false });
-    
+    var sys_role      = '<?=$sys_role?>';
+    var auth_emp_id   = '<?=$auth_emp_id?>';
 </script>
 
 <script src="form.js?v=<?=time()?>"></script>

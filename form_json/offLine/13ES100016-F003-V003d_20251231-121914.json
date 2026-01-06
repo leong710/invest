@@ -4,7 +4,7 @@
     "version"    : "V003d",
     "dcc_no"     : "13ES100016-F003",
     "form_item"  : {
-        "Section_1" : {
+        "session_1" : {
             "label" : "人員基本資料",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -106,7 +106,7 @@
                 }
             ]
         },
-        "Section_2" : {
+        "session_2" : {
             "label" : "事故摘要",
             "info"  : "",
             "class" : "col-6 col-md-6 p-2 ",
@@ -338,7 +338,7 @@
             ]
         },
 
-        "Section_3" : {
+        "session_3" : {
             "label" : "事故敘述",
             "info"  : "",
             "class" : " p-2 ",
@@ -381,7 +381,7 @@
             ]
         },
 
-        "Section_4" : {
+        "session_4" : {
             "label": "傷害程度",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -453,7 +453,7 @@
             ]
         },
 
-        "Section_5A" : {
+        "session_5A" : {
             "label" : "綜合問項 - 個人行為",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -547,7 +547,7 @@
             ]
         },
 
-        "Section_5B" : {
+        "session_5B" : {
             "label" : "綜合問項 - 身心狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -595,7 +595,7 @@
             ]
         },
 
-        "Section_6A" : {
+        "session_6A" : {
             "label" : "綜合問項 - 天候因素條件",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -659,7 +659,7 @@
             ]
         },
 
-        "Section_6B" : {
+        "session_6B" : {
             "label" : "綜合問項 - 照明狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -707,7 +707,7 @@
             ]
         },
 
-        "Section_6C" : {
+        "session_6C" : {
             "label" : "綜合問項 - 地面狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -761,7 +761,7 @@
             ]
         },
 
-        "Section_7B" : {
+        "session_7B" : {
             "label" : "綜合問項 - 服裝狀況",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",
@@ -795,7 +795,7 @@
             ]
         },
 
-        "Section_8" : {
+        "session_8" : {
             "label": "事故分析",
             "info" : "",
             "class": "col-6 col-md-6 p-2 ",

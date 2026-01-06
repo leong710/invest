@@ -125,6 +125,18 @@
                     "required": true
                 },
                 {
+                    "label": "責任區域負責單位",
+                    "type" : "text",
+                    "name" : "a_areaInCharge",
+                    "required": true
+                },
+                {
+                    "label": "責任區域負責人",
+                    "type" : "text",
+                    "name" : "a_personInCharge",
+                    "required": true
+                },
+                {
                     "label": "事故當日應工作起始時間",
                     "type": "datetime",
                     "name" : "a_work_s",

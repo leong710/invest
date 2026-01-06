@@ -67,7 +67,8 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             newToast.setAttribute('autohide', 'true');
             newToast.setAttribute('delay', '1000');
             // 設置 toast 的內部 HTML
-            newToast.innerHTML = `<div class="d-flex"><div class="toast-body">${sinn}</div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+            newToast.innerHTML = `<div class="d-flex"><div class="toast-body">${sinn}</div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
         // 將新 toast 添加到容器中
         document.getElementById('toastContainer').appendChild(newToast);
         // 初始化並顯示 toast
@@ -327,7 +328,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             Object(lists_obj).forEach((list_i)=>{                        // 依序處理...
                 const {
                     _remaining, anis_no, _odd : { due_day , od_day = null }, short_name, fab_title, sign_code,
-                    created_cname, created_emp_id, created_email, idty, spm, signDept, bpm, created_at
+                    created_cname, created_emp_id, created_email, idty, spm, signDept, bpm
                 } = list_i;
     
                 const idty_value = {
@@ -352,9 +353,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                     remaining_day   : _remaining,
                     idty            : idty + '_' + idty_value + ( od_day === null ? '(尚未申報)' : ''),
                     created_cname   : created_cname,
-                    created_emp_id  : created_emp_id,
-                    created_at      : created_at,
-                    spm             : spm
+                    created_emp_id  : created_emp_id
                 };
 
                 const addToNotifyList = (i_emp_id, i_cname, i_email, i_action) => {
@@ -461,12 +460,13 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     function push_mapp(to_emp_id, mg_msg) {
         if(!debugMode.mapp){
             console.log(to_emp_id, mg_msg);
-            return Promise.resolve(true); // 在 debug 模式也回傳 Promise，保持一致性
+            return true;
         }
         return new Promise((resolve, reject) => {
             $.ajax({
                 url:'http://tneship.cminl.oa/api/pushmapp/index.php',       // 正式2024新版
                 method:'post',
+                async: false,                                               // ajax取得數據包後，可以return的重要參數
                 dataType:'json',
                 data:{
                     uuid         : uuid,                                    // invest
@@ -489,16 +489,15 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // 20240314 將訊息郵件發送給對的人~
     function sendmail(to_email, int_msg1_title, mg_msg){
         if(!debugMode.email){
-            console.log('debug mode:');
-            console.log(to_email);
-            console.log(int_msg1_title);
-            console.log( mg_msg);
-            return Promise.resolve(true); // 在 debug 模式也回傳 Promise，保持一致性
+            console.log('debug mode:',to_email, int_msg1_title, mg_msg);
+            return true;
         }
         return new Promise((resolve, reject) => {
+            console.log(int_msg1_title); 
             $.ajax({
                 url:'http://tneship.cminl.oa/api/sendmail/index.php',       // 正式2024新版
                 method:'post',
+                async: false,                                               // ajax取得數據包後，可以return的重要參數
                 dataType:'json',
                 data:{
                     uuid    : uuid,                                         // invest
@@ -530,7 +529,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             var invest_url   = `\n事故訪談系統：${uri}/invest/`;
             var invest_url_mail = `<a href="${uri}/invest/" target="_blank">事故訪談系統</a>`;
             var int_msg1     = '【tnESH事故訪談系統】待您處理文件提醒';
-            var int_msg2     = '目前共有 ';
+            var int_msg2     = '您共有 ';
             var int_msg3     = ' 件訪談單尚未完成結案';
             var int_msg4     = '** 請至以下連結查看待處理文件： ';
             var srt_msg4     = ' ，如已處理完畢，請忽略此訊息！\n';
@@ -563,10 +562,9 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                             let emergency = 0;                                          // 小於等於 0天的急件
                             const { anis_no } = _value_obj;                             // 取出ANIS_NO這一個陣列
                             let anis_msg = '';                                          // 初始化ANIS訊息值
-                            let spm_cname = 'Dear';                                     // 251211 增加收件者(spm)冠名
                         // _fun1.step1. 分拆出ANIS訊息 &#9
-                            for (const [anis_k, anis_v] of Object.entries(anis_no)){  
-                                const { fab_title, short_name, created_cname, created_at, due_date, remaining_day, idty, spm } = anis_v;
+                            for (const [anis_k, anis_v] of Object.entries(anis_no)){     
+                                const { fab_title, short_name, due_date, remaining_day, idty } = anis_v;
 
                                 let idtyMsg = "";
                                 if (!idty.includes('10_完成訪談')) {
@@ -582,24 +580,10 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                                 idtyMsg += (idtyMsg == "") ? " NA (idty error) " : "";
 
                                 // anis信息組合
-                                anis_msg += (i > 0 ? '\n\n':'') 
-                                         +`事故廠區/類別：${fab_title} / ${short_name}\nANIS單號： ${anis_k}\n開單人/開單日： ${created_cname} / ${created_at}\n申報截止日： ${due_date}\n剩餘天數： ${remaining_day} 天\n表單狀態： ${idtyMsg}`;
+                                anis_msg += (i > 0 ? '\n\n':'') +`事故廠區/類別：${fab_title} / ${short_name} \nANIS單號： ${anis_k} \n申報截止日： ${due_date} \n剩餘天數： ${remaining_day} 天\n表單狀態： ${idtyMsg}`;
                                 i++;
                                 emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
-                                // 增加收件者(spm)冠名
-                                if(spm.length > 0){
-                                    for(spm_i of spm){
-                                        spm_cname += (spm_cname == 'Dear' ? ' ' : '、') + `${spm_i.cname}`;
-                                    }
-                                }
                             }
-                                
-                            if(spm_cname == 'Dear'){
-                                spm_cname = '';
-                            }else{
-                                spm_cname += ' '; // 增加收件者(spm)冠名 尾端+空格分開
-                            }
-
                         // _fun1.step2. 組合訊息文字
                             let countMsg = "";  // 統計訊息
                             if (nok !== 0) {
@@ -613,8 +597,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                                 }
                                 countMsg += `${nood} 件未完成申報)`;
                             }
-
-                            let base_anis_msg =  `${spm_cname}${int_msg2}${i}${int_msg3} ${countMsg}\n\n${anis_msg}`;  // 組合訊息2元素 
+                            let base_anis_msg =  `${int_msg2}${i}${int_msg3} ${countMsg}\n\n${anis_msg}`;  // 組合訊息2元素 
 
                             let mg_msg   = `${int_msg1}\n\n${base_anis_msg}\n\n${int_msg4}${invest_url}${srt_msg4}${int_msg5}`;         // 組合mapp訊息
                             let mail_msg = `${int_msg1}\n\n${base_anis_msg}\n\n${int_msg4}${invest_url_mail}${srt_msg4}${int_msg5}`;    // 組合mail訊息

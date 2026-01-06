@@ -32,7 +32,7 @@
                     extract($_REQUEST);
                         $parm_arr = explode(",", $parm);    // 將參數parm炸成陣列：0= 要抓的對象； 1= true/false 是否輸出更新json檔
                         if($parm_arr[0] == "formcase"){
-                            $sql = "SELECT * FROM _formcase WHERE flag <> 'Off' ORDER BY id ASC";
+                            $sql = "SELECT * FROM _formcase WHERE flag <> 'Off' ORDER BY dcc_no ASC";
                         }else if($parm_arr[0] == "_site"){
                             $sql = "SELECT _s.id, _s.site_title, _s.site_remark FROM _site _s WHERE _s.flag <> 'Off' ORDER BY _s.id ASC";
                         }else if($parm_arr[0] == "_fab"){
