@@ -300,7 +300,7 @@
                     "type" : "radio",
                     "name" : "s4_combo_04",
                     "options" : [
-                        { "label" : "NA/免住院" , "value" : "NA/免住院" },
+                        { "label" : "NA-免住院" , "value" : "NA-免住院" },
                         { "label" : "已出院" , "value" : {
                                                             "label": "（請填寫出院時間：西元年/月/日）",
                                                             "type" : "text",

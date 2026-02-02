@@ -114,6 +114,9 @@
             text-shadow: 3px 3px 5px rgba(0,0,0,.5);
             /* color: #636b6f; */
         }
+        .notify_map th, td {
+            width: 50px;
+        }
    </style>
 </head>
 
@@ -157,14 +160,88 @@
                             <b>自動通報條件：職災申報期限 <= 5天</b>
                             <ul>
                                 <li>通報時間：週一～週五 08:00 & 13:00</li>
-                                <li>通報方式：>3days：eMail；<=3days：Mapp + eMail通知</li>
+                                <!-- <li>通報方式：>3days：eMail；<=3days：Mapp + eMail通知</li>
                                 <li>通知對象：remaining_days<ul>
                                         <li>>3：窗口、課副理</li>    
                                         <li>>=0：窗口、課副理、部經理、大PM</li>    
                                         <li>&nbsp;&nbsp;<&nbsp;0：窗口、課副理、部經理、大PM、處長</li>    
                                         <li>*** 以上表單狀態若是未結案，將一併通知 開單人</li>
-                                </ul></li>
+                                </ul></li> -->
                             </ul>
+                            <div class="px-5 notify_map">
+                                <table class="table table-striped table-hover bs-b">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7"></th>
+                                            <th>dueDay</th>
+                                            <th>Over<br>dueDay</th>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th>日期</th>
+                                            <th>31</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>5</th>
+                                            <th>6</th>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th>倒數</th>
+                                            <th>5</th>
+                                            <th>4</th>
+                                            <th>3</th>
+                                            <th>2</th>
+                                            <th>1</th>
+                                            <th>0</th>
+                                            <th class="alert_it">-1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="2">通報方式</td>
+                                            <td>mail</td>
+                                            <td colspan="7" class="bg-info"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>mapp</td>
+                                            <td colspan="2" class=""></td>
+                                            <td colspan="5" class="bg-info"></td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="5">通知對象</td>
+                                            <td>窗口 / 開單人</td>
+                                            <td colspan="6" class="bg-warning"></td>
+                                            <td class="bg-danger"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>副理</td>
+                                            <td colspan="6" class="bg-warning"></td>
+                                            <td class="bg-danger"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>經理</td>
+                                            <td colspan="2" class=""></td>
+                                            <td colspan="4" class="bg-warning"></td>
+                                            <td class="bg-danger"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>大PM</td>
+                                            <td colspan="2" class=""></td>
+                                            <td colspan="4" class="bg-warning"></td>
+                                            <td class="bg-danger"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>處長</td>
+                                            <td colspan="6" class=""></td>
+                                            <td class="bg-danger"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <snap>*** 以上表單狀態若是未結案，將一併通知 開單人</snap>
+                            </div>
                             <!-- 20231108-資料更新時間 -->
                             <div class="col-12 py-0 px-3 text-end">
                                 <span style="display: inline-block;" >
