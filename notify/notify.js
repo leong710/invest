@@ -2,9 +2,9 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     // 241209 確認是否是測試帳號
     const debugMode = { 
         'test'     : (fun == 'debug') ? true : false,           // true  = 啟動測試 
-        'mapp'     : true,                                      // false = 放棄執行
-        'email'    : true,                                      // false = 放棄執行
-        'toLog'    : true,                                      // false = 放棄執行
+        'mapp'     : false,                                      // false = 放棄執行
+        'email'    : false,                                      // false = 放棄執行
+        'toLog'    : false,                                      // false = 放棄執行
         'title'    : '!!! Now is DEBUGMODE !!!',
         'to_empId' : '10008048',
         'to_email' : 'leong.chen@innolux.com'
@@ -215,7 +215,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         } 
 
         $.ajax({
-            url:'http://tneship.cminl.oa/api/hrdb/index.php',           // 正式2024新版
+            url:'https://tneship.cminl.oa/api/hrdb/index.php',           // 正式2024新版
             method   :'post',
             async    : false,                                           // ajax取得數據包後，可以return的重要參數
             dataType :'json',
@@ -322,7 +322,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
     }
     // notifyLists 資料清洗
     function step3(lists_obj, myCallback){
-        console.log('lists_obj',lists_obj)
+        // console.log('lists_obj',lists_obj)
         return new Promise((resolve) => {
             Object(lists_obj).forEach((list_i)=>{                        // 依序處理...
                 const {
@@ -465,7 +465,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         }
         return new Promise((resolve, reject) => {
             $.ajax({
-                url:'http://tneship.cminl.oa/api/pushmapp/index.php',       // 正式2024新版
+                url:'https://tneship.cminl.oa/api/pushmapp/index.php',       // 正式2024新版
                 method:'post',
                 dataType:'json',
                 data:{
@@ -497,7 +497,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
         }
         return new Promise((resolve, reject) => {
             $.ajax({
-                url:'http://tneship.cminl.oa/api/sendmail/index.php',       // 正式2024新版
+                url:'https://tneship.cminl.oa/api/sendmail/index.php',       // 正式2024新版
                 method:'post',
                 dataType:'json',
                 data:{
@@ -550,7 +550,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
             var totalUsers = Object.keys(notifyLists).length;                   // 獲取總用戶數量
             var completedUsers = 0;                                             // 已完成发送操作的用户数量
             var user_logs = [];                                                 // 宣告儲存Log用的 大-陣列Logs
-
+                
                 // _fun1.製作主要信息
                 function make_msg(_value_obj){
                     if(debugMode.test) console.log('make_msg__value_obj', _value_obj);
@@ -564,6 +564,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                             const { anis_no } = _value_obj;                             // 取出ANIS_NO這一個陣列
                             let anis_msg = '';                                          // 初始化ANIS訊息值
                             let spm_cname = 'Dear';                                     // 251211 增加收件者(spm)冠名
+                            let spm_arr = [];
                         // _fun1.step1. 分拆出ANIS訊息 &#9
                             for (const [anis_k, anis_v] of Object.entries(anis_no)){  
                                 const { fab_title, short_name, created_cname, created_at, due_date, remaining_day, idty, spm } = anis_v;
@@ -586,14 +587,22 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
                                          +`事故廠區/類別：${fab_title} / ${short_name}\nANIS單號： ${anis_k}\n開單人/開單日： ${created_cname} / ${created_at}\n申報截止日： ${due_date}\n剩餘天數： ${remaining_day} 天\n表單狀態： ${idtyMsg}`;
                                 i++;
                                 emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
+                                
+                                spm_arr.push(created_cname); // Dear 加入開單人
                                 // 增加收件者(spm)冠名
                                 if(spm.length > 0){
                                     for(spm_i of spm){
-                                        spm_cname += (spm_cname == 'Dear' ? ' ' : '、') + `${spm_i.cname}`;
+                                        // spm_cname += (spm_cname == 'Dear' ? ' ' : '、') + `${spm_i.cname}`;
+                                        spm_arr.push(spm_i.cname);  // Dear 加入副PM
                                     }
                                 }
                             }
-                                
+                            // 260202_debug去除重複收件人
+                            spm_arr = [...new Set(spm_arr)];                    // 1. Dear 取唯一值
+                            let spm_result = Array.from(spm_arr).join('、');    // 2. 轉為陣列並用 '‵' 分隔
+                            spm_cname += ' ' + `${spm_result}`;                 // 3. 串接Dear字串
+                            if(debugMode.test) console.log('spm_cname...',spm_cname);
+
                             if(spm_cname == 'Dear'){
                                 spm_cname = '';
                             }else{
