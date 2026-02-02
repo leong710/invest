@@ -584,7 +584,7 @@ const uuid      = '3cd9a6fd-4021-11ef-9173-1c697a98a75f';       // invest
 
                                 // anis信息組合
                                 anis_msg += (i > 0 ? '\n\n':'') 
-                                         +`事故廠區/類別：${fab_title} / ${short_name}\nANIS單號： ${anis_k}\n開單人/開單日： ${created_cname} / ${created_at}\n申報截止日： ${due_date}\n剩餘天數： ${remaining_day} 天\n表單狀態： ${idtyMsg}`;
+                                         +`事故廠區/類別：${fab_title} / ${short_name}\nANIS單號：${anis_k}\n開單人/開單日：${created_cname} / ${created_at}\n申報截止日：${due_date}\n剩餘天數：${remaining_day} 天\n表單狀態：${idtyMsg}`;
                                 i++;
                                 emergency += (remaining_day <= 0 ) ? 1 : 0;     // 統計小於等於 0天的急件
                                 
