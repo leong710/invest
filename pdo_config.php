@@ -6,7 +6,8 @@
         'db_user'      => 'tnesh',
         'db_pass'      => '&9t040500',
         
-        'hrdb_host'    => '10.53.203.100,1433',
+        // 'hrdb_host'    => '10.53.203.100,1433',
+        'hrdb_host'    => '10.53.202.182',
         'hrdb_name'    => 'hrdb',
         'hrdb_charset' => 'utf8mb4',
         'hrdb_user'    => 'tnesh',

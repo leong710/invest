@@ -1144,7 +1144,7 @@
             })
 
         // 260105 內容限制：電話
-            if((document_row.created_emp_id != auth_emp_id) || sys_role > '2'){
+            if((document_row.created_emp_id != auth_emp_id) && sys_role > '2'){
                 let password_items = ['phone'];
                 password_items.forEach((itemId) => {
                     $(`#${itemId}`).prop('type', 'password');

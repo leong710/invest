@@ -38,15 +38,19 @@
             $db_pw      = $config["hrdb_pass"];
         
             try {
-                $dsn = "sqlsrv:Server={$db_host};Database={$db_name};encrypt=false;";           // msSQL  ..encrypt=false;解決憑證不受信任問題
+                // $dsn = "sqlsrv:Server={$db_host};Database={$db_name};encrypt=false;";           // msSQL  ..encrypt=false;解決憑證不受信任問題
                 // $pdo = new PDO($dsn, $db_user, $db_pw);
                 // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // 设置 PDO 错误模式为异常
-                $pdo = new PDO($dsn, $db_user, $db_pw, [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_TIMEOUT => 2 // 設定連線超時為 2 秒
-                ]);
+                // // 设置 PDO 错误模式为异常
+                // $pdo = new PDO($dsn, $db_user, $db_pw, [
+                //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                //     PDO::ATTR_TIMEOUT => 2 // 設定連線超時為 2 秒
+                // ]);
+                $dsn = "mysql:host={$db_host};dbname={$db_name};charset={$db_charset}";
+                $pdo = new PDO($dsn, $db_user, $db_pw);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 // echo "hrDB连接成功...";
+                
             }catch(PDOException $e){
                 // echo "hrDB資料庫連線失敗: " . $e->getMessage() . "\n嘗試連接到localhost資料庫...";
                 try {
